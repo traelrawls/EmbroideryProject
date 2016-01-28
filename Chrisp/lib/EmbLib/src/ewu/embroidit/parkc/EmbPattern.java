@@ -1,6 +1,5 @@
 package ewu.embroidit.parkc;
 
-
 import java.util.*;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Ellipse;
@@ -12,7 +11,10 @@ import com.sun.javafx.geom.Path2D;
 
 /*-----------------------------------------------------------------------*/
 /**
- *
+ * Represents an embroidery pattern. A pattern contains a combination of
+ * lines and primitive shapes created by connecting stitch locations with
+ * colored threads inside of an embroidery hoop.
+ * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class EmbPattern
@@ -20,22 +22,21 @@ public class EmbPattern
     /*-----------------------------------------------------------------------*/
     
     //Class member variables
-    int colorIndex;                        //Current colorIndex
+    int colorIndex;                        //Current color index
     double lastX;                          //Last x position
     double lastY;                          //Last y position
-    Point2D homePoint;                     //Starting point
-    
-    EmbHoop hoop;                          //Hoop
-    List<EmbStitch> stitchList;            //Stitch list
-    List<EmbThread> threadList;            //Thread list
-    List<Rectangle> rectList;              //Rectangle list
-    List<Line> lineList;                   //Line list
-    List<Ellipse> circleList;              //Circle list
-    List<Ellipse> ellipseList;             //Ellipse list
-    List<Path2D> pathList;                 //Path list
-    List<Point2D> pointList;               //Point list
-    List<Polygon> polygonList;             //Polygon list
-    List<Polyline> polylineList;           //Polyline list
+    Point2D homePoint;                     //Pattern starting point
+    EmbHoop hoop;                          //Embroidery hoop
+    List<EmbStitch> stitchList;            //List of stitches
+    List<EmbThread> threadList;            //List of threads
+    List<Rectangle> rectList;              //List of rectangles
+    List<Line> lineList;                   //List of lines
+    List<Ellipse> circleList;              //List of circles
+    List<Ellipse> ellipseList;             //List of ellipses
+    List<Path2D> pathList;                 //List of paths
+    List<Point2D> pointList;               //List of points
+    List<Polygon> polygonList;             //List of polygons
+    List<Polyline> polylineList;           //List of polylines
     
     //Object lists remaining
     //--Arc (not sure if this should be Arc or Cubic Curve)
@@ -43,32 +44,15 @@ public class EmbPattern
     
     /*-----------------------------------------------------------------------*/
     
-    //This is a list of pointer references in the modder api pattern file
-    //they should be uneccesary since we can just get a reference from the
-    //Lists<> that we use in this class
-  
-    //lastStitch
-    //lastThread
-    //lastArc
-    //lastCircle
-    //lastEllipse
-    //lastLine
-    //lastPath
-    //lastPoint
-    //lastPolygon
-    //lastPolyline
-    //lastRect
-    //lastSpleen (Except this one, I don't know what this spline thing is)
-    
-    /*-----------------------------------------------------------------------*/
-    
+    /**
+     * Constructs a default empty pattern.
+     */
     public EmbPattern()
     {
         this.colorIndex = 0;
         this.lastX = 0.0;
         this.lastY = 0.0;
         this.homePoint = new Point2D(lastX, lastY);
-    
         this.stitchList = new ArrayList<>();
         this.threadList = new ArrayList<>();
         this.rectList = new ArrayList<>();
@@ -85,10 +69,11 @@ public class EmbPattern
     
     /**
      * Adds a stitch to the stitch list at the absolute position (x, y). 
-     * @param x
-     * @param y
-     * @param flags
-     * @param isAutoColorIndex 
+     * 
+     * @param x double
+     * @param y double
+     * @param flags int
+     * @param isAutoColorIndex  int
      */
     public void addStitchAbs(double x, double y, int flags, int isAutoColorIndex)
     {
@@ -122,14 +107,14 @@ public class EmbPattern
     }
     
     /*-----------------------------------------------------------------------*/
+    
     /**
      * Adds a stitch to the stitch list relative to the previous stitch.
-     * If this is the first stitch in the pattern then homePoint 
-     * is set using its coordinates. autoColorIndex
-     * @param dx
-     * @param dy
-     * @param flags
-     * @param isAutocolorIndex
+     * 
+     * @param dx double
+     * @param dy double
+     * @param flags int
+     * @param isAutocolorIndex int
      */
     public void addStitchRel(double dx, double dy, int flags, int isAutocolorIndex)
     {
@@ -179,6 +164,11 @@ public class EmbPattern
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Ensures that object sent as a parameter exists.
+     * 
+     * @param obj Object
+     */
     private void validateObject(Object obj)
     {
         if (obj == null)
@@ -188,4 +178,5 @@ public class EmbPattern
     }
     
     /*-----------------------------------------------------------------------*/
+    
 }

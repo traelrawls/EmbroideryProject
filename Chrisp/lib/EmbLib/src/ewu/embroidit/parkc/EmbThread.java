@@ -1,10 +1,13 @@
 package ewu.embroidit.parkc;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
+
+
 
 /*-----------------------------------------------------------------------*/
 /**
- *
+ * Represents a colored embroidery thread used in an embroidery design.
+ * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class EmbThread
@@ -12,10 +15,15 @@ public class EmbThread
     /*-----------------------------------------------------------------------*/
     
     //Class member variables
-    private Color threadColor;                      //Thread Color
+    private Color threadColor;              //Thread Color
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Constructs an embroidery thread with the given color.
+     * 
+     * @param threadColor javafx.scene.paint.Color 
+     */
     public EmbThread(Color threadColor)
     {
         this.validateObject(threadColor);
@@ -24,6 +32,11 @@ public class EmbThread
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Gets the embroidery thread color
+     * 
+     * @return javafx.scene.paint.Color
+     */
     public Color getThreadColor()
     {
         return this.threadColor;
@@ -31,6 +44,11 @@ public class EmbThread
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Sets the embroidery thread to the given color.
+     * 
+     * @param threadColor javafx.scene.paint.Color
+     */
     public void setThreadColor(Color threadColor)
     {
         this.validateObject(threadColor);
@@ -39,6 +57,11 @@ public class EmbThread
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Ensures the given object exists.
+     * 
+     * @param obj Object
+     */
     private void validateObject(Object obj)
     {
         if (obj == null)

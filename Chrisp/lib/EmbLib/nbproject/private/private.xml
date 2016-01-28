@@ -5,9 +5,11 @@
         <group>
             <file>file:/C:/Users/Desolis/Desktop/Working%20Directory/Embroidery/Embroid-It/lib/EmbLib/src/ewu/embroidit/parkc/EmbThread.java</file>
             <file>file:/C:/Users/Desolis/Desktop/Working%20Directory/Embroidery/Embroid-It/lib/EmbLib/src/ewu/embroidit/parkc/EmbStitch.java</file>
+            <file>file:/C:/Users/Desolis/Desktop/Working%20Directory/Embroidery/Embroid-It/lib/EmbLib/src/ewu/embroidit/parkc/io/FormatPES.java</file>
             <file>file:/C:/Users/Desolis/Desktop/Working%20Directory/Embroidery/Embroid-It/lib/EmbLib/src/ewu/embroidit/parkc/EmbPattern.java</file>
             <file>file:/C:/Users/Desolis/Desktop/Working%20Directory/Embroidery/Embroid-It/lib/EmbLib/src/ewu/embroidit/parkc/StitchCode.java</file>
             <file>file:/C:/Users/Desolis/Desktop/Working%20Directory/Embroidery/Embroid-It/lib/EmbLib/src/ewu/embroidit/parkc/EmbHoop.java</file>
+            <file>file:/C:/Users/Desolis/Desktop/Working%20Directory/Embroidery/Embroid-It/lib/EmbLib/src/ewu/embroidit/parkc/io/PECDecoder.java</file>
         </group>
     </open-files>
 </project-private>
