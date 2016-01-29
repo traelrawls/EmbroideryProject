@@ -1,5 +1,6 @@
 package ewu.embroidit.parkc;
 
+import ewu.embroidit.parkc.io.StitchCode;
 import java.util.*;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Ellipse;
@@ -8,6 +9,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import com.sun.javafx.geom.Path2D;
+import javafx.scene.shape.Circle;
 
 /*-----------------------------------------------------------------------*/
 /**
@@ -22,21 +24,21 @@ public class EmbPattern
     /*-----------------------------------------------------------------------*/
     
     //Class member variables
-    int colorIndex;                        //Current color index
-    double lastX;                          //Last x position
-    double lastY;                          //Last y position
-    Point2D homePoint;                     //Pattern starting point
-    EmbHoop hoop;                          //Embroidery hoop
-    List<EmbStitch> stitchList;            //List of stitches
-    List<EmbThread> threadList;            //List of threads
-    List<Rectangle> rectList;              //List of rectangles
-    List<Line> lineList;                   //List of lines
-    List<Ellipse> circleList;              //List of circles
-    List<Ellipse> ellipseList;             //List of ellipses
-    List<Path2D> pathList;                 //List of paths
-    List<Point2D> pointList;               //List of points
-    List<Polygon> polygonList;             //List of polygons
-    List<Polyline> polylineList;           //List of polylines
+    private int colorIndex;                        //Current color index
+    private double lastX;                          //Last x position
+    private double lastY;                          //Last y position
+    private Point2D homePoint;                     //Pattern starting point
+    private EmbHoop hoop;                          //Embroidery hoop
+    private List<EmbStitch> stitchList;            //List of stitches
+    private List<EmbThread> threadList;            //List of threads
+    private List<Rectangle> rectList;              //List of rectangles
+    private List<Line> lineList;                   //List of lines
+    private List<Circle> circleList;              //List of circles
+    private List<Ellipse> ellipseList;             //List of ellipses
+    private List<Path2D> pathList;                 //List of paths
+    private List<Point2D> pointList;               //List of points
+    private List<Polygon> polygonList;             //List of polygons
+    private List<Polyline> polylineList;           //List of polylines
     
     //Object lists remaining
     //--Arc (not sure if this should be Arc or Cubic Curve)

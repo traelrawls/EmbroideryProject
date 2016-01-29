@@ -17,7 +17,7 @@ public class FormatPES
 {
     /*-----------------------------------------------------------------------*/
     
-    public static final long PEC_OFFSET = 8;
+    private final long PEC_OFFSET = 8;
     
     private int pecStart;
     private int threadCount;
