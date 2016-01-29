@@ -20,7 +20,7 @@ public class FormatPES
     public static final long PEC_OFFSET = 8;
     
     private int pecStart;
-    private int numColors;
+    private int threadCount;
     private RandomAccessFile inFile;
     private EmbPattern pattern;
     
@@ -33,8 +33,9 @@ public class FormatPES
         this.openFile(filename);
         this.getPECStart();
         this.pattern = new EmbPattern();
-        //get threads
-        //pass off to pec
+        //add threads from file
+        //seek to start of stitch data
+        //pass off to pec for stitch creation
         this.closeFile();
         //check for stitch end and add if necessary
     }
@@ -88,12 +89,20 @@ public class FormatPES
     /**
      * 
      */
-    private void getThreadCount()
+    private void createThreads()
     {
         try
         {
             this.inFile.seek(this.pecStart + 48);
-            this.numColors = this.inFile.readInt();
+            this.threadCount = this.inFile.readInt(); //embroidermodder equiv embfile_get_c() +1
+            
+            for(int i = 0; i < this.threadCount; i++)
+            {
+                //grab character (byte?) from file
+                //use that value to add a thread of matching rgb value
+                    //(create this list of colors)
+                
+            }
         }
         catch(IOException e)
         { System.err.println("FormatPES: sumColors:" + e); }
