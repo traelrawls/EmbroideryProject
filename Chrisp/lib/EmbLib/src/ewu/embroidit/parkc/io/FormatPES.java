@@ -33,7 +33,9 @@ public class FormatPES
         this.openFile(filename);
         this.getPECStart();
         this.pattern = new EmbPattern();
-        //add threads from file
+        
+        this.createThreads();
+        
         //seek to start of stitch data
         //pass off to pec for stitch creation
         this.closeFile();
@@ -87,21 +89,19 @@ public class FormatPES
     /*-----------------------------------------------------------------------*/
     
     /**
-     * 
+     * Creates a thread object and adds it to the thread list of the pattern
+     * currently being constructed.
      */
     private void createThreads()
     {
         try
         {
             this.inFile.seek(this.pecStart + 48);
-            this.threadCount = this.inFile.readInt(); //embroidermodder equiv embfile_get_c() +1
+            this.threadCount = this.inFile.readByte()+ 1;
             
             for(int i = 0; i < this.threadCount; i++)
             {
-                //grab character (byte?) from file
-                //use that value to add a thread of matching rgb value
-                    //(create this list of colors)
-                
+                this.pattern.addThread(this.inFile.readUnsignedByte());
             }
         }
         catch(IOException e)
@@ -120,10 +120,6 @@ public class FormatPES
             throw new RuntimeException("FormatPES: Null reference error");
     }
     
-    /*-----------------------------------------------------------------------*/
-    //get numcolors
-    //for each color add a thread
-    //use pec to read stitches
     /*-----------------------------------------------------------------------*/
     
 }

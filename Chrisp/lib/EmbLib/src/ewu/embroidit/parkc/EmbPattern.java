@@ -9,6 +9,8 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import com.sun.javafx.geom.Path2D;
+import ewu.embroidit.parkc.io.PECDecoder;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 /*-----------------------------------------------------------------------*/
@@ -33,7 +35,7 @@ public class EmbPattern
     private List<EmbThread> threadList;            //List of threads
     private List<Rectangle> rectList;              //List of rectangles
     private List<Line> lineList;                   //List of lines
-    private List<Circle> circleList;              //List of circles
+    private List<Circle> circleList;               //List of circles
     private List<Ellipse> ellipseList;             //List of ellipses
     private List<Path2D> pathList;                 //List of paths
     private List<Point2D> pointList;               //List of points
@@ -136,9 +138,48 @@ public class EmbPattern
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Returns this patterns list of threads
+     * 
+     * @return List<EmbThread>
+     */
+    public List<EmbThread> getThreadList()
+    {
+        return this.threadList;
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Sets the List<EmbThread> passed as the new thread list for this
+     * pattern.
+     */
+    public void setThreadList(List<EmbThread> threadList)
+    {
+        this.threadList = threadList;
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Gets the color at the given color index, creates a new thread of this
+     * color, and adds it to the patterns thread list.
+     * @param index int
+     */
+    public void addThread(int index)
+    {
+        Color threadColor;
+        EmbThread thread;
+        
+        threadColor = PECDecoder.getInstance().getColorByIndex(index);
+        thread = new EmbThread(threadColor);
+        this.threadList.add(thread);
+    }
+    
+    
+    /*-----------------------------------------------------------------------*/
     //Possible Methods (Should be renamed to better reflect what java uses)
     //hideStitchesOverLength
-    //addThread
     //fixColorCount (compares color values in stitches and takes highest?)
     //copyStitchesToPolylines
     //copyPolylineToStitches
