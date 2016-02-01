@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 
 /*-----------------------------------------------------------------------*/
 /**
+ * Singleton class used to read stitch information from .PES files.
  * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
@@ -12,19 +13,35 @@ public class PECDecoder
 {
     /*-----------------------------------------------------------------------*/
     
-    private List<Color> COLOR_LIST;
+    private List<Color> COLOR_LIST;             //List of stitch colors
     
     /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Constructs a default PECDecoder.
+     */
     private PECDecoder()
     {
         this.createColorlist();
     }
     
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Returns an instance of the PECDecoder class.
+     * 
+     * @return PECDecoder
+     */
     public static PECDecoder getInstance()
     {
         return PECDecoderHolder.INSTANCE;
     }
     
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Returns an instance of the PECDecoder class.
+     */
     private static class PECDecoderHolder
     {
         private static final PECDecoder INSTANCE = new PECDecoder();

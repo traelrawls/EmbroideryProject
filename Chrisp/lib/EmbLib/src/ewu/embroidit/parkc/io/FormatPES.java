@@ -89,8 +89,7 @@ public class FormatPES
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Creates a thread object and adds it to the thread list of the pattern
-     * currently being constructed.
+     * Creates a thread object and adds it to the thread list of the pattern.
      */
     private void createThreads()
     {

@@ -1,6 +1,5 @@
-package ewu.embroidit.parkc;
+package ewu.embroidit.parkc.pattern;
 
-import ewu.embroidit.parkc.io.StitchCode;
 import java.util.*;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Ellipse;
@@ -12,6 +11,7 @@ import com.sun.javafx.geom.Path2D;
 import ewu.embroidit.parkc.io.PECDecoder;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import ewu.embroidit.parkc.io.StitchCode;
 
 /*-----------------------------------------------------------------------*/
 /**
@@ -77,7 +77,7 @@ public class EmbPattern
      * @param x double
      * @param y double
      * @param flags int
-     * @param isAutoColorIndex  int
+     * @param isAutoColorIndex int
      */
     public void addStitchAbs(double x, double y, int flags, int isAutoColorIndex)
     {
@@ -141,7 +141,7 @@ public class EmbPattern
     /**
      * Returns this patterns list of threads
      * 
-     * @return List<EmbThread>
+     * @return List&lt;EmbThread&gt;
      */
     public List<EmbThread> getThreadList()
     {
@@ -151,7 +151,7 @@ public class EmbPattern
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Sets the List<EmbThread> passed as the new thread list for this
+     * Sets the List&lt;EmbThread&gt; passed as the new thread list for this
      * pattern.
      */
     public void setThreadList(List<EmbThread> threadList)

@@ -1,4 +1,4 @@
-package ewu.embroidit.parkc;
+package ewu.embroidit.parkc.pattern;
 
 /*-----------------------------------------------------------------------*/
 /**
