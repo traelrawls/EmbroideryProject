@@ -1,6 +1,6 @@
 package ewu.embroidit.parkc.io;
 
-import ewu.embroidit.parkc.EmbPattern;
+import ewu.embroidit.parkc.pattern.EmbPattern;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -35,11 +35,12 @@ public class FormatPES
         this.pattern = new EmbPattern();
         
         this.createThreads();
-        
-        //seek to start of stitch data
-        //pass off to pec for stitch creation
+        this.readPEC();
         this.closeFile();
-        //check for stitch end and add if necessary
+        
+        
+        //check for end stitch and add it if it's not there.
+        //flip pattern verticle (are y values read backwards?)
     }
     
     /*-----------------------------------------------------------------------*/
@@ -106,6 +107,22 @@ public class FormatPES
         catch(IOException e)
         { System.err.println("FormatPES: sumColors:" + e); }
     }
+    /*-----------------------------------------------------------------------*/
+    
+    private void readPEC()
+    {
+        
+        try
+        {
+        this.inFile.seek(this.pecStart + 532);
+        PECDecoder.getInstance().readStitches(this.pattern, this.inFile);
+        }
+        catch(IOException e)
+        {
+            System.err.println("FormatPES: Error in readPEC():" + e);
+        }
+    }
+    
     /*-----------------------------------------------------------------------*/
     
     /**

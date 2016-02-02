@@ -81,8 +81,7 @@ public class EmbPattern
      */
     public void addStitchAbs(double x, double y, int flags, int isAutoColorIndex)
     {
-        
-        if(flags == StitchCode.END)
+        if((flags & StitchCode.END) != 0)
         {
             if(this.stitchList.isEmpty())
                 return;
@@ -90,12 +89,12 @@ public class EmbPattern
             //this.fixColorCount();
         }
         
-        if(flags == StitchCode.STOP)
+        if((flags & StitchCode.STOP) != 0)
         {
             if(this.stitchList.isEmpty())
                 return;
-            
-            if(isAutoColorIndex > 0)    //Maybe change this to == 1?
+               
+            if(isAutoColorIndex > 0)
                 this.colorIndex++;    
         }
                 
@@ -161,6 +160,17 @@ public class EmbPattern
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Returns this patterns list of stitches
+     * 
+     * @return List&lt;EmbStitch&gt;
+     */
+    public List<EmbStitch> getStitchList()
+    {
+        return this.stitchList;
+    }
+    
+    /*-----------------------------------------------------------------------*/
     /**
      * Gets the color at the given color index, creates a new thread of this
      * color, and adds it to the patterns thread list.

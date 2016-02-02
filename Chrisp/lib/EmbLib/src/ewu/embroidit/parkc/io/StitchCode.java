@@ -25,6 +25,11 @@ public class StitchCode
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Returns and instance of StitchCode
+     * 
+     * @return StitchCode
+     */
     public static StitchCode getInstance()
     {
         return StitchCodeHolder.INSTANCE;
@@ -38,4 +43,44 @@ public class StitchCode
     }
     
     /*-----------------------------------------------------------------------*/
+    
+    /**
+     * returns whether this stitch is a TRIM, JUMP, or NORMAL stitch.
+     * 
+     * @param val int
+     * @return int
+     */
+    public int getStitchCode(int val)
+    {
+        if((val & 0x20) != 0)
+            return StitchCode.TRIM;
+        if((val & 0x10) != 0)
+            return StitchCode.JUMP;
+        
+        return StitchCode.NORMAL;
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * returns whether END stitch code if the end of the stitch data has been
+     * reached. Returns STOP if there is a color change. Otherwise returns 
+     * NORMAL.
+     * 
+     * @param val1 int
+     * @param val2 int
+     * @return int
+     */
+    public int getStitchCode(int val1, int val2)
+    {
+        if(val1 == 0xFF && val2 == 0x00)
+            return StitchCode.END;
+        if(val1 == 0xFE && val2 == 0XB0)
+            return StitchCode.STOP;
+        
+        return StitchCode.NORMAL;
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
 }

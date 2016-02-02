@@ -1,5 +1,8 @@
 package ewu.embroidit.parkc.io;
 
+import ewu.embroidit.parkc.pattern.EmbPattern;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.List;
 import javafx.scene.paint.Color;
 
@@ -133,6 +136,90 @@ public class PECDecoder
     public Color getColorByIndex(int index)
     {
         return COLOR_LIST.get(index);
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Gets the stitches from file and adds them to the pattern.
+     * 
+     * @param pattern EmbPattern
+     * @param inFile  RandomAccessFile
+     */
+    public void readStitches(EmbPattern pattern, RandomAccessFile inFile)
+    {
+        int discardedColor, stitchType, val1, val2;
+        int stitchNumber = 0;
+        
+        this.validateObject((pattern));
+        this.validateObject((inFile));
+        
+        while(true)
+        {
+            try
+            {
+                val1 = inFile.readUnsignedByte();
+                val2 = inFile.readUnsignedByte();
+                stitchType = StitchCode.getInstance().getStitchCode(val1, val2);
+                
+                if(stitchType == StitchCode.END) //End of stitch data
+                {
+                   pattern.addStitchRel(0.0, 0.0, stitchType, 1);
+                    break; 
+                }
+                
+                if(stitchType == StitchCode.STOP) //Color Change
+                {
+                    discardedColor = inFile.readByte();
+                    pattern.addStitchRel(0.0, 0.0, stitchType, 1);
+                    stitchNumber++;
+                    continue;
+                }
+                
+                if((val1 & 0x80) != 0)
+                {   
+                    stitchType = StitchCode.getInstance().getStitchCode(val1);
+                    val1 = ((val1 & 0x0F) << 8) + val2;
+                    
+                    if((val1 & 0x800) != 0)
+                        val1 -= 0x1000;
+                    
+                    val2 = inFile.readUnsignedByte();
+                }
+                else if(val1 >= 0x40)
+                    val1-=0x800;
+                
+                if((val2 & 0x80) != 0)
+                {
+                    stitchType = StitchCode.getInstance().getStitchCode(val2);
+                    val2 = ((val2 & 0x0F) << 8) + inFile.readUnsignedByte();
+                    
+                    if((val2 & 0x800) != 0)
+                        val2 -= 0x1000;
+                }
+                else if(val2 >= 0x40)
+                    val2 -=0x80;
+                
+                pattern.addStitchRel(val1 / 10.0, val2 / 10.0, stitchType, 1);
+                stitchNumber++;
+            }
+            catch(IOException e)
+            { break; /*end of file reached */ }
+        }    
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    /**
+     * Ensures that object sent as a parameter exists.
+     *
+     * @param obj Object
+     */
+    private void validateObject(Object obj)
+    {
+        if (obj == null)
+        {
+            throw new RuntimeException("ClassName: Null reference error");
+        }
     }
     
     /*-----------------------------------------------------------------------*/
