@@ -85,7 +85,7 @@ public class FormatPES
             //this.pecStart = this.pecStart | this.pecStart << 8;
             //this.pecStart = this.pecStart | this.pecStart << 16;
             //this.pecStart = this.pecStart | this.pecStart << 24;
-            System.err.println(" TEST:" + this.pecStart);
+            System.err.println(" Start Location:" + this.pecStart);
         }
         catch(IOException e)
         { System.err.println("FormatPES: getPECStart: " + e); }   

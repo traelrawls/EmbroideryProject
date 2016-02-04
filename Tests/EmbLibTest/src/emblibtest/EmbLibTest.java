@@ -23,7 +23,7 @@ public class EmbLibTest {
      */
     public static void main(String[] args) 
     {
-        String filename =  "pestest.pes";
+        String filename =  "test3.pes";
         
         FormatPES pesInput = new FormatPES(filename);
         EmbPattern pattern = pesInput.getPattern();
