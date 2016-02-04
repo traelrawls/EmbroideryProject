@@ -81,7 +81,11 @@ public class FormatPES
         try
         {
             this.inFile.seek(PEC_OFFSET);
-            this.pecStart = this.inFile.readInt();
+            this.pecStart = this.inFile.readUnsignedByte();
+            //this.pecStart = this.pecStart | this.pecStart << 8;
+            //this.pecStart = this.pecStart | this.pecStart << 16;
+            //this.pecStart = this.pecStart | this.pecStart << 24;
+            System.err.println(" TEST:" + this.pecStart);
         }
         catch(IOException e)
         { System.err.println("FormatPES: getPECStart: " + e); }   
@@ -97,15 +101,18 @@ public class FormatPES
         try
         {
             this.inFile.seek(this.pecStart + 48);
-            this.threadCount = this.inFile.readByte()+ 1;
+            this.threadCount = this.inFile.readByte() + 1;
             
             for(int i = 0; i < this.threadCount; i++)
             {
                 this.pattern.addThread(this.inFile.readUnsignedByte());
+                System.err.println("DEBUG: Thread Added.");
             }
         }
         catch(IOException e)
-        { System.err.println("FormatPES: sumColors:" + e); }
+        { System.err.println("FormatPES: createThreads:" + e);
+            System.err.println(this.pecStart);
+        }
     }
     /*-----------------------------------------------------------------------*/
     
@@ -114,13 +121,21 @@ public class FormatPES
         
         try
         {
-        this.inFile.seek(this.pecStart + 532);
-        PECDecoder.getInstance().readStitches(this.pattern, this.inFile);
+            this.inFile.seek(this.pecStart + 532);
+            PECDecoder.getInstance().readStitches(this.pattern, this.inFile);
         }
         catch(IOException e)
         {
             System.err.println("FormatPES: Error in readPEC():" + e);
         }
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    public EmbPattern getPattern()
+    {
+        this.validateObject(this.pattern);
+        return this.pattern;
     }
     
     /*-----------------------------------------------------------------------*/

@@ -3,6 +3,7 @@ package ewu.embroidit.parkc.io;
 import ewu.embroidit.parkc.pattern.EmbPattern;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.paint.Color;
 
@@ -57,6 +58,7 @@ public class PECDecoder
      */
     private void createColorlist()
     {
+        COLOR_LIST = new ArrayList<>();
         COLOR_LIST.add(Color.rgb(0, 0, 0));             //Unknown           (0)
         COLOR_LIST.add(Color.rgb(14, 31, 124));         //Prussian Blue     (1)
         COLOR_LIST.add(Color.rgb(10, 85, 163));         //Blue              (2)
@@ -165,6 +167,7 @@ public class PECDecoder
                 if(stitchType == StitchCode.END) //End of stitch data
                 {
                    pattern.addStitchRel(0.0, 0.0, stitchType, 1);
+                   System.err.println("DEBUG: ##END STITCH ADDED##");
                     break; 
                 }
                 
@@ -173,6 +176,7 @@ public class PECDecoder
                     discardedColor = inFile.readByte();
                     pattern.addStitchRel(0.0, 0.0, stitchType, 1);
                     stitchNumber++;
+                    System.err.println("DEBUG: ##STOP STITCH##");
                     continue;
                 }
                 
@@ -201,6 +205,7 @@ public class PECDecoder
                     val2 -=0x80;
                 
                 pattern.addStitchRel(val1 / 10.0, val2 / 10.0, stitchType, 1);
+                System.err.println("DEBUG: STITCH ADDED");
                 stitchNumber++;
             }
             catch(IOException e)

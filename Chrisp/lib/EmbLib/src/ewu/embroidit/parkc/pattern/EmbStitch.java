@@ -67,7 +67,7 @@ public class EmbStitch
      * 
      * @return int
      */
-    public int getColor()
+    public int getColorIndex()
     {
         return this.colorIndex;
     }
