@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 
 /*-----------------------------------------------------------------------*/
 /**
- * This driver file tests the functionality of PES reading for the
+ * This driver file tests the functionality of PES importing for the
  * EmbroidIt Library
  * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)

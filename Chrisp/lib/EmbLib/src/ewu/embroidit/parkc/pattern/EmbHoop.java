@@ -10,7 +10,6 @@ public class EmbHoop
 {
     /*-----------------------------------------------------------------------*/
     
-    //Class member variables
     private double width;           //Hoop Width
     private double height;          //Hook Height
     

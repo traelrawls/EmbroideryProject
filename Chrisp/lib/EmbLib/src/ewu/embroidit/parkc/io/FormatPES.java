@@ -1,15 +1,16 @@
 package ewu.embroidit.parkc.io;
 
 import ewu.embroidit.parkc.pattern.EmbPattern;
+import ewu.embroidit.parkc.pattern.EmbStitch;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
 /*-----------------------------------------------------------------------*/
 /**
- * This Class opens a .PES file and interprets the stitch data it extracts
- * using the PECDecoder class. This data is used to create an embroidery
- * pattern.
+ * This Class opens a .PES file and interprets the stitch data extracted
+ * by the PECDecoder class. This data is used to create the stitches for
+ * an embroidery pattern.
  * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
@@ -17,13 +18,13 @@ public class FormatPES
 {
     /*-----------------------------------------------------------------------*/
     
-    private final long PEC_OFFSET = 8;
+    private final long PEC_OFFSET = 8;  //Location in the PES file that contains
+                                        //the starting address of the PEC code block.
     
-    private int pecStart;
-    private int threadCount;
-    private RandomAccessFile inFile;
-    private EmbPattern pattern;
-    
+    private int pecStart;               //Starting location of PEC code block.
+    private int threadCount;            //Number of threads used in this PES file.
+    private RandomAccessFile inFile;    //The input stream.
+    private EmbPattern pattern;         //Pattern used to hold PES data.
     
     /*-----------------------------------------------------------------------*/
     
@@ -37,9 +38,7 @@ public class FormatPES
         this.createThreads();
         this.readPEC();
         this.closeFile();
-        
-        
-        //check for end stitch and add it if it's not there.
+        this.validateLastStitch();
         //flip pattern verticle (are y values read backwards?)
     }
     
@@ -88,7 +87,7 @@ public class FormatPES
             System.err.println(" Start Location:" + this.pecStart);
         }
         catch(IOException e)
-        { System.err.println("FormatPES: getPECStart: " + e); }   
+        { System.err.println("FormatPES: getPECStart: " + e); }
     }
     
     /*-----------------------------------------------------------------------*/
@@ -110,15 +109,16 @@ public class FormatPES
             }
         }
         catch(IOException e)
-        { System.err.println("FormatPES: createThreads:" + e);
-            System.err.println(this.pecStart);
-        }
+        { System.err.println("FormatPES: createThreads:" + e); }
     }
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Uses PECDecoder to read stitch information into the EmbPattern held by 
+     * this class.
+     */
     private void readPEC()
     {
-        
         try
         {
             this.inFile.seek(this.pecStart + 532);
@@ -132,6 +132,12 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Returns the pattern containing the thread and stitch lists created from 
+     * the imported PES file.
+     * 
+     * @return EmbPattern
+     */
     public EmbPattern getPattern()
     {
         this.validateObject(this.pattern);
@@ -149,6 +155,23 @@ public class FormatPES
     {
         if (obj == null)
             throw new RuntimeException("FormatPES: Null reference error");
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Ensures that the last stitch in the pattern is labeled as an END stitch.
+     */
+    private void validateLastStitch()
+    {
+        int listSize = this.pattern.getStitchList().size();
+        EmbStitch lastStitch = this.pattern.getStitchList().get(listSize - 1);
+        
+        if(lastStitch.getFlag() != StitchCode.END)
+        {
+            this.pattern.addStitchRel(0.0, 0.0, StitchCode.END, 1);
+            System.err.println("End Stitch not present in data, Added manually.");
+        }
     }
     
     /*-----------------------------------------------------------------------*/

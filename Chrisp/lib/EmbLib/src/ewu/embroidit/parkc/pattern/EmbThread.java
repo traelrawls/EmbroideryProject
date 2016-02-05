@@ -14,7 +14,6 @@ public class EmbThread
 {
     /*-----------------------------------------------------------------------*/
     
-    //Class member variables
     private Color threadColor;              //Thread Color
     
     /*-----------------------------------------------------------------------*/

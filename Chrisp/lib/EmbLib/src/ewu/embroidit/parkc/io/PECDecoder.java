@@ -130,13 +130,19 @@ public class PECDecoder
     
     /**
      * Returns the color in the color list that corresponds with the given
-     * index
+     * index.
      * 
      * @param index int
      * @return Color
      */
     public Color getColorByIndex(int index)
     {
+        if(index >= COLOR_LIST.size())
+        {
+            throw new IndexOutOfBoundsException("PECDecoder - getColorByIndex: " 
+            + "Index (" + index + ") does not reference a color.");
+        }
+        
         return COLOR_LIST.get(index);
     }
     
@@ -144,6 +150,9 @@ public class PECDecoder
     
     /**
      * Gets the stitches from file and adds them to the pattern.
+     * Pulls byte values out of the PES file and references them against the 
+     * stitch codes (StitchCode) to determine the stitch type, color, and 
+     * location of each stitch, which are then stored a pattern.
      * 
      * @param pattern EmbPattern
      * @param inFile  RandomAccessFile
@@ -168,7 +177,7 @@ public class PECDecoder
                 {
                    pattern.addStitchRel(0.0, 0.0, stitchType, 1);
                    System.err.println("DEBUG: ##END STITCH ADDED##");
-                    break; 
+                   break; 
                 }
                 
                 if(stitchType == StitchCode.STOP) //Color Change
@@ -191,7 +200,7 @@ public class PECDecoder
                     val2 = inFile.readUnsignedByte();
                 }
                 else if(val1 >= 0x40)
-                    val1-=0x800;
+                    val1-=0x80;
                 
                 if((val2 & 0x80) != 0)
                 {
@@ -205,7 +214,6 @@ public class PECDecoder
                     val2 -=0x80;
                 
                 pattern.addStitchRel(val1 / 10.0, val2 / 10.0, stitchType, 1);
-                //System.err.println("DEBUG: STITCH ADDED");
                 stitchNumber++;
             }
             catch(IOException e)
@@ -215,16 +223,14 @@ public class PECDecoder
     
     /*-----------------------------------------------------------------------*/
     /**
-     * Ensures that object sent as a parameter exists.
+     * Ensures that the object sent as a parameter exists.
      *
      * @param obj Object
      */
     private void validateObject(Object obj)
     {
         if (obj == null)
-        {
-            throw new RuntimeException("ClassName: Null reference error");
-        }
+            throw new RuntimeException("PECDecoder: Null reference error");
     }
     
     /*-----------------------------------------------------------------------*/

@@ -13,7 +13,6 @@ public class EmbStitch
 {
     /*-----------------------------------------------------------------------*/
     
-    //Class member variables
     private int flag;                //Machine code stitch flag
     private int colorIndex;          //Color number
     private Point2D absPosition;     //Absolute (x,y) position

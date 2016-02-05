@@ -63,9 +63,7 @@ public class StitchCode
     /*-----------------------------------------------------------------------*/
     
     /**
-     * returns whether END stitch code if the end of the stitch data has been
-     * reached. Returns STOP if there is a color change. Otherwise returns 
-     * NORMAL.
+     * Returns whether this stitch is a END, STOP, or NORMAL stitch.
      * 
      * @param val1 int
      * @param val2 int

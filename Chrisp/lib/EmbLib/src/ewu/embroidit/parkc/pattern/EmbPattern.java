@@ -25,7 +25,6 @@ public class EmbPattern
 {
     /*-----------------------------------------------------------------------*/
     
-    //Class member variables
     private int colorIndex;                        //Current color index
     private double lastX;                          //Last x position
     private double lastY;                          //Last y position
@@ -212,34 +211,6 @@ public class EmbPattern
         System.err.println("Max Color Index: " + maxIndex);
         return maxIndex;
     }
-    
-    /*-----------------------------------------------------------------------*/
-    //Possible Methods (Should be renamed to better reflect what java uses)
-    //hideStitchesOverLength
-    //fixColorCount (compares color values in stitches and takes highest?)
-    //copyStitchesToPolylines
-    //copyPolylineToStitches
-    //moveStitchesToPolylines
-    //movePolylinesToStitches
-    //changeColor
-    //read (this reads a pattern file? seems out of place here)
-    //write (same as above)
-    //scale (whole pattern?)
-    //calcBoundingBox
-    //flipHorizontal
-    //flipVerticle
-    //combineJumpStitches
-    //correctForMaxStitchLength
-    //center (docs say its not used right now)
-    //loadExternalColorFile
-    //addCircleObjectsAbs
-    //addEllipseObjectAbs
-    //AddLineObjectAbs
-    //AddPathObjectAbs
-    //addPointObjectsAbs
-    //addPolygonObjectsAbs
-    //addPolylineObjectsAbs
-    //addRectangleObjectsAbs
     
     /*-----------------------------------------------------------------------*/
     
