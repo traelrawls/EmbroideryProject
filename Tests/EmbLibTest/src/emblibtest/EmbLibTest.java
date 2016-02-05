@@ -14,7 +14,8 @@ import javafx.scene.paint.Color;
  * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
-public class EmbLibTest {
+public class EmbLibTest 
+{
 
     /*-----------------------------------------------------------------------*/
     

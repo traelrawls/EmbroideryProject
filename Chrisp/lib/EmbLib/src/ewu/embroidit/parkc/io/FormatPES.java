@@ -82,9 +82,9 @@ public class FormatPES
         {
             this.inFile.seek(PEC_OFFSET);
             this.pecStart = this.inFile.readUnsignedByte();
-            //this.pecStart = this.pecStart | this.pecStart << 8;
-            //this.pecStart = this.pecStart | this.pecStart << 16;
-            //this.pecStart = this.pecStart | this.pecStart << 24;
+            this.pecStart = this.pecStart | this.inFile.readUnsignedByte() << 8;
+            this.pecStart = this.pecStart | this.inFile.readUnsignedByte() << 16;
+            this.pecStart = this.pecStart | this.inFile.readUnsignedByte() << 24;
             System.err.println(" Start Location:" + this.pecStart);
         }
         catch(IOException e)

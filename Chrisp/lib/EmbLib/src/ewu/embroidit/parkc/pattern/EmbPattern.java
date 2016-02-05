@@ -81,12 +81,14 @@ public class EmbPattern
      */
     public void addStitchAbs(double x, double y, int flags, int isAutoColorIndex)
     {
+        EmbStitch stitch;
+        
         if((flags & StitchCode.END) != 0)
         {
             if(this.stitchList.isEmpty())
                 return;
             
-            //this.fixColorCount();
+            //this.getMaxColorIndex(); May not be used.
         }
         
         if((flags & StitchCode.STOP) != 0)
@@ -101,10 +103,17 @@ public class EmbPattern
         if(this.stitchList.isEmpty())
         {
             Point2D coord = new Point2D(this.homePoint.getX(), this.homePoint.getY());
-            EmbStitch stitch = new EmbStitch(coord, this.colorIndex, StitchCode.JUMP);
+            stitch = new EmbStitch(coord, this.colorIndex, StitchCode.JUMP);
             this.stitchList.add(stitch);
+            return;
         }
         
+        //need to add stitch here either relative or absolute. not sure yet
+        //This is why we only ever got a jump stitch(from the first stitch
+        //homepoint in the if above
+        stitch = new EmbStitch(new Point2D(x, y), this.colorIndex,
+                StitchCode.getInstance().getStitchCode(flags));
+        this.stitchList.add(stitch);
         this.lastX = x;
         this.lastY = y;
     }
@@ -152,6 +161,7 @@ public class EmbPattern
     /**
      * Sets the List&lt;EmbThread&gt; passed as the new thread list for this
      * pattern.
+     * @param threadList List&lt;EmbThread&gt;
      */
     public void setThreadList(List<EmbThread> threadList)
     {
@@ -186,6 +196,22 @@ public class EmbPattern
         this.threadList.add(thread);
     }
     
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Returns the maximum color index found in this patterns stitch list.
+     * @return maxIndex int
+     */
+    private int getMaxColorIndex()
+    {
+        int maxIndex = 0;
+        
+        for(EmbStitch stitch: this.stitchList)
+            maxIndex = Math.max(maxIndex, stitch.getColorIndex());
+        
+        System.err.println("Max Color Index: " + maxIndex);
+        return maxIndex;
+    }
     
     /*-----------------------------------------------------------------------*/
     //Possible Methods (Should be renamed to better reflect what java uses)

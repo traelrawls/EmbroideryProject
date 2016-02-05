@@ -205,7 +205,7 @@ public class PECDecoder
                     val2 -=0x80;
                 
                 pattern.addStitchRel(val1 / 10.0, val2 / 10.0, stitchType, 1);
-                System.err.println("DEBUG: STITCH ADDED");
+                //System.err.println("DEBUG: STITCH ADDED");
                 stitchNumber++;
             }
             catch(IOException e)
