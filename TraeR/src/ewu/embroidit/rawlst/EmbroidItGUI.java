@@ -17,12 +17,12 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.control.*;
 import javafx.scene.shape.*;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.geometry.Insets;
+import java.util.ArrayList;
 
 /**
  *
@@ -30,13 +30,15 @@ import javafx.geometry.Insets;
  */
 public class EmbroidItGUI extends Application
 {
-    private Canvas canvas;
-    private GraphicsContext graphicsContext;
+    private ArrayList<Canvas> layerList =  new ArrayList<Canvas>();
+    private int currLayerIndex;
+    private BorderPane root;
+    private Pane canvas;
     private Path path;
-    private double rectX;
-    private double rectY;
-    private double startRectX;
-    private double startRectY;
+    private double coordX;
+    private double coordY;
+    private double startCoordX;
+    private double startCoordY;
     
     public void openGUI(String[] args)
     {
@@ -47,10 +49,11 @@ public class EmbroidItGUI extends Application
     public void start (Stage primaryStage)
     {
         primaryStage.setTitle("EmbroidIt");
-        
-        BorderPane root = new BorderPane();
-        canvas = new Canvas(500,500);
-        graphicsContext = canvas.getGraphicsContext2D();
+        this.root = new BorderPane();
+        this.canvas = new Pane();
+        this.layerList.add(new Canvas(500,500));
+        this.currLayerIndex = 0;
+        this.canvas.getChildren().add(this.layerList.get(currLayerIndex));
         VBox topContainer = createMenuBar();
         VBox botContainer = createColorBar();
         VBox leftContainer = createOptionsMenu();
@@ -61,7 +64,7 @@ public class EmbroidItGUI extends Application
         root.setTop(topContainer);
         root.setLeft(leftContainer);
         root.setBottom(botContainer);
-        root.setCenter(canvas);
+        root.setCenter(this.canvas);
         
         Scene scene = new Scene(root,350,200);
         freeDrawingMode();
@@ -83,15 +86,28 @@ public class EmbroidItGUI extends Application
     private VBox createOptionsMenu()
     {
         VBox newVBox = new VBox();
-        Button freeDrawButton = new Button();
+        Button drawButton = new Button();
+        Button lineButton = new Button();
         Button rectButton = new Button();
+        Button ovalButton = new Button();
+        Button layerButton = new Button();
+        Button testButton = new Button();
+        Image drawImage = new Image(getClass().getResourceAsStream("graphics/DrawButton.png"));
         Image lineImage = new Image(getClass().getResourceAsStream("graphics/LineButton.png"));
         Image rectImage = new Image(getClass().getResourceAsStream("graphics/RectButton.png"));
-        freeDrawButton.setGraphic(new ImageView(lineImage));
+        Image ovalImage = new Image(getClass().getResourceAsStream("graphics/OvalButton.png"));
+        drawButton.setGraphic(new ImageView(drawImage));
+        lineButton.setGraphic(new ImageView(lineImage));
         rectButton.setGraphic(new ImageView(rectImage));
-        freeDrawButton.setOnAction(new EventHandler<ActionEvent>(){
+        ovalButton.setGraphic(new ImageView(ovalImage));
+        drawButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
                 freeDrawingMode();
+            }
+        });
+        lineButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e) {
+                lineDrawingMode();
             }
         });
         rectButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -99,8 +115,23 @@ public class EmbroidItGUI extends Application
                 rectDrawingMode();
             }
         });
+        ovalButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e) {
+                ovalDrawingMode();
+            }
+        });
+        layerButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e) {
+                addLayer();
+            }
+        }); 
+        testButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e) {
+                testLayer();
+            }
+        }); 
         newVBox.setPrefWidth(70);
-        newVBox.getChildren().addAll(freeDrawButton,rectButton);
+        newVBox.getChildren().addAll(drawButton,lineButton,rectButton,ovalButton,layerButton,testButton);
         newVBox.setStyle("-fx-background-color: gray");
         return newVBox;
     }
@@ -117,17 +148,17 @@ public class EmbroidItGUI extends Application
         Image blueImg = new Image(getClass().getResourceAsStream("graphics/BlueColor.png"));
         blackButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                graphicsContext.setStroke(Color.BLACK);
+                layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(Color.BLACK);
             }
         });
         redButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                graphicsContext.setStroke(Color.RED);
+                layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(Color.RED);
             }
         });
         blueButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                graphicsContext.setStroke(Color.BLUE);
+                layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(Color.BLUE);
             }
         });
         blackButton.setGraphic(new ImageView(blackImg));
@@ -139,30 +170,27 @@ public class EmbroidItGUI extends Application
     }
     
     private void initializeCanvas(){
-        double canvasWidth = graphicsContext.getCanvas().getWidth();
-        double canvasHeight = graphicsContext.getCanvas().getHeight();
+        double canvasWidth = layerList.get(currLayerIndex).getGraphicsContext2D().getCanvas().getWidth();
+        double canvasHeight = layerList.get(currLayerIndex).getGraphicsContext2D().getCanvas().getHeight();
          
-        graphicsContext.setFill(Color.LIGHTGRAY);
-        graphicsContext.setStroke(Color.BLACK);
-        graphicsContext.setLineWidth(5);
+        layerList.get(currLayerIndex).getGraphicsContext2D().setFill(Color.LIGHTGRAY);
+        layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(Color.BLACK);
+        layerList.get(currLayerIndex).getGraphicsContext2D().setLineWidth(5);
  
-        graphicsContext.fill();
-        graphicsContext.strokeRect(
+        layerList.get(currLayerIndex).getGraphicsContext2D().fill();
+        layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(
                 0,              //x of the upper left corner
                 0,              //y of the upper left corner
                 canvasWidth,    //width of the rectangle
                 canvasHeight);  //height of the rectangle
          
-        graphicsContext.setFill(Color.RED);
-        graphicsContext.setLineWidth(1);
+        layerList.get(currLayerIndex).getGraphicsContext2D().setFill(Color.RED);
+        layerList.get(currLayerIndex).getGraphicsContext2D().setLineWidth(1);
          
     }
     
     private void freeDrawingMode()
     {
-        canvas.setOnMousePressed(null);
-        canvas.setOnMouseDragged(null);
-        canvas.setOnMouseReleased(null);
         EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>()
         {
             @Override
@@ -170,28 +198,28 @@ public class EmbroidItGUI extends Application
             {
                 if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
                 {
-                    graphicsContext.beginPath();
-                    graphicsContext.moveTo(mouseEvent.getX(), mouseEvent.getY());
-                    graphicsContext.stroke();
+                    layerList.get(currLayerIndex).getGraphicsContext2D().beginPath();
+                    layerList.get(currLayerIndex).getGraphicsContext2D().moveTo(mouseEvent.getX(), mouseEvent.getY());
+                    layerList.get(currLayerIndex).getGraphicsContext2D().stroke();
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
                 {
-                    graphicsContext.lineTo(mouseEvent.getX(), mouseEvent.getY());
-                    graphicsContext.stroke();
+                    layerList.get(currLayerIndex).getGraphicsContext2D().lineTo(mouseEvent.getX(), mouseEvent.getY());
+                    layerList.get(currLayerIndex).getGraphicsContext2D().stroke();
                 }
             }  
         };
-        canvas.setOnMousePressed(mouseHandler);
-        canvas.setOnMouseDragged(mouseHandler);
-        canvas.setOnMouseReleased(mouseHandler);
+        layerList.get(currLayerIndex).setOnMousePressed(mouseHandler);
+        layerList.get(currLayerIndex).setOnMouseDragged(mouseHandler);
+        layerList.get(currLayerIndex).setOnMouseReleased(mouseHandler);
     }
     
-    private void rectDrawingMode()
+    private void lineDrawingMode()
     {
-        rectX = 0;
-        rectY = 0;
-        startRectX = 0;
-        startRectY = 0;
+        coordX = 0;
+        coordY = 0;
+        startCoordX = 0;
+        startCoordY = 0;
 
         EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>()
         {
@@ -200,42 +228,146 @@ public class EmbroidItGUI extends Application
             {    
                 if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
                 {
-                    rectX = mouseEvent.getX();
-                    rectY = mouseEvent.getY();
-                    startRectX = mouseEvent.getX();
-                    startRectY = mouseEvent.getY();
+                    coordX = mouseEvent.getX();
+                    coordY = mouseEvent.getY();
+                    startCoordX = mouseEvent.getX();
+                    startCoordY = mouseEvent.getY();
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
                 {
-                    rectX = mouseEvent.getX();
-                    rectY = mouseEvent.getY();
+                    coordX = mouseEvent.getX();
+                    coordY = mouseEvent.getY();
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
                 {
-                    if (startRectX <= rectX && startRectY <= rectY)
+                    layerList.get(currLayerIndex).getGraphicsContext2D().strokeLine(startCoordX,startCoordY,coordX,coordY);
+                }
+            }
+        };
+        layerList.get(currLayerIndex).setOnMousePressed(mouseHandler);
+        layerList.get(currLayerIndex).setOnMouseDragged(mouseHandler);
+        layerList.get(currLayerIndex).setOnMouseReleased(mouseHandler);
+    }
+    
+    private void rectDrawingMode()
+    {
+        coordX = 0;
+        coordY = 0;
+        startCoordX = 0;
+        startCoordY = 0;
+
+        EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {    
+                if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
+                {
+                    coordX = mouseEvent.getX();
+                    coordY = mouseEvent.getY();
+                    startCoordX = mouseEvent.getX();
+                    startCoordY = mouseEvent.getY();
+                }
+                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
+                {
+                    coordX = mouseEvent.getX();
+                    coordY = mouseEvent.getY();
+                }
+                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
+                {
+                    if (startCoordX <= coordX && startCoordY <= coordY)
                     {
-                        graphicsContext.strokeRect(startRectX,startRectY,rectX-startRectX,rectY-startRectY);
+                        layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
                     }
-                    else if (startRectX > rectX)
+                    else if (startCoordX > coordX)
                     {
-                        if (startRectY <= rectY)
+                        if (startCoordY <= coordY)
                         {
-                            graphicsContext.strokeRect(rectX,startRectY,startRectX-rectX,rectY-startRectY);
+                            layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
                         }
-                        else if (startRectY > rectY)
+                        else if (startCoordY > coordY)
                         {
-                            graphicsContext.strokeRect(rectX,rectY,startRectX-rectX,startRectY-rectY);
+                            layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
                         }
                     }
-                    else if (startRectY > rectY)
+                    else if (startCoordY > coordY)
                     {
-                        graphicsContext.strokeRect(startRectX,rectY,rectX-startRectX,startRectY-rectY);
+                        layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
                     }
                 }
             }
         };
-        canvas.setOnMousePressed(mouseHandler);
-        canvas.setOnMouseDragged(mouseHandler);
-        canvas.setOnMouseReleased(mouseHandler);
+        layerList.get(currLayerIndex).setOnMousePressed(mouseHandler);
+        layerList.get(currLayerIndex).setOnMouseDragged(mouseHandler);
+        layerList.get(currLayerIndex).setOnMouseReleased(mouseHandler);
+    }
+    
+    private void ovalDrawingMode()
+    {
+        coordX = 0;
+        coordY = 0;
+        startCoordX = 0;
+        startCoordY = 0;
+
+        EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {    
+                if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
+                {
+                    coordX = mouseEvent.getX();
+                    coordY = mouseEvent.getY();
+                    startCoordX = mouseEvent.getX();
+                    startCoordY = mouseEvent.getY();
+                }
+                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
+                {
+                    coordX = mouseEvent.getX();
+                    coordY = mouseEvent.getY();
+                }
+                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
+                {
+                    if (startCoordX <= coordX && startCoordY <= coordY)
+                    {
+                        layerList.get(currLayerIndex).getGraphicsContext2D().strokeOval(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
+                    }
+                    else if (startCoordX > coordX)
+                    {
+                        if (startCoordY <= coordY)
+                        {
+                            layerList.get(currLayerIndex).getGraphicsContext2D().strokeOval(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
+                        }
+                        else if (startCoordY > coordY)
+                        {
+                            layerList.get(currLayerIndex).getGraphicsContext2D().strokeOval(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
+                        }
+                    }
+                    else if (startCoordY > coordY)
+                    {
+                        layerList.get(currLayerIndex).getGraphicsContext2D().strokeOval(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
+                    }
+                }
+            }
+        };
+        layerList.get(currLayerIndex).setOnMousePressed(mouseHandler);
+        layerList.get(currLayerIndex).setOnMouseDragged(mouseHandler);
+        layerList.get(currLayerIndex).setOnMouseReleased(mouseHandler);
+    }
+    
+    private void addLayer()
+    {
+        Canvas newLayer = new Canvas(500,500);
+        this.layerList.add(newLayer);
+        this.currLayerIndex += 1;
+        this.canvas.getChildren().add(this.layerList.get(this.currLayerIndex));
+        initializeCanvas();
+        this.layerList.get(this.currLayerIndex).toFront();
+    }
+    
+    private void testLayer()
+    {
+        this.currLayerIndex = 0;
+        this.layerList.get(this.currLayerIndex).toFront();
     }
 }
