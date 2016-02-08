@@ -358,10 +358,11 @@ public class EmbroidItGUI extends Application
     private void addLayer()
     {
         Canvas newLayer = new Canvas(500,500);
+        this.currLayerIndex = this.layerList.size();
         this.layerList.add(newLayer);
-        this.currLayerIndex += 1;
         this.canvas.getChildren().add(this.layerList.get(this.currLayerIndex));
         initializeCanvas();
+        freeDrawingMode();
         this.layerList.get(this.currLayerIndex).toFront();
     }
     
