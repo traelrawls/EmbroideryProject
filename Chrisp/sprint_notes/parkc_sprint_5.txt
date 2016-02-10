@@ -1,19 +1,20 @@
 Sprint 5 Activities:
 
-Render Stitches to the GUI from PES import (Sprints - 1)
+Render Stitches to the GUI from PES import (Sprints - 1) (Trae will implement, I will test)
 -Both to prototype and to test the accuracy of the stitch data being read in.
 
-Begin working on the file menu (Sprints - 1)
+Begin working on the file menu (Sprints - 1) (Trae will implement)
 -Connect importing to file menu in the GUI.
 
-Create project saving for the file menu (Sprints - 2)
+Create project saving for the file menu (Sprints - 2) (#1)
 -Determine a structure for project files. Begin serializing project data for later use.
 
-Display stitches in color (Sprints - 1)
+Display stitches in color (Sprints - 1) (Trae should be able to implement this also)
 -Render stitch locations with their intended RGB color values.
 
-Briefing 3 prep (Sprints - 1)
+Briefing 3 prep (Sprints - 1) (Done)
 -Briefing information collection and presentation creation.
 
-UML updates (Sprints - 1)
+UML updates (Sprints - 1) (#2)
 -Update existing UML Diagrams, and account for any new ones that need to be created.
+
