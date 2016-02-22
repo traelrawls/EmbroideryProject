@@ -1,0 +1,47 @@
+Prepared by: Chris Park
+
+Which aspects of the current work are the easiest to understand? 
+
+We have a better idea this week of what everyone is going to focus on, and what tools we have at our disposal to work with (IDE's, libraries etc.) We need a library of classes that deal with file reading and translation, pattern construction, and a gui interface with which to display these patterns. 
+
+Which aspects of the current work are the hardest to understand?
+
+When considering the architecture of the whole program, we know that we need the process under the hood run by something functionally equivelant to the Embroidermodder API, and that we will use JavaFX to represent shapes and drawing in a GUI environment. Given this we are trying to understand how much of an intermediate layer we need to have for the library code to communicate with the GUI. The pattern read from the .PES files consists of stitch location and color information, but does not pre construct them into shapes. Embroidermodder deals with some of this and will provide some solutions.
+
+Which aspects of the current work are the easiest to approach?
+
+JavaFX provides a way to both write the GUI and deal with most of the shapes represented in the Embroidermodder API. Almost all of the shapes required by Embroidermodder have adequate if not better representations in the JavaFX library. The possibility of skinning the GUI using CSS also looks promising.
+
+
+Which aspects of the current work are the hardest to approach? 
+
+The method by which a pattern is translated into a shape in Embroidermodder is somewhat unclear. the emb-outline.c file in the Embroidermodder library deals with turning stitch data into shapes outlines and fill data. Working through the methods in this file and exactly how they work are part of the solution to our intermediate layer concerns.
+
+
+Which aspects of the current work are the easiest to solve? 
+
+The necessary classes required to store stitch data are now in place, and the framework for reading PES files into those patterns is understood and continuing into the next sprint.
+
+Which aspects of the current work are the hardest to solve? 
+
+Stitch blocking and shape outlining based on stitch pattern information need to be translated into their shape containers, Studying Embroidermodders emb-outline.c further should provide much needed answers here.
+
+Which aspects of the current work are the easiest to evaluate?
+
+PES file reading and pattern stitch construction should be testable by creating a small main file to create a pattern and then print out its stitch information. 
+
+Which aspects of the current work are the hardest to evaluate? 
+
+Checking blocking and outlines will be harder to evaluate using a simple main file and will require visual representation to check for correctness.
+
+How far along (as a percent) are you toward the final goal? Does this pace seem likely to succeed? 
+
+10-15%. This pace looks to be on target at this time.
+
+Did you meet or communicate with your client this week? If not, when was the last time? 
+
+The last meeting with our client was our initial discussion of project requirements.
+
+Are there any issues, concerns, or comments about the project? 
+
+None at this time.
