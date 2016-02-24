@@ -90,7 +90,7 @@ public class EmbStitch
      * 
      * @return javafx.geometry.Point2D
      */
-    public Point2D getSitchPosition()
+    public Point2D getStitchPosition()
     {
         return this.absPosition;
     }

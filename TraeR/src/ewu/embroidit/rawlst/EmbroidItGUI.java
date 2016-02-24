@@ -12,8 +12,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.control.*;
 import javafx.scene.shape.*;
@@ -21,8 +19,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.geometry.Insets;
+import javafx.geometry.*;
 import java.util.ArrayList;
+import java.util.List;
+import ewu.embroidit.parkc.io.*;
+import ewu.embroidit.parkc.pattern.*;
 
 /**
  *
@@ -30,7 +31,7 @@ import java.util.ArrayList;
  */
 public class EmbroidItGUI extends Application
 {
-    private ArrayList<Canvas> layerList =  new ArrayList<Canvas>();
+    private final ArrayList<Canvas> layerList =  new ArrayList<>();
     private int currLayerIndex;
     private BorderPane root;
     private Pane canvas;
@@ -57,6 +58,7 @@ public class EmbroidItGUI extends Application
         VBox topContainer = createMenuBar();
         VBox botContainer = createColorBar();
         VBox leftContainer = createOptionsMenu();
+        VBox rightContainer = createPropertiesBar();
         path = new Path();
 
         initializeCanvas();
@@ -64,6 +66,7 @@ public class EmbroidItGUI extends Application
         root.setTop(topContainer);
         root.setLeft(leftContainer);
         root.setBottom(botContainer);
+        root.setRight(rightContainer);
         root.setCenter(this.canvas);
         
         Scene scene = new Scene(root,350,200);
@@ -76,10 +79,30 @@ public class EmbroidItGUI extends Application
     {
         VBox newVBox = new VBox();
         MenuBar menuBar = new MenuBar();
+        FlowPane layerOptions = new FlowPane();
+        Button layerButton = new Button();
+        Button testButton = new Button();
+        layerButton.setAlignment(Pos.CENTER);
+        testButton.setAlignment(Pos.CENTER);
+        layerButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e) {
+                addLayer();
+            }
+        }); 
+        testButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e) {
+                testLayer();
+            }
+        });
+        layerOptions.setStyle("-fx-background-color: gray");
+        layerOptions.getChildren().addAll(layerButton,testButton);
         Menu menuFile = new Menu("File");
+        MenuItem menuItemOpen = new MenuItem("Open");
+        MenuItem menuItemSave = new MenuItem("Save");
+        menuFile.getItems().addAll(menuItemOpen,menuItemSave);
         Menu menuEdit = new Menu("Edit");        
         menuBar.getMenus().addAll(menuFile,menuEdit);
-        newVBox.getChildren().add(menuBar);
+        newVBox.getChildren().addAll(menuBar,layerOptions);
         return newVBox;
     }
     
@@ -90,8 +113,7 @@ public class EmbroidItGUI extends Application
         Button lineButton = new Button();
         Button rectButton = new Button();
         Button ovalButton = new Button();
-        Button layerButton = new Button();
-        Button testButton = new Button();
+
         Image drawImage = new Image(getClass().getResourceAsStream("graphics/DrawButton.png"));
         Image lineImage = new Image(getClass().getResourceAsStream("graphics/LineButton.png"));
         Image rectImage = new Image(getClass().getResourceAsStream("graphics/RectButton.png"));
@@ -120,19 +142,9 @@ public class EmbroidItGUI extends Application
                 ovalDrawingMode();
             }
         });
-        layerButton.setOnAction(new EventHandler<ActionEvent>(){
-            @Override public void handle(ActionEvent e) {
-                addLayer();
-            }
-        }); 
-        testButton.setOnAction(new EventHandler<ActionEvent>(){
-            @Override public void handle(ActionEvent e) {
-                testLayer();
-            }
-        }); 
         newVBox.setPrefWidth(70);
-        newVBox.getChildren().addAll(drawButton,lineButton,rectButton,ovalButton,layerButton,testButton);
-        newVBox.setStyle("-fx-background-color: gray");
+        newVBox.getChildren().addAll(drawButton,lineButton,rectButton,ovalButton);
+        newVBox.setStyle("-fx-background-color: gray; -fx-border-width: 2px; -fx-border-color: black;");
         return newVBox;
     }
     
@@ -166,6 +178,32 @@ public class EmbroidItGUI extends Application
         blueButton.setGraphic(new ImageView(blueImg));
         toolBar.getItems().addAll(blackButton,redButton,blueButton);
         newVBox.getChildren().add(toolBar);
+        return newVBox;
+    }
+    
+    private VBox createPropertiesBar()
+    {
+        VBox newVBox = new VBox();
+        TextField xProperty = new TextField();
+        TextField yProperty = new TextField();
+        TextField heightProperty = new TextField();
+        TextField widthProperty = new TextField();
+        TextField rotateProperty = new TextField();
+        Label xLabel = new Label();
+        Label yLabel = new Label();
+        Label heightLabel = new Label();
+        Label widthLabel = new Label();
+        Label rotateLabel = new Label();
+        xLabel.setText("X:");
+        yLabel.setText("Y:");
+        heightLabel.setText("Height:");
+        widthLabel.setText("Width:");
+        rotateLabel.setText("Rotation:");
+        newVBox.getChildren().addAll(xLabel, xProperty, yLabel, yProperty,
+                                     heightLabel, heightProperty, widthLabel,
+                                     widthProperty, rotateLabel, rotateProperty);
+        newVBox.setStyle("-fx-background-color: gray; -fx-border-width: 2px; -fx-border-color: black;");
+
         return newVBox;
     }
     
@@ -368,7 +406,26 @@ public class EmbroidItGUI extends Application
     
     private void testLayer()
     {
-        this.currLayerIndex = 0;
-        this.layerList.get(this.currLayerIndex).toFront();
+        FormatPES formatter = new FormatPES("C:/Users/Trae/Documents/NetBeansProjects/EmbroidIt/src/ewu/embroidit/rawlst/Golfcrest.pes");
+        List<EmbStitch> stitchList = formatter.getPattern().getStitchList();
+        stitchShapes(stitchList);
+        
+    }
+    
+    private void stitchShapes(List<EmbStitch> stitchList)
+    {
+        Point2D prevPoint = null;
+        boolean firstStitch = true;
+        for (EmbStitch stitch : stitchList)
+        {
+            if (!firstStitch)
+            {
+                layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(PECDecoder.getInstance().getColorByIndex(stitch.getColorIndex()));
+                layerList.get(currLayerIndex).getGraphicsContext2D().strokeLine(prevPoint.getX()+100,prevPoint.getY()+200,
+                                                                                stitch.getStitchPosition().getX()+100,stitch.getStitchPosition().getY()+200);
+            }
+            prevPoint = stitch.getStitchPosition();
+            firstStitch = false;
+        }
     }
 }
