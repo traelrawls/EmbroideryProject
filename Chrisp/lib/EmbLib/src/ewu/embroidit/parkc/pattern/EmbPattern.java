@@ -2,16 +2,10 @@ package ewu.embroidit.parkc.pattern;
 
 import java.util.*;
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
-import javafx.scene.shape.Rectangle;
-import com.sun.javafx.geom.Path2D;
 import ewu.embroidit.parkc.io.PECDecoder;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import ewu.embroidit.parkc.io.StitchCode;
+import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
 /**
@@ -28,18 +22,24 @@ public class EmbPattern
     private int colorIndex;                        //Current color index
     private double lastX;                          //Last x position
     private double lastY;                          //Last y position
+    
     private Point2D homePoint;                     //Pattern starting point
     private EmbHoop hoop;                          //Embroidery hoop
     private List<EmbStitch> stitchList;            //List of stitches
     private List<EmbThread> threadList;            //List of threads
-    private List<Rectangle> rectList;              //List of rectangles
-    private List<Line> lineList;                   //List of lines
-    private List<Circle> circleList;               //List of circles
-    private List<Ellipse> ellipseList;             //List of ellipses
-    private List<Path2D> pathList;                 //List of paths
-    private List<Point2D> pointList;               //List of points
-    private List<Polygon> polygonList;             //List of polygons
-    private List<Polyline> polylineList;           //List of polylines
+    
+    private List<Shape> shapeList;
+    
+    //Following 4 shapes are covered under Shape class list above
+    //private List<Rectangle> rectList;              //List of rectangles
+    //private List<Line> lineList;                   //List of lines
+    //private List<Circle> circleList;               //List of circles
+    //private List<Ellipse> ellipseList;             //List of ellipses
+    
+    //private List<Path2D> pathList;                 //List of paths
+    //private List<Point2D> pointList;               //List of points
+    //private List<Polygon> polygonList;             //List of polygons
+    //private List<Polyline> polylineList;           //List of polylines
     
     //Object lists remaining
     //--Arc (not sure if this should be Arc or Cubic Curve)
@@ -58,14 +58,7 @@ public class EmbPattern
         this.homePoint = new Point2D(lastX, lastY);
         this.stitchList = new ArrayList<>();
         this.threadList = new ArrayList<>();
-        this.rectList = new ArrayList<>();
-        this.lineList = new ArrayList<>();              
-        this.circleList = new ArrayList<>();             
-        this.ellipseList = new ArrayList<>();
-        this.pathList = new ArrayList<>();
-        this.pointList = new ArrayList<>();
-        this.polygonList = new ArrayList<>();
-        this.polylineList = new ArrayList<>();
+        this.shapeList = new ArrayList<>();
     }
     
     /*-----------------------------------------------------------------------*/

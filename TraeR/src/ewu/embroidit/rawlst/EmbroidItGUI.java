@@ -14,9 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.control.*;
-import javafx.scene.shape.*;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.geometry.*;
@@ -24,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import ewu.embroidit.parkc.io.*;
 import ewu.embroidit.parkc.pattern.*;
+import java.io.File;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -75,6 +75,7 @@ public class EmbroidItGUI extends Application
         primaryStage.show();
     }
     
+    @SuppressWarnings("Convert2Lambda")
     private VBox createMenuBar()
     {
         VBox newVBox = new VBox();
@@ -100,7 +101,7 @@ public class EmbroidItGUI extends Application
         MenuItem menuItemOpen = new MenuItem("Open");
         MenuItem menuItemSave = new MenuItem("Save");
         menuFile.getItems().addAll(menuItemOpen,menuItemSave);
-        Menu menuEdit = new Menu("Edit");        
+        Menu menuEdit = new Menu("Edit");
         menuBar.getMenus().addAll(menuFile,menuEdit);
         newVBox.getChildren().addAll(menuBar,layerOptions);
         return newVBox;
@@ -113,11 +114,12 @@ public class EmbroidItGUI extends Application
         Button lineButton = new Button();
         Button rectButton = new Button();
         Button ovalButton = new Button();
-
-        Image drawImage = new Image(getClass().getResourceAsStream("graphics/DrawButton.png"));
-        Image lineImage = new Image(getClass().getResourceAsStream("graphics/LineButton.png"));
-        Image rectImage = new Image(getClass().getResourceAsStream("graphics/RectButton.png"));
-        Image ovalImage = new Image(getClass().getResourceAsStream("graphics/OvalButton.png"));
+        
+        Image drawImage = new Image(getClass().getResourceAsStream("res/DrawButton.PNG"));
+        Image lineImage = new Image(getClass().getResourceAsStream("res/LineButton.PNG"));
+        Image rectImage = new Image(getClass().getResourceAsStream("res/RectButton.PNG"));
+        Image ovalImage = new Image(getClass().getResourceAsStream("res/OvalButton.PNG"));
+        
         drawButton.setGraphic(new ImageView(drawImage));
         lineButton.setGraphic(new ImageView(lineImage));
         rectButton.setGraphic(new ImageView(rectImage));
@@ -155,9 +157,11 @@ public class EmbroidItGUI extends Application
         Button blackButton = new Button();
         Button redButton = new Button();
         Button blueButton = new Button();
-        Image blackImg = new Image(getClass().getResourceAsStream("graphics/blackColor.png"));
-        Image redImg = new Image(getClass().getResourceAsStream("graphics/RedColor.png"));
-        Image blueImg = new Image(getClass().getResourceAsStream("graphics/BlueColor.png"));
+        
+        Image blackImg = new Image(this.getClass().getResourceAsStream("res/BlackColor.PNG"));
+        Image redImg = new Image(getClass().getResourceAsStream("res/RedColor.PNG"));
+        Image blueImg = new Image(getClass().getResourceAsStream("res/BlueColor.PNG"));
+        
         blackButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
                 layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(Color.BLACK);
