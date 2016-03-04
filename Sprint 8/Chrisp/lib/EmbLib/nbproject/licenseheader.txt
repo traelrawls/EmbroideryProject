@@ -1,7 +1,0 @@
-<#if licenseFirst??>
-${licenseFirst}
-</#if>
-${licensePrefix}Author: Chris Park (christopherpark@eagles.ewu.edu)
-<#if licenseLast??>
-${licenseLast}
-</#if>

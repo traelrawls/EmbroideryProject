@@ -11,7 +11,7 @@ import ewu.embroidit.parkc.shape.*;
 public abstract class A_EmbFill
 {
     /*-----------------------------------------------------------------------*/
-    
+    protected static final double MM_TO_PXL = 3.779527559;
     /*-----------------------------------------------------------------------*/
     
     public A_EmbFill()
