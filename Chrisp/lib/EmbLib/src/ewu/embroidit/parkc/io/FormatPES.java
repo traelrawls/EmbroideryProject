@@ -39,7 +39,6 @@ public class FormatPES
         this.readPEC();
         this.closeFile();
         this.validateLastStitch();
-        //flip pattern verticle (are y values read backwards?)
     }
     
     /*-----------------------------------------------------------------------*/

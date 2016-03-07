@@ -4,6 +4,7 @@ import ewu.embroidit.parkc.pattern.EmbStitch;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Point2D;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 
 
@@ -18,6 +19,7 @@ public abstract class A_EmbShapeWrapper
     /*-----------------------------------------------------------------------*/
     
     private Shape wrappedShape;
+    private List<Line> lineList;
     private List<EmbStitch> stitchList;
     private Point2D startPoint;
     
@@ -38,6 +40,18 @@ public abstract class A_EmbShapeWrapper
         this.stitchList = new ArrayList();
     }
     
+    /*-----------------------------------------------------------------------*/
+    
+    public List<Line> getLineList()
+    {
+        return this.lineList;
+    }
+    
+    public void setLineList(List<Line> lineList)
+    {
+        this.validateObject(lineList);
+        this.lineList = lineList;
+    }
     /*-----------------------------------------------------------------------*/
     
     /**
