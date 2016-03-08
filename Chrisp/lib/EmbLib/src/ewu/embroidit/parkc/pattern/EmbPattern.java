@@ -30,21 +30,6 @@ public class EmbPattern
     
     private List<Shape> shapeList;
     
-    //Following 4 shapes are covered under Shape class list above
-    //private List<Rectangle> rectList;              //List of rectangles
-    //private List<Line> lineList;                   //List of lines
-    //private List<Circle> circleList;               //List of circles
-    //private List<Ellipse> ellipseList;             //List of ellipses
-    
-    //private List<Path2D> pathList;                 //List of paths
-    //private List<Point2D> pointList;               //List of points
-    //private List<Polygon> polygonList;             //List of polygons
-    //private List<Polyline> polylineList;           //List of polylines
-    
-    //Object lists remaining
-    //--Arc (not sure if this should be Arc or Cubic Curve)
-    //--Spline (Uh....Find out what this is)
-    
     /*-----------------------------------------------------------------------*/
     
     /**
@@ -79,8 +64,6 @@ public class EmbPattern
         {
             if(this.stitchList.isEmpty())
                 return;
-            
-            //this.getMaxColorIndex(); May not be used.
         }
         
         if((flags & StitchCode.STOP) != 0)
@@ -100,9 +83,6 @@ public class EmbPattern
             return;
         }
         
-        //need to add stitch here either relative or absolute. not sure yet
-        //This is why we only ever got a jump stitch(from the first stitch
-        //homepoint in the if above
         stitch = new EmbStitch(new Point2D(x, y), this.colorIndex,
                 StitchCode.getInstance().getStitchCode(flags));
         this.stitchList.add(stitch);
@@ -153,6 +133,7 @@ public class EmbPattern
     /**
      * Sets the List&lt;EmbThread&gt; passed as the new thread list for this
      * pattern.
+     * 
      * @param threadList List&lt;EmbThread&gt;
      */
     public void setThreadList(List<EmbThread> threadList)
@@ -176,6 +157,7 @@ public class EmbPattern
     /**
      * Gets the color at the given color index, creates a new thread of this
      * color, and adds it to the patterns thread list.
+     * 
      * @param index int
      */
     public void addThread(int index)
@@ -208,7 +190,7 @@ public class EmbPattern
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Ensures that object sent as a parameter exists.
+     * Ensures that object sent as a parameter is not null.
      * 
      * @param obj Object
      */

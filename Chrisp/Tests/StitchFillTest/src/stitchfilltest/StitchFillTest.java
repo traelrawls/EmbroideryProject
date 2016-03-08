@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package stitchfilltest;
 
 
@@ -21,11 +16,12 @@ import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
 
 
 /**
  *
- * @author Desolis
+ * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class StitchFillTest extends Application 
 {
@@ -36,7 +32,7 @@ public class StitchFillTest extends Application
         primaryStage.setTitle("StitchFillTest");
         
         //create rect and it's wrapper
-        Rectangle rect = new Rectangle(128, 64, 100, 64);
+        Rectangle rect = new Rectangle(128, 64, 128, 128);
         A_EmbShapeWrapper shapeWrapper = new EmbShapeWrapperTatamiFill(rect, new Point2D(0,0), 0.0, 0.0 );
         
         //create fill strategy
@@ -65,7 +61,7 @@ public class StitchFillTest extends Application
         Rectangle rect = (Rectangle) shapeWrapper.getWrappedShape();
        
         gc.setStroke(Color.BLACK);
-        gc.setLineWidth(1);
+        gc.setLineWidth(2);
         gc.strokeRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
     
@@ -75,12 +71,18 @@ public class StitchFillTest extends Application
          
         System.err.println("Line List Size is: " + lineList.size());
         
+        gc.setStroke(Color.CORNFLOWERBLUE);
+        gc.setLineWidth(1);
+        gc.setLineCap(StrokeLineCap.SQUARE);
+        
         for(Line line : lineList)
         {
-            gc.setLineWidth(1);
-            gc.strokeLine(line.getStartX(),
+            System.err.println("Line points: (" + line.getStartX() + ", " + line.getStartY() + ") " +
+                                            "(" + line.getEndX() + ", " + line.getEndY() + ")" );
+            
+            gc.strokeLine(line.getStartX() + 0.5,
                     line.getStartY(),
-                    line.getEndX(),
+                    line.getEndX() + 0.5,
                     line.getEndY());
         }
     }

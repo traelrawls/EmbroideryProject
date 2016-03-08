@@ -26,14 +26,14 @@ public class EmbFillTatamiRect extends A_EmbFill
     public EmbFillTatamiRect()
     {
         super();
-        System.err.println("Fill Strat Created");
     }
     
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Implements a shape filling strategy for Tatami style fill stitches.
-     * NOTE: Implementation incomplete. TBD.
+     * Implements a rectangle filling strategy for Tatami style fill stitches.
+     * The resulting Line and EmbStitch Lists are added to the shape wrapper
+     * sent as a parameter.
      * 
      * @param shapeWrapper shapeWrapper
      */
@@ -46,34 +46,30 @@ public class EmbFillTatamiRect extends A_EmbFill
         rect = (Rectangle) shapeWrapper.getWrappedShape();
         lineList = new ArrayList<>();
         
-        System.err.println("Before Initial Recursive Call!!!");
-        
         divideRectRecursive(rect, lineList);
         
         Collections.sort(lineList, new VerticalLineSort());
-        
-        //add the line list to the wrapper
         shapeWrapper.setLineList(lineList);
-        
-        //break lines down into individual stitches
-        //and add to shapeWrapper(subdivisions later?)
         shapeWrapper.setStitchList(createStitchList(lineList));
     }
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Breaks a rectangle down into a list of line segments by subdividing the
+     * rectangle until all resulting rectangles are under a defined width of 
+     * approx. 3.78 pixels. Then the midpoint of each rectangle is used to
+     * create a line segment.
+     * 
+     * @param rect Rectangle
+     * @param lineList List&lt;Line&gt;
+     */
     private void divideRectRecursive(Rectangle rect, List<Line> lineList)
-    {
-        System.err.println("Rect Width is:" + rect.getWidth());
-        
-        //Base case: if rect width is < MM_TO_PXL * 2
+    {   
         if(rect.getWidth() >= MM_TO_PXL * 2)
-        {
-            System.err.println("Splitting Rect");
-            
+        {   
             Rectangle rectLeft, rectRight;
             
-            //cut rect in half creating two new rects
             rectLeft = new Rectangle(
                     rect.getX(),
                     rect.getY(),
@@ -81,24 +77,21 @@ public class EmbFillTatamiRect extends A_EmbFill
                     rect.getHeight());
             
             rectRight = new Rectangle(
-                    (rect.getX() + rect.getWidth()) / 2.0,
+                    rect.getX() + (rect.getWidth() / 2.0),
                     rect.getY(),
                     rect.getWidth() / 2.0,
                     rect.getHeight());
         
-            //recurse
             divideRectRecursive(rectLeft, lineList);
             divideRectRecursive(rectRight, lineList);
         }
         
-        //create midpoint line
         Line midPointLine = new Line(
-                (rect.getX() + rect.getWidth() / 2.0),
+                rect.getX() + (rect.getWidth() / 2.0),
                 rect.getY(),
-                (rect.getX() + rect.getWidth() / 2.0),
+                rect.getX() + (rect.getWidth() / 2.0),
                 rect.getY() + rect.getHeight());
         
-        //add line to list
         lineList.add(midPointLine);
     }
     
@@ -111,7 +104,7 @@ public class EmbFillTatamiRect extends A_EmbFill
      * NOTE: This doesn't account for stitch type or color appropriately yet.
      * 
      * @param lineList
-     * @return stitchList
+     * @return stitchList List&lt;EmbStitch&gt;
      */
     public List<EmbStitch> createStitchList(List<Line> lineList)
     {

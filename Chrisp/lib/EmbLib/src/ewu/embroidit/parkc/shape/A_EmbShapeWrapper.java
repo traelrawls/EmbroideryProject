@@ -38,15 +38,29 @@ public abstract class A_EmbShapeWrapper
         this.wrappedShape = wrappedShape;
         this.startPoint = startPoint;
         this.stitchList = new ArrayList();
+        this.lineList = new ArrayList();
     }
+    
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Returns the fill line list for the wrappers corresponding shape.
+     * 
+     * @return List&lt;Line&gt;
+     */
     public List<Line> getLineList()
     {
         return this.lineList;
     }
     
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Sets the fill line list for this wrappers corresponding shape
+     * 
+     * @param lineList List&lt;Line&gt;
+     */
     public void setLineList(List<Line> lineList)
     {
         this.validateObject(lineList);
@@ -57,7 +71,7 @@ public abstract class A_EmbShapeWrapper
     /**
      * Gets the list of stitches.
      * 
-     * @return EmbStitch[]
+     * @return List&lt;EmbStitch&gt;
      */
     public List<EmbStitch> getStitchList()
     {
@@ -129,7 +143,7 @@ public abstract class A_EmbShapeWrapper
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Ensures the object sent as a parameter exists.
+     * Ensures the object sent as a parameter is not null.
      * 
      * @param obj Object
      */

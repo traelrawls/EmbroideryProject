@@ -33,14 +33,13 @@ public class EmbShapeWrapperTatamiFill extends A_EmbShapeWrapper
         
         this.angle = angle; //Figure out how to enforce range (0-180)
         this.stitchLength = stitchLength;
-        
-        System.err.println("Wrapper Created!");
     }
     
     /*-----------------------------------------------------------------------*/
     
     /**
      * Gets the angle of the parallel stitches for the wrapped shape.
+     * 
      * @return double
      */
     public double getAngle()
