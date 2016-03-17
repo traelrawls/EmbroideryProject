@@ -5,6 +5,7 @@ import javafx.geometry.Point2D;
 import ewu.embroidit.parkc.io.PECDecoder;
 import javafx.scene.paint.Color;
 import ewu.embroidit.parkc.io.StitchCode;
+import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
 import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
@@ -29,6 +30,7 @@ public class EmbPattern
     private List<EmbThread> threadList;            //List of threads
     
     private List<Shape> shapeList;
+    private HashMap<Shape, A_EmbShapeWrapper> wrapperHash;
     
     /*-----------------------------------------------------------------------*/
     
@@ -44,6 +46,7 @@ public class EmbPattern
         this.stitchList = new ArrayList<>();
         this.threadList = new ArrayList<>();
         this.shapeList = new ArrayList<>();
+        this.wrapperHash = new HashMap<>();
     }
     
     /*-----------------------------------------------------------------------*/
@@ -119,6 +122,51 @@ public class EmbPattern
     /*-----------------------------------------------------------------------*/
     
     /**
+     * Adds the shape wrapper passed as a parameter to the hash using the shape 
+     * contained within it as the key.
+     * 
+     * @param shapeWrapper  A_EmbShapeWrapper
+     */
+    public void addShapeWrapper(A_EmbShapeWrapper shapeWrapper)
+    {
+        this.validateObject(shapeWrapper);
+        this.wrapperHash.put(shapeWrapper.getWrappedShape(), shapeWrapper);
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Removes the wrapper related to the given key shape if it exists.
+     * 
+     * @param keyShape Shape
+     */
+    public void removeShapeWrapper(Shape keyShape)
+    {
+        this.validateObject(keyShape);
+        this.wrapperHash.remove(keyShape);
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Gets the shape wrapper that corresponds to the given shape.
+     * 
+     * @param keyShape Shape
+     * @return A_EmbShapeWrapper wrapper
+     */
+    public A_EmbShapeWrapper getShapeWrapper(Shape keyShape)
+    {
+        A_EmbShapeWrapper wrapper;
+        
+        this.validateObject(keyShape);
+        wrapper = this.wrapperHash.get(keyShape);
+        this.validateObject(wrapper);
+        return wrapper;
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
      * Returns this patterns list of threads
      * 
      * @return List&lt;EmbThread&gt;
@@ -151,6 +199,19 @@ public class EmbPattern
     public List<EmbStitch> getStitchList()
     {
         return this.stitchList;
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Sets the List&lt;EmbStitch&gt; passed as the new stitch list for this
+     * pattern.
+     * 
+     * @param stitchList 
+     */
+    public void setStitchList(List<EmbStitch> stitchList)
+    {
+        this.stitchList = stitchList;
     }
     
     /*-----------------------------------------------------------------------*/
