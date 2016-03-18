@@ -37,8 +37,8 @@ public abstract class A_EmbShapeWrapper
     {
         this.wrappedShape = wrappedShape;
         this.startPoint = startPoint;
-        this.stitchList = new ArrayList();
-        this.lineList = new ArrayList();
+        this.stitchList = new ArrayList<>();
+        this.lineList = new ArrayList<>();
     }
     
     
