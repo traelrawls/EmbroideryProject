@@ -33,18 +33,24 @@ public class StitchFillTest extends Application
     {
         primaryStage.setTitle("StitchFillTest");
         
+        /*-----------------------------------------------------------------------*/
         //TEST Rectangle Fill
-        Rectangle rect = new Rectangle(160, 64, 64, 64);
+        Rectangle rect = new Rectangle(200, 128, 64, 64);
         A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect, new Point2D(0,0), 0.0, 0.0 );
         EmbFillTatamiRect rectFillStrat = new EmbFillTatamiRect();                
         rectFillStrat.fillShape(rectWrapper);
+        /*-----------------------------------------------------------------------*/
         
+        /*-----------------------------------------------------------------------*/
         //TEST Ellipse Fill
         Ellipse ellipse = new Ellipse(128, 128, 64, 32);
         A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse, new Point2D(0,0) );
         EmbFillRadial ellipseFillStrat = new EmbFillRadial();
         ellipseFillStrat.fillShape(ellipseWrapper);
+        /*-----------------------------------------------------------------------*/
         
+        /*-----------------------------------------------------------------------*/
+        //Rendering
         Group root = new Group();
         Canvas canvas = new Canvas(300, 250);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -56,7 +62,7 @@ public class StitchFillTest extends Application
         drawFill(gc, ellipseWrapper, Color.CHOCOLATE);
         
         root.getChildren().add(canvas);
-        
+        /*-----------------------------------------------------------------------*/
         
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
@@ -67,12 +73,15 @@ public class StitchFillTest extends Application
     private void drawEllipse(GraphicsContext gc, A_EmbShapeWrapper shapeWrapper)
     {
         Ellipse ellipse = (Ellipse) shapeWrapper.getWrappedShape();
-        Bounds bounds = ellipse.getBoundsInParent();
+        Bounds bounds = ellipse.getBoundsInLocal();
         
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
-        gc.strokeOval(bounds.getMinX(), bounds.getMinY(), ellipse.getRadiusX(),
-                ellipse.getRadiusY());
+        gc.strokeOval(
+                bounds.getMinX(), 
+                bounds.getMinY(), 
+                2 * ellipse.getRadiusX(),
+                2 * ellipse.getRadiusY());
     }
     
     /*-----------------------------------------------------------------------*/
@@ -83,7 +92,11 @@ public class StitchFillTest extends Application
        
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
-        gc.strokeRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+        gc.strokeRect(
+                rect.getX(), 
+                rect.getY(), 
+                rect.getWidth(), 
+                rect.getHeight());
     }
     
     /*-----------------------------------------------------------------------*/

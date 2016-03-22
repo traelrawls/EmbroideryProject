@@ -16,7 +16,7 @@ public class EmbFillRadial extends A_EmbFill
 {
     /*-----------------------------------------------------------------------*/
     
-    private static final int NUM_STITCHES = 8;
+    private static final int NUM_STITCHES = 3;
     
     /*-----------------------------------------------------------------------*/
     /**
@@ -48,44 +48,58 @@ public class EmbFillRadial extends A_EmbFill
     }
     
     /*-----------------------------------------------------------------------*/
-    //Note: if you use quandrants and flip stitch values, you will
-    //have to account for and remove duplicate line segments at 90 degrees
+    
     private void fillEllipse(Ellipse ellipse, List<Line> lineList)
     {   
         double endX, endY, radius, degree, degreeInterval;
         Line radialLine;
         
-        degreeInterval = 90 / NUM_STITCHES;
+        
+        //Okay this works now, need to get subdivision of angle for mutliple lines
+        //next.
         degree = 0;
-        for(int i = 0; i <= NUM_STITCHES; i++)
-        {
-            
-            radius = EmbMathEllipse.getEllipseRadiusDeg(ellipse, degree);
-            endX = radius * Math.cos(degree);
-            endY = radius * Math.sin(degree);
-            
-            radialLine = new Line(
+        
+        radius = EmbMathEllipse.getEllipseRadiusDeg(ellipse, degree);
+        
+        endX = ellipse.getCenterX() + ( radius * Math.cos(Math.toRadians(degree)) );
+        endY = ellipse.getCenterY() + ( radius * Math.sin(Math.toRadians(degree)) );
+
+        radialLine = new Line(
                     ellipse.getCenterX(),
                     ellipse.getCenterY(),
                     endX,
                     endY);
 
-            //add line to list
             lineList.add(radialLine);
             
-            degree += degreeInterval;
-        }
         
-        //mirror line segments along x axis, update list,
-        //mirror y axis, update list, remove duplicates
-        
+//        degreeInterval = 90 / NUM_STITCHES;
+//        degree = 0;
+//        for(int i = 0; i < NUM_STITCHES; i++)
+//        {
+//            //caclulate the radius at degree theta
+//            radius = EmbMathEllipse.getEllipseRadiusDeg(ellipse, degree);
+//            
+//            //DEBUG
+//            System.err.println("Current degree is:" + degree);
+//            System.err.println("ellipse radius is:" + radius);
+//            
+//            //make endpoints
+//            endX = ellipse.getCenterX() + (radius * Math.cos(degree));
+//            endY = ellipse.getCenterY() + (radius * Math.sin(degree));
+//            
+//            radialLine = new Line(
+//                    ellipse.getCenterX(),
+//                    ellipse.getCenterY(),
+//                    endX,
+//                    endY);
+//
+//            lineList.add(radialLine);
+//            
+//            degree += degreeInterval;
+//        }
         
     }
     
-    //get arclength
-    //while distance(0) < arclength
-    //calculate the radius line at that theta,
-    //add dx to angle
-    //repeat
     /*-----------------------------------------------------------------------*/
 }
