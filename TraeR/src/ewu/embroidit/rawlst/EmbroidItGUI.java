@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -24,6 +25,8 @@ import ewu.embroidit.parkc.io.*;
 import ewu.embroidit.parkc.pattern.*;
 import java.io.File;
 import javax.imageio.ImageIO;
+import javafx.stage.FileChooser;
+import javafx.stage.DirectoryChooser;
 
 /**
  *
@@ -32,14 +35,16 @@ import javax.imageio.ImageIO;
 public class EmbroidItGUI extends Application
 {
     private final ArrayList<Canvas> layerList =  new ArrayList<>();
-    private int currLayerIndex;
+    private final FileChooser fileBrowser = new FileChooser();
+    private final DirectoryChooser dirBrowser = new DirectoryChooser();
+    private final int STITCH_LAYER = 0, SHAPE_LAYER = 1;
+    private Stage primaryStage;
+    private int currLayerIndex, prevLayerIndex;
     private BorderPane root;
-    private Pane canvas;
-    private Path path;
-    private double coordX;
-    private double coordY;
-    private double startCoordX;
-    private double startCoordY;
+    private VBox canvas = new VBox();
+    private StackPane canvasContainer = new StackPane();
+    private double coordX, coordY, originX, originY, startCoordX, startCoordY;
+    private Canvas prevCanvas;
     
     public void openGUI(String[] args)
     {
@@ -49,19 +54,24 @@ public class EmbroidItGUI extends Application
     @Override
     public void start (Stage primaryStage)
     {
+        this.primaryStage = primaryStage;
         primaryStage.setTitle("EmbroidIt");
         this.root = new BorderPane();
-        this.canvas = new Pane();
-        this.layerList.add(new Canvas(500,500));
-        this.currLayerIndex = 0;
-        this.canvas.getChildren().add(this.layerList.get(currLayerIndex));
+
+        this.canvasContainer.setMaxHeight(500);
+        this.canvasContainer.setMaxWidth(500);
+        this.canvasContainer.setStyle("-fx-background-color: white");
+        this.layerList.add(initializeCanvas(new Canvas(500,500)));
+        this.layerList.add(initializeCanvas(new Canvas(500,500)));
+        this.currLayerIndex = STITCH_LAYER;
+        this.canvasContainer.getChildren().addAll(this.layerList.get(STITCH_LAYER), this.layerList.get(SHAPE_LAYER));
+        this.canvas.getChildren().add(this.canvasContainer);
+        this.canvas.setAlignment(Pos.CENTER);
+        
         VBox topContainer = createMenuBar();
         VBox botContainer = createColorBar();
         VBox leftContainer = createOptionsMenu();
         VBox rightContainer = createPropertiesBar();
-        path = new Path();
-
-        initializeCanvas();
 
         root.setTop(topContainer);
         root.setLeft(leftContainer);
@@ -69,7 +79,7 @@ public class EmbroidItGUI extends Application
         root.setRight(rightContainer);
         root.setCenter(this.canvas);
         
-        Scene scene = new Scene(root,350,200);
+        Scene scene = new Scene(root,1000,700);
         freeDrawingMode();
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -81,25 +91,42 @@ public class EmbroidItGUI extends Application
         VBox newVBox = new VBox();
         MenuBar menuBar = new MenuBar();
         FlowPane layerOptions = new FlowPane();
-        Button layerButton = new Button();
-        Button testButton = new Button();
-        layerButton.setAlignment(Pos.CENTER);
-        testButton.setAlignment(Pos.CENTER);
-        layerButton.setOnAction(new EventHandler<ActionEvent>(){
+        layerOptions.setAlignment(Pos.CENTER);
+        
+        Button stitchLayerButton = new Button("STITCH");
+        Button shapeLayerButton = new Button("SHAPE");
+        stitchLayerButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                addLayer();
+                currLayerIndex = STITCH_LAYER;
             }
         }); 
-        testButton.setOnAction(new EventHandler<ActionEvent>(){
+        shapeLayerButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                testLayer();
+                currLayerIndex = SHAPE_LAYER;
             }
         });
-        layerOptions.setStyle("-fx-background-color: gray");
-        layerOptions.getChildren().addAll(layerButton,testButton);
+        
+        layerOptions.setStyle("-fx-background-color: #C8C8C8;");
+        layerOptions.getChildren().addAll(stitchLayerButton,shapeLayerButton);
         Menu menuFile = new Menu("File");
         MenuItem menuItemOpen = new MenuItem("Open");
+        menuItemOpen.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e) {
+                File file = fileBrowser.showOpenDialog(primaryStage);
+                if (file != null) {
+                    openFile(file);
+                }
+            }
+        });
         MenuItem menuItemSave = new MenuItem("Save");
+        menuItemSave.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e) {
+                File directory = dirBrowser.showDialog(primaryStage);
+                if (directory != null) {
+                    //saveFile(directory);
+                }
+            }
+        });
         menuFile.getItems().addAll(menuItemOpen,menuItemSave);
         Menu menuEdit = new Menu("Edit");
         menuBar.getMenus().addAll(menuFile,menuEdit);
@@ -144,9 +171,20 @@ public class EmbroidItGUI extends Application
                 ovalDrawingMode();
             }
         });
-        newVBox.setPrefWidth(70);
+        
+        drawButton.setPrefHeight(70);
+        drawButton.setPrefWidth(70);
+        lineButton.setPrefHeight(70);
+        lineButton.setPrefWidth(70);
+        rectButton.setPrefHeight(70);
+        rectButton.setPrefWidth(70);
+        ovalButton.setPrefHeight(70);
+        ovalButton.setPrefWidth(70);
+        
+        newVBox.setPrefWidth(100);
+        newVBox.setAlignment(Pos.TOP_CENTER);
         newVBox.getChildren().addAll(drawButton,lineButton,rectButton,ovalButton);
-        newVBox.setStyle("-fx-background-color: gray; -fx-border-width: 2px; -fx-border-color: black;");
+        newVBox.setStyle("-fx-background-color: #C8C8C8;");
         return newVBox;
     }
     
@@ -164,17 +202,20 @@ public class EmbroidItGUI extends Application
         
         blackButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(Color.BLACK);
+                layerList.get(STITCH_LAYER).getGraphicsContext2D().setStroke(Color.BLACK);
+                layerList.get(SHAPE_LAYER).getGraphicsContext2D().setStroke(Color.BLACK);
             }
         });
         redButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(Color.RED);
+                layerList.get(STITCH_LAYER).getGraphicsContext2D().setStroke(Color.RED);
+                layerList.get(SHAPE_LAYER).getGraphicsContext2D().setStroke(Color.RED);
             }
         });
         blueButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(Color.BLUE);
+                layerList.get(STITCH_LAYER).getGraphicsContext2D().setStroke(Color.BLUE);
+                layerList.get(SHAPE_LAYER).getGraphicsContext2D().setStroke(Color.BLUE);
             }
         });
         blackButton.setGraphic(new ImageView(blackImg));
@@ -206,28 +247,29 @@ public class EmbroidItGUI extends Application
         newVBox.getChildren().addAll(xLabel, xProperty, yLabel, yProperty,
                                      heightLabel, heightProperty, widthLabel,
                                      widthProperty, rotateLabel, rotateProperty);
-        newVBox.setStyle("-fx-background-color: gray; -fx-border-width: 2px; -fx-border-color: black;");
+        newVBox.setStyle("-fx-background-color: #C8C8C8;");
 
         return newVBox;
     }
     
-    private void initializeCanvas(){
-        double canvasWidth = layerList.get(currLayerIndex).getGraphicsContext2D().getCanvas().getWidth();
-        double canvasHeight = layerList.get(currLayerIndex).getGraphicsContext2D().getCanvas().getHeight();
+    private Canvas initializeCanvas(Canvas newCanvas){
+        double canvasWidth = newCanvas.getGraphicsContext2D().getCanvas().getWidth();
+        double canvasHeight = newCanvas.getGraphicsContext2D().getCanvas().getHeight();
          
-        layerList.get(currLayerIndex).getGraphicsContext2D().setFill(Color.LIGHTGRAY);
-        layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(Color.BLACK);
-        layerList.get(currLayerIndex).getGraphicsContext2D().setLineWidth(5);
+        newCanvas.getGraphicsContext2D().setFill(Color.LIGHTGRAY);
+        newCanvas.getGraphicsContext2D().setStroke(Color.BLACK);
+        newCanvas.getGraphicsContext2D().setLineWidth(5);
  
-        layerList.get(currLayerIndex).getGraphicsContext2D().fill();
-        layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(
+        newCanvas.getGraphicsContext2D().fill();
+        newCanvas.getGraphicsContext2D().strokeRect(
                 0,              //x of the upper left corner
                 0,              //y of the upper left corner
                 canvasWidth,    //width of the rectangle
                 canvasHeight);  //height of the rectangle
          
-        layerList.get(currLayerIndex).getGraphicsContext2D().setFill(Color.RED);
-        layerList.get(currLayerIndex).getGraphicsContext2D().setLineWidth(1);
+        newCanvas.getGraphicsContext2D().setFill(Color.RED);
+        newCanvas.getGraphicsContext2D().setLineWidth(1);
+        return newCanvas;
          
     }
     
@@ -240,6 +282,8 @@ public class EmbroidItGUI extends Application
             {
                 if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
                 {
+                    prevCanvas = layerList.get(currLayerIndex);
+                    prevLayerIndex = currLayerIndex;
                     layerList.get(currLayerIndex).getGraphicsContext2D().beginPath();
                     layerList.get(currLayerIndex).getGraphicsContext2D().moveTo(mouseEvent.getX(), mouseEvent.getY());
                     layerList.get(currLayerIndex).getGraphicsContext2D().stroke();
@@ -282,6 +326,8 @@ public class EmbroidItGUI extends Application
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
                 {
+                    prevCanvas = layerList.get(currLayerIndex);
+                    prevLayerIndex = currLayerIndex;
                     layerList.get(currLayerIndex).getGraphicsContext2D().strokeLine(startCoordX,startCoordY,coordX,coordY);
                 }
             }
@@ -316,7 +362,9 @@ public class EmbroidItGUI extends Application
                     coordY = mouseEvent.getY();
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
-                {
+                {  
+                    prevCanvas = layerList.get(currLayerIndex);
+                    prevLayerIndex = currLayerIndex;
                     if (startCoordX <= coordX && startCoordY <= coordY)
                     {
                         layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
@@ -370,6 +418,8 @@ public class EmbroidItGUI extends Application
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
                 {
+                    prevCanvas = layerList.get(currLayerIndex);
+                    prevLayerIndex = currLayerIndex;
                     if (startCoordX <= coordX && startCoordY <= coordY)
                     {
                         layerList.get(currLayerIndex).getGraphicsContext2D().strokeOval(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
@@ -399,21 +449,25 @@ public class EmbroidItGUI extends Application
     
     private void addLayer()
     {
-        Canvas newLayer = new Canvas(500,500);
         this.currLayerIndex = this.layerList.size();
-        this.layerList.add(newLayer);
+        this.layerList.add(initializeCanvas(new Canvas(500,500)));
         this.canvas.getChildren().add(this.layerList.get(this.currLayerIndex));
-        initializeCanvas();
         freeDrawingMode();
         this.layerList.get(this.currLayerIndex).toFront();
     }
     
-    private void testLayer()
+    private void openFile(File file)
     {
-        FormatPES formatter = new FormatPES("C:/Users/Trae/Documents/NetBeansProjects/EmbroidIt/src/ewu/embroidit/rawlst/Golfcrest.pes");
+        FormatPES formatter = new FormatPES(file.getAbsolutePath());
         List<EmbStitch> stitchList = formatter.getPattern().getStitchList();
         stitchShapes(stitchList);
-        
+    }
+    
+    private void undoButton()
+    {
+        this.canvas.getChildren().remove(this.layerList.get(currLayerIndex));
+        this.canvas.getChildren().add(this.prevCanvas);
+        layerList.set(this.currLayerIndex, this.prevCanvas);
     }
     
     private void stitchShapes(List<EmbStitch> stitchList)
@@ -425,8 +479,9 @@ public class EmbroidItGUI extends Application
             if (!firstStitch)
             {
                 layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(PECDecoder.getInstance().getColorByIndex(stitch.getColorIndex()));
-                layerList.get(currLayerIndex).getGraphicsContext2D().strokeLine(prevPoint.getX()+100,prevPoint.getY()+200,
-                                                                                stitch.getStitchPosition().getX()+100,stitch.getStitchPosition().getY()+200);
+                layerList.get(currLayerIndex).getGraphicsContext2D().strokeLine(prevPoint.getX()+(this.layerList.get(currLayerIndex).getWidth()/2),prevPoint.getY()+(this.layerList.get(currLayerIndex).getHeight()/2),
+                                                                                stitch.getStitchPosition().getX()+(this.layerList.get(currLayerIndex).getWidth()/2),
+                                                                                stitch.getStitchPosition().getY()+(this.layerList.get(currLayerIndex).getHeight()/2));
             }
             prevPoint = stitch.getStitchPosition();
             firstStitch = false;
