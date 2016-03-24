@@ -66,21 +66,19 @@ public class FileManager
     /*-----------------------------------------------------------------------*/
 
     /**
-     * Saves a pattern to the given file path with the given name.
+     * Saves a pattern to the given file.
      * @param pattern EmbPattern
-     * @param filepath String
+     * @param file File
      * @param name String
      */
-    public void savePattern(EmbPattern pattern, String filepath, String name)
+    public void savePattern(EmbPattern pattern, File file)
     {
         FileOutputStream outFile;
         ObjectOutputStream outObject;
-         
-        filepath = filepath.trim() + name.trim() + ".epf";
         
         try
         {
-            outFile = new FileOutputStream(filepath);
+            outFile = new FileOutputStream(file);
             outObject = new ObjectOutputStream(outFile);
             outObject.writeObject(pattern);
             outObject.close();
@@ -93,15 +91,15 @@ public class FileManager
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Returns a pattern constructed from the given PES file path.
-     * @param filepath String
+     * Returns a pattern constructed from the given PES file.
+     * @param file File
      * @return EmbPattern
      */
-    public EmbPattern pesToPattern(String filepath)
+    public EmbPattern pesToPattern(File file)
     {
         FormatPES pesFormatter;
         
-        pesFormatter = new FormatPES(filepath);
+        pesFormatter = new FormatPES(file);
         return pesFormatter.getPattern();
     }
     

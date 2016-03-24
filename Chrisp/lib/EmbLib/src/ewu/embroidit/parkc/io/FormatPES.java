@@ -2,6 +2,7 @@ package ewu.embroidit.parkc.io;
 
 import ewu.embroidit.parkc.pattern.EmbPattern;
 import ewu.embroidit.parkc.pattern.EmbStitch;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -28,10 +29,10 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
-    public FormatPES(String filename)
+    public FormatPES(File file)
     {
-        this.validateObject(filename);
-        this.openFile(filename);
+        this.validateObject(file);
+        this.openFile(file);
         this.getPECStart();
         this.pattern = new EmbPattern();
         
@@ -44,14 +45,14 @@ public class FormatPES
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Creates a new RandomAccessFile with the given filename.
+     * Creates a new RandomAccessFile with the given file.
      * 
-     * @param filename String
+     * @param file File
      */
-    private void openFile(String filename)
+    private void openFile(File file)
     {   
         try
-        { this.inFile = new RandomAccessFile(filename, "r"); }
+        { this.inFile = new RandomAccessFile(file, "r"); }
         catch(FileNotFoundException e)
         { System.err.println("FormatPES openFile: " + e); }
     }
