@@ -16,7 +16,7 @@ public class EmbFillRadial extends A_EmbFill
 {
     /*-----------------------------------------------------------------------*/
     
-    private static final int NUM_STITCHES = 3;
+    private static final int NUM_STITCHES = 30;
     
     /*-----------------------------------------------------------------------*/
     /**
@@ -54,51 +54,37 @@ public class EmbFillRadial extends A_EmbFill
         double endX, endY, radius, degree, degreeInterval;
         Line radialLine;
         
-        
-        //Okay this works now, need to get subdivision of angle for mutliple lines
-        //next.
+        degreeInterval = 360 / NUM_STITCHES;
         degree = 0;
-        
-        radius = EmbMathEllipse.getEllipseRadiusDeg(ellipse, degree);
-        
-        endX = ellipse.getCenterX() + ( radius * Math.cos(Math.toRadians(degree)) );
-        endY = ellipse.getCenterY() + ( radius * Math.sin(Math.toRadians(degree)) );
-
-        radialLine = new Line(
-                    ellipse.getCenterX(),
-                    ellipse.getCenterY(),
-                    endX,
-                    endY);
+        for(int i = 0; i < NUM_STITCHES; i++)
+        {
+            radius = EmbMathEllipse.getEllipseRadiusDeg(ellipse, degree);
+            
+            endX = ellipse.getCenterX() + 
+                    ( radius * Math.cos(Math.toRadians(degree)) );
+            endY = ellipse.getCenterY() + 
+                    ( radius * Math.sin(Math.toRadians(degree)) );
+            radialLine = new Line(ellipse.getCenterX(), ellipse.getCenterY(),
+                    endX, endY);
 
             lineList.add(radialLine);
-            
+            degree += degreeInterval;
+        }
         
-//        degreeInterval = 90 / NUM_STITCHES;
-//        degree = 0;
-//        for(int i = 0; i < NUM_STITCHES; i++)
-//        {
-//            //caclulate the radius at degree theta
-//            radius = EmbMathEllipse.getEllipseRadiusDeg(ellipse, degree);
+        //Create line at 90 degrees
+//        radius = EmbMathEllipse.getEllipseRadiusDeg(ellipse, 90);
 //            
-//            //DEBUG
-//            System.err.println("Current degree is:" + degree);
-//            System.err.println("ellipse radius is:" + radius);
-//            
-//            //make endpoints
-//            endX = ellipse.getCenterX() + (radius * Math.cos(degree));
-//            endY = ellipse.getCenterY() + (radius * Math.sin(degree));
-//            
-//            radialLine = new Line(
-//                    ellipse.getCenterX(),
-//                    ellipse.getCenterY(),
-//                    endX,
-//                    endY);
+//            endX = ellipse.getCenterX() + 
+//                    ( radius * Math.cos(Math.toRadians(degree)) );
+//            endY = ellipse.getCenterY() + 
+//                    ( radius * Math.sin(Math.toRadians(degree)) );
+//            radialLine = new Line(ellipse.getCenterX(), ellipse.getCenterY(),
+//                    endX, endY);
 //
 //            lineList.add(radialLine);
-//            
-//            degree += degreeInterval;
-//        }
-        
+            
+            //invert x coordinates and add resulting line segments to list
+            //invert y coordinatea dn add resulting lines segments to list
     }
     
     /*-----------------------------------------------------------------------*/

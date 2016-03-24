@@ -3,8 +3,6 @@ package ewu.embroidit.parkc.io;
 /*-----------------------------------------------------------------------*/
 /**
  * Holds StitchCode values for use in pattern creation. 
- * Should not be instantiated!
- * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class StitchCode
@@ -27,7 +25,6 @@ public class StitchCode
     
     /**
      * Returns and instance of StitchCode
-     * 
      * @return StitchCode
      */
     public static StitchCode getInstance()
@@ -46,7 +43,6 @@ public class StitchCode
     
     /**
      * returns whether this stitch is a TRIM, JUMP, or NORMAL stitch.
-     * 
      * @param val int
      * @return int
      */
@@ -64,7 +60,6 @@ public class StitchCode
     
     /**
      * Returns whether this stitch is a END, STOP, or NORMAL stitch.
-     * 
      * @param val1 int
      * @param val2 int
      * @return int

@@ -35,7 +35,7 @@ public class StitchFillTest extends Application
         
         /*-----------------------------------------------------------------------*/
         //TEST Rectangle Fill
-        Rectangle rect = new Rectangle(200, 128, 64, 64);
+        Rectangle rect = new Rectangle(32, 128, 128, 64);
         A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect, new Point2D(0,0), 0.0, 0.0 );
         EmbFillTatamiRect rectFillStrat = new EmbFillTatamiRect();                
         rectFillStrat.fillShape(rectWrapper);
@@ -43,14 +43,14 @@ public class StitchFillTest extends Application
         
         /*-----------------------------------------------------------------------*/
         //TEST Ellipse Fill
-        Ellipse ellipse = new Ellipse(128, 128, 64, 32);
+        Ellipse ellipse = new Ellipse(96, 64, 64, 32);
         A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse, new Point2D(0,0) );
         EmbFillRadial ellipseFillStrat = new EmbFillRadial();
         ellipseFillStrat.fillShape(ellipseWrapper);
         /*-----------------------------------------------------------------------*/
         
         /*-----------------------------------------------------------------------*/
-        //Rendering
+        //TEST Rendering
         Group root = new Group();
         Canvas canvas = new Canvas(300, 250);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -108,7 +108,7 @@ public class StitchFillTest extends Application
         System.err.println("Line List Size is: " + lineList.size());
         
         gc.setStroke(color);
-        gc.setLineWidth(1);
+        gc.setLineWidth(3);
         gc.setLineCap(StrokeLineCap.SQUARE);
         
         for(Line line : lineList)

@@ -6,6 +6,7 @@ import ewu.embroidit.parkc.io.PECDecoder;
 import javafx.scene.paint.Color;
 import ewu.embroidit.parkc.io.StitchCode;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
+import java.io.Serializable;
 import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
@@ -13,16 +14,16 @@ import javafx.scene.shape.Shape;
  * Represents an embroidery pattern. A pattern contains a combination of
  * lines and primitive shapes created by connecting stitch locations with
  * colored threads inside of an embroidery hoop.
- * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
-public class EmbPattern
+public class EmbPattern implements Serializable
 {
     /*-----------------------------------------------------------------------*/
     
     private int colorIndex;                        //Current color index
     private double lastX;                          //Last x position
     private double lastY;                          //Last y position
+    private String name;
     
     private Point2D homePoint;                     //Pattern starting point
     private EmbHoop hoop;                          //Embroidery hoop
@@ -42,6 +43,7 @@ public class EmbPattern
         this.colorIndex = 0;
         this.lastX = 0.0;
         this.lastY = 0.0;
+        this.name = "New Pattern";
         this.homePoint = new Point2D(lastX, lastY);
         this.stitchList = new ArrayList<>();
         this.threadList = new ArrayList<>();
@@ -53,7 +55,6 @@ public class EmbPattern
     
     /**
      * Adds a stitch to the stitch list at the absolute position (x, y). 
-     * 
      * @param x double
      * @param y double
      * @param flags int
@@ -97,7 +98,6 @@ public class EmbPattern
     
     /**
      * Adds a stitch to the stitch list relative to the previous stitch.
-     * 
      * @param dx double
      * @param dy double
      * @param flags int
@@ -122,9 +122,43 @@ public class EmbPattern
     /*-----------------------------------------------------------------------*/
     
     /**
+     * Adds a shape to the shape list.
+     * @param shape Shape
+     */
+    public void addShape(Shape shape)
+    {
+        this.validateObject(shape);
+        this.shapeList.add(shape);
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Removes the passed shape, if it exists.
+     * @param shape Shape
+     */
+    public void removeShape(Shape shape)
+    {
+        this.validateObject(shape);
+        this.shapeList.remove(shape);
+    }
+            
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Returns this patterns list of shapes.
+     * @return List&lt;Shape&gt;
+     */
+    public List<Shape> getShapeList()
+    {
+        return this.shapeList;
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
      * Adds the shape wrapper passed as a parameter to the hash using the shape 
      * contained within it as the key.
-     * 
      * @param shapeWrapper  A_EmbShapeWrapper
      */
     public void addShapeWrapper(A_EmbShapeWrapper shapeWrapper)
@@ -137,7 +171,6 @@ public class EmbPattern
     
     /**
      * Removes the wrapper related to the given key shape if it exists.
-     * 
      * @param keyShape Shape
      */
     public void removeShapeWrapper(Shape keyShape)
@@ -150,7 +183,6 @@ public class EmbPattern
     
     /**
      * Gets the shape wrapper that corresponds to the given shape.
-     * 
      * @param keyShape Shape
      * @return A_EmbShapeWrapper wrapper
      */
@@ -168,7 +200,6 @@ public class EmbPattern
     
     /**
      * Returns this patterns list of threads
-     * 
      * @return List&lt;EmbThread&gt;
      */
     public List<EmbThread> getThreadList()
@@ -181,7 +212,6 @@ public class EmbPattern
     /**
      * Sets the List&lt;EmbThread&gt; passed as the new thread list for this
      * pattern.
-     * 
      * @param threadList List&lt;EmbThread&gt;
      */
     public void setThreadList(List<EmbThread> threadList)
@@ -193,7 +223,6 @@ public class EmbPattern
     
     /**
      * Returns this patterns list of stitches
-     * 
      * @return List&lt;EmbStitch&gt;
      */
     public List<EmbStitch> getStitchList()
@@ -206,7 +235,6 @@ public class EmbPattern
     /**
      * Sets the List&lt;EmbStitch&gt; passed as the new stitch list for this
      * pattern.
-     * 
      * @param stitchList 
      */
     public void setStitchList(List<EmbStitch> stitchList)
@@ -218,7 +246,6 @@ public class EmbPattern
     /**
      * Gets the color at the given color index, creates a new thread of this
      * color, and adds it to the patterns thread list.
-     * 
      * @param index int
      */
     public void addThread(int index)
@@ -234,7 +261,8 @@ public class EmbPattern
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Returns the maximum color index found in this patterns stitch list.
+     * [NOT CURRENTLY IN USE] Returns the maximum color 
+     * index found in this patterns stitch list.
      * @return maxIndex int
      */
     private int getMaxColorIndex()
@@ -251,8 +279,28 @@ public class EmbPattern
     /*-----------------------------------------------------------------------*/
     
     /**
+     * Returns the pattern name (New Pattern by default).
+     * @return String
+     */
+    public String getName()
+    { return this.name; }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Sets the patterns name to the given string.
+     * @param name String
+     */
+    public void setName(String name)
+    { 
+        this.validateObject(name);
+        this.name = name; 
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
      * Ensures that object sent as a parameter is not null.
-     * 
      * @param obj Object
      */
     private void validateObject(Object obj)
