@@ -16,6 +16,13 @@ public class EmbShapeWrapperTatamiFill extends A_EmbShapeWrapper
     private double stitchLength;    //Length of an individual fill stitch.
     /*-----------------------------------------------------------------------*/
     
+    
+    /*-----------------------------------------------------------------------*/
+    public EmbShapeWrapperTatamiFill(Shape wrappedShape)
+    {
+        super(wrappedShape, new Point2D(0,0));
+    }
+    /*-----------------------------------------------------------------------*/
     /**
      * Constructs a wrapper containing a JavaFX shape, the starting location
      * for stitch filling, the angle of the fill stitches and an empty list of 
@@ -34,6 +41,7 @@ public class EmbShapeWrapperTatamiFill extends A_EmbShapeWrapper
         this.angle = angle; //Figure out how to enforce range (0-180)
         this.stitchLength = stitchLength;
     }
+    
     
     /*-----------------------------------------------------------------------*/
     

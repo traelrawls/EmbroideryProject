@@ -11,6 +11,11 @@ import javafx.scene.shape.Shape;
 public class EmbShapeWrapperRadialFill extends A_EmbShapeWrapper
 {
     /*-----------------------------------------------------------------------*/
+    
+    public EmbShapeWrapperRadialFill(Shape wrappedShape)
+    {
+        super(wrappedShape, new Point2D(0,0));
+    }
     /*-----------------------------------------------------------------------*/
     
     /**
