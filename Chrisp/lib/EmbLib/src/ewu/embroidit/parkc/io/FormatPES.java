@@ -12,7 +12,6 @@ import java.io.RandomAccessFile;
  * This Class opens a .PES file and interprets the stitch data extracted
  * by the PECDecoder class. This data is used to create the stitches for
  * an embroidery pattern.
- * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class FormatPES
@@ -46,7 +45,6 @@ public class FormatPES
     
     /**
      * Creates a new RandomAccessFile with the given file.
-     * 
      * @param file File
      */
     private void openFile(File file)
@@ -135,7 +133,6 @@ public class FormatPES
     /**
      * Returns the pattern containing the thread and stitch lists created from 
      * the imported PES file.
-     * 
      * @return EmbPattern
      */
     public EmbPattern getPattern()
@@ -148,7 +145,6 @@ public class FormatPES
     
     /**
      * Ensures that the object sent as a parameter exists.
-     *
      * @param obj Object
      */
     private void validateObject(Object obj)

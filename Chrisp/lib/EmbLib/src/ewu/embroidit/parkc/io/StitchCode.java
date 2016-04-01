@@ -42,7 +42,7 @@ public class StitchCode
     /*-----------------------------------------------------------------------*/
     
     /**
-     * returns whether this stitch is a TRIM, JUMP, or NORMAL stitch.
+     * Returns whether this stitch is a TRIM, JUMP, or NORMAL stitch.
      * @param val int
      * @return int
      */

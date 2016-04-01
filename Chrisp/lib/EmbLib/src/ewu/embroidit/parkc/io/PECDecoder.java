@@ -10,7 +10,6 @@ import javafx.scene.paint.Color;
 /*-----------------------------------------------------------------------*/
 /**
  * Singleton class used to read stitch information from .PES files.
- * 
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class PECDecoder
@@ -33,7 +32,6 @@ public class PECDecoder
     
     /**
      * Returns an instance of the PECDecoder class.
-     * 
      * @return PECDecoder
      */
     public static PECDecoder getInstance()
@@ -43,13 +41,8 @@ public class PECDecoder
     
     /*-----------------------------------------------------------------------*/
     
-    /**
-     * Returns an instance of the PECDecoder class.
-     */
     private static class PECDecoderHolder
-    {
-        private static final PECDecoder INSTANCE = new PECDecoder();
-    }
+    { private static final PECDecoder INSTANCE = new PECDecoder(); }
     
     /*-----------------------------------------------------------------------*/
     
@@ -131,7 +124,6 @@ public class PECDecoder
     /**
      * Returns the color in the color list that corresponds with the given
      * index.
-     * 
      * @param index int
      * @return Color
      */
@@ -153,7 +145,6 @@ public class PECDecoder
      * Pulls byte values out of the PES file and references them against the 
      * stitch codes (StitchCode) to determine the stitch type, color, and 
      * location of each stitch, which are then stored a pattern.
-     * 
      * @param pattern EmbPattern
      * @param inFile  RandomAccessFile
      */
@@ -224,7 +215,6 @@ public class PECDecoder
     /*-----------------------------------------------------------------------*/
     /**
      * Ensures that the object sent as a parameter exists.
-     *
      * @param obj Object
      */
     private void validateObject(Object obj)

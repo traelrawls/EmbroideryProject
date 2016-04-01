@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle;
 
 /*-----------------------------------------------------------------------*/
 /**
- *
+ * Fill strategy for rectangles.
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class EmbFillTatamiRect extends A_EmbFill
@@ -34,7 +34,6 @@ public class EmbFillTatamiRect extends A_EmbFill
      * Implements a rectangle filling strategy for Tatami style fill stitches.
      * The resulting Line and EmbStitch Lists are added to the shape wrapper
      * sent as a parameter.
-     * 
      * @param shapeWrapper shapeWrapper
      */
     @Override
@@ -60,7 +59,6 @@ public class EmbFillTatamiRect extends A_EmbFill
      * rectangle until all resulting rectangles are under a defined width of 
      * approx. 3.78 pixels. Then the midpoint of each rectangle is used to
      * create a line segment.
-     * 
      * @param rect Rectangle
      * @param lineList List&lt;Line&gt;
      */
@@ -102,7 +100,6 @@ public class EmbFillTatamiRect extends A_EmbFill
      * alternating start end coordinates to reduce jump stitching in a fill.
      * 
      * NOTE: This doesn't account for stitch type or color appropriately yet.
-     * 
      * @param lineList
      * @return stitchList List&lt;EmbStitch&gt;
      */

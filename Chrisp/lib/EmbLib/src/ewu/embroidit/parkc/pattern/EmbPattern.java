@@ -27,7 +27,7 @@ public class EmbPattern implements Serializable
     
     private Point2D homePoint;                     //Pattern starting point
     private EmbHoop hoop;                          //Embroidery hoop
-    private List<EmbStitch> stitchList;            //List of stitches
+    private List<EmbStitch> importStitchList;      //List imported of stitches
     private List<EmbThread> threadList;            //List of threads
     
     private List<Shape> shapeList;
@@ -45,7 +45,7 @@ public class EmbPattern implements Serializable
         this.lastY = 0.0;
         this.name = "New Pattern";
         this.homePoint = new Point2D(lastX, lastY);
-        this.stitchList = new ArrayList<>();
+        this.importStitchList = new ArrayList<>();
         this.threadList = new ArrayList<>();
         this.shapeList = new ArrayList<>();
         this.wrapperHash = new HashMap<>();
@@ -54,7 +54,7 @@ public class EmbPattern implements Serializable
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Adds a stitch to the stitch list at the absolute position (x, y). 
+     * Adds a stitch to the import stitch list at the absolute position (x, y). 
      * @param x double
      * @param y double
      * @param flags int
@@ -66,30 +66,30 @@ public class EmbPattern implements Serializable
         
         if((flags & StitchCode.END) != 0)
         {
-            if(this.stitchList.isEmpty())
+            if(this.importStitchList.isEmpty())
                 return;
         }
         
         if((flags & StitchCode.STOP) != 0)
         {
-            if(this.stitchList.isEmpty())
+            if(this.importStitchList.isEmpty())
                 return;
                
             if(isAutoColorIndex > 0)
                 this.colorIndex++;    
         }
                 
-        if(this.stitchList.isEmpty())
+        if(this.importStitchList.isEmpty())
         {
             Point2D coord = new Point2D(this.homePoint.getX(), this.homePoint.getY());
             stitch = new EmbStitch(coord, this.colorIndex, StitchCode.JUMP);
-            this.stitchList.add(stitch);
+            this.importStitchList.add(stitch);
             return;
         }
         
         stitch = new EmbStitch(new Point2D(x, y), this.colorIndex,
                 StitchCode.getInstance().getStitchCode(flags));
-        this.stitchList.add(stitch);
+        this.importStitchList.add(stitch);
         this.lastX = x;
         this.lastY = y;
     }
@@ -97,7 +97,7 @@ public class EmbPattern implements Serializable
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Adds a stitch to the stitch list relative to the previous stitch.
+     * Adds a stitch to the import stitch list relative to the previous stitch.
      * @param dx double
      * @param dy double
      * @param flags int
@@ -108,7 +108,7 @@ public class EmbPattern implements Serializable
         double x = 0;
         double y = 0;
         
-        if(this.stitchList.isEmpty())
+        if(this.importStitchList.isEmpty())
             this.homePoint.add(dx, dy);
         else
         {
@@ -150,9 +150,7 @@ public class EmbPattern implements Serializable
      * @return List&lt;Shape&gt;
      */
     public List<Shape> getShapeList()
-    {
-        return this.shapeList;
-    }
+    { return this.shapeList; }
     
     /*-----------------------------------------------------------------------*/
     
@@ -203,9 +201,7 @@ public class EmbPattern implements Serializable
      * @return List&lt;EmbThread&gt;
      */
     public List<EmbThread> getThreadList()
-    {
-        return this.threadList;
-    }
+    { return this.threadList; }
     
     /*-----------------------------------------------------------------------*/
     
@@ -216,6 +212,7 @@ public class EmbPattern implements Serializable
      */
     public void setThreadList(List<EmbThread> threadList)
     {
+        this.validateObject((threadList));
         this.threadList = threadList;
     }
     
@@ -226,9 +223,7 @@ public class EmbPattern implements Serializable
      * @return List&lt;EmbStitch&gt;
      */
     public List<EmbStitch> getStitchList()
-    {
-        return this.stitchList;
-    }
+    { return this.importStitchList; }
     
     /*-----------------------------------------------------------------------*/
     
@@ -239,7 +234,8 @@ public class EmbPattern implements Serializable
      */
     public void setStitchList(List<EmbStitch> stitchList)
     {
-        this.stitchList = stitchList;
+        this.validateObject(stitchList);
+        this.importStitchList = stitchList;
     }
     
     /*-----------------------------------------------------------------------*/
@@ -269,7 +265,7 @@ public class EmbPattern implements Serializable
     {
         int maxIndex = 0;
         
-        for(EmbStitch stitch: this.stitchList)
+        for(EmbStitch stitch: this.importStitchList)
             maxIndex = Math.max(maxIndex, stitch.getColorIndex());
         
         System.err.println("Max Color Index: " + maxIndex);
@@ -306,9 +302,7 @@ public class EmbPattern implements Serializable
     private void validateObject(Object obj)
     {
         if (obj == null)
-        {
-            throw new RuntimeException("EmbPattern: Null reference error");
-        }
+        { throw new RuntimeException("EmbPattern: Null reference error"); }
     }
     
     /*-----------------------------------------------------------------------*/

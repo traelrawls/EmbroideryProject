@@ -32,9 +32,7 @@ public class FileManager
     
     
     private static class FileManagerHolder
-    {
-        private static final FileManager INSTANCE = new FileManager();
-    }
+    { private static final FileManager INSTANCE = new FileManager(); }
     
     /*-----------------------------------------------------------------------*/
     
@@ -104,6 +102,5 @@ public class FileManager
     }
     
     /*-----------------------------------------------------------------------*/
-    
     
 }

@@ -5,7 +5,7 @@ import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
 /**
- *
+ * A property wrapper for a rectangle.
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class EmbShapeWrapperTatamiFill extends A_EmbShapeWrapper
@@ -13,15 +13,33 @@ public class EmbShapeWrapperTatamiFill extends A_EmbShapeWrapper
     /*-----------------------------------------------------------------------*/
     
     private double angle;           //Angle of fill stitches. (0-180 degrees)
-    private double stitchLength;    //Length of an individual fill stitch.
-    /*-----------------------------------------------------------------------*/
-    
     
     /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Constructs a wrapper containing a JavaFX shape, and default values.
+     * @param wrappedShape  Shape
+     */
     public EmbShapeWrapperTatamiFill(Shape wrappedShape)
     {
-        super(wrappedShape, new Point2D(0,0));
+        super(wrappedShape);
+        this.angle = 0;
     }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Constructs a wrapper containing a JavaFX Shape, the shapes fill stitch 
+     * length, and default values. Ensures a minimum stitch length of 1mm.
+     * @param wrappedShape Shape
+     * @param stitchLength double
+     */
+    public EmbShapeWrapperTatamiFill(Shape wrappedShape, double stitchLength)
+    {
+        super(wrappedShape, stitchLength);
+        this.angle = 0;
+    }
+    
     /*-----------------------------------------------------------------------*/
     /**
      * Constructs a wrapper containing a JavaFX shape, the starting location
@@ -42,30 +60,23 @@ public class EmbShapeWrapperTatamiFill extends A_EmbShapeWrapper
         this.stitchLength = stitchLength;
     }
     
-    
     /*-----------------------------------------------------------------------*/
     
     /**
      * Gets the angle of the parallel stitches for the wrapped shape.
-     * 
      * @return double
      */
     public double getAngle()
-    {
-        return this.angle;
-    }
+    { return this.angle; }
     
     /*-----------------------------------------------------------------------*/
     
     /**
      * Sets the angle of the parallel stitches for this wrapped shape.
-     * 
      * @param angle double
      */
     public void setAngle(double angle)
-    {
-        this.angle = angle;
-    }
+    { this.angle = angle; }
     
     /*-----------------------------------------------------------------------*/
 }

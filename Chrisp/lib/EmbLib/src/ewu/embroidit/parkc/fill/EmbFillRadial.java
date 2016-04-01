@@ -9,7 +9,7 @@ import javafx.scene.shape.Line;
 
 /*-----------------------------------------------------------------------*/
 /**
- *
+ * Fill strategy from a central point for an ellipse.
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class EmbFillRadial extends A_EmbFill
@@ -28,9 +28,7 @@ public class EmbFillRadial extends A_EmbFill
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Implements a shape filling strategy for Radial style fill stitches.
-     * NOTE: Implementation incomplete. TBD.
-     * 
+     * Implements a shape filling strategy for radial style fill stitches.
      * @param shapeWrapper A_EmbShapeWrapper
      */
     @Override
@@ -49,6 +47,12 @@ public class EmbFillRadial extends A_EmbFill
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Determines the radial line segment at angles evenly subdivided  by a
+     * preset number of stitches.
+     * @param ellipse Ellipse
+     * @param lineList List&lt;Line&gt;
+     */
     private void fillEllipse(Ellipse ellipse, List<Line> lineList)
     {   
         double endX, endY, radius, degree, degreeInterval;
@@ -70,21 +74,6 @@ public class EmbFillRadial extends A_EmbFill
             lineList.add(radialLine);
             degree += degreeInterval;
         }
-        
-        //Create line at 90 degrees
-//        radius = EmbMathEllipse.getEllipseRadiusDeg(ellipse, 90);
-//            
-//            endX = ellipse.getCenterX() + 
-//                    ( radius * Math.cos(Math.toRadians(degree)) );
-//            endY = ellipse.getCenterY() + 
-//                    ( radius * Math.sin(Math.toRadians(degree)) );
-//            radialLine = new Line(ellipse.getCenterX(), ellipse.getCenterY(),
-//                    endX, endY);
-//
-//            lineList.add(radialLine);
-            
-            //invert x coordinates and add resulting line segments to list
-            //invert y coordinatea dn add resulting lines segments to list
     }
     
     /*-----------------------------------------------------------------------*/
