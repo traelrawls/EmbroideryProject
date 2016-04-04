@@ -532,9 +532,9 @@ public class EmbroidItGUI extends Application
     
     private void openFile(File file)
     {
-//        FormatPES formatter = new FormatPES(file.getAbsolutePath());
-//        List<EmbStitch> stitchList = formatter.getPattern().getStitchList();
-//        stitchShapes(stitchList);
+        FormatPES formatter = new FormatPES(file);
+        List<EmbStitch> stitchList = formatter.getPattern().getStitchList();
+        stitchShapes(stitchList);
     }
     
     
