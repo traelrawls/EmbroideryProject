@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import ewu.embroidit.parkc.io.*;
 import ewu.embroidit.parkc.pattern.*;
+import ewu.embroidit.parkc.shape.*;
+import ewu.embroidit.parkc.fill.*;
+import javafx.scene.shape.*;
 import java.io.File;
 import javax.imageio.ImageIO;
 import javafx.stage.FileChooser;
@@ -38,13 +41,15 @@ public class EmbroidItGUI extends Application
     private final FileChooser fileBrowser = new FileChooser();
     private final DirectoryChooser dirBrowser = new DirectoryChooser();
     private final int STITCH_LAYER = 0, SHAPE_LAYER = 1;
+    private Rectangle rect;
+    private Ellipse ellipse;
     private Stage primaryStage;
     private int currLayerIndex, prevLayerIndex;
     private BorderPane root;
     private VBox canvas = new VBox();
     private StackPane canvasContainer = new StackPane();
     private double coordX, coordY, originX, originY, startCoordX, startCoordY;
-    private Canvas prevCanvas;
+    private Canvas stitchLayer, shapeLayer;
     
     public void openGUI(String[] args)
     {
@@ -61,10 +66,9 @@ public class EmbroidItGUI extends Application
         this.canvasContainer.setMaxHeight(500);
         this.canvasContainer.setMaxWidth(500);
         this.canvasContainer.setStyle("-fx-background-color: white");
-        this.layerList.add(initializeCanvas(new Canvas(500,500)));
-        this.layerList.add(initializeCanvas(new Canvas(500,500)));
-        this.currLayerIndex = STITCH_LAYER;
-        this.canvasContainer.getChildren().addAll(this.layerList.get(STITCH_LAYER), this.layerList.get(SHAPE_LAYER));
+        this.stitchLayer = new Canvas(500,500);
+        this.shapeLayer = new Canvas(500,500);
+        this.canvasContainer.getChildren().addAll(stitchLayer,shapeLayer);
         this.canvas.getChildren().add(this.canvasContainer);
         this.canvas.setAlignment(Pos.CENTER);
         
@@ -97,12 +101,14 @@ public class EmbroidItGUI extends Application
         Button shapeLayerButton = new Button("SHAPE");
         stitchLayerButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                currLayerIndex = STITCH_LAYER;
+                stitchLayer.setVisible(true);
+                shapeLayer.setVisible(false);
             }
         }); 
         shapeLayerButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                currLayerIndex = SHAPE_LAYER;
+                stitchLayer.setVisible(false);
+                shapeLayer.setVisible(true);
             }
         });
         
@@ -202,20 +208,20 @@ public class EmbroidItGUI extends Application
         
         blackButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                layerList.get(STITCH_LAYER).getGraphicsContext2D().setStroke(Color.BLACK);
-                layerList.get(SHAPE_LAYER).getGraphicsContext2D().setStroke(Color.BLACK);
+                stitchLayer.getGraphicsContext2D().setStroke(Color.BLACK);
+                shapeLayer.getGraphicsContext2D().setStroke(Color.BLACK);
             }
         });
         redButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                layerList.get(STITCH_LAYER).getGraphicsContext2D().setStroke(Color.RED);
-                layerList.get(SHAPE_LAYER).getGraphicsContext2D().setStroke(Color.RED);
+                stitchLayer.getGraphicsContext2D().setStroke(Color.RED);
+                shapeLayer.getGraphicsContext2D().setStroke(Color.RED);
             }
         });
         blueButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
-                layerList.get(STITCH_LAYER).getGraphicsContext2D().setStroke(Color.BLUE);
-                layerList.get(SHAPE_LAYER).getGraphicsContext2D().setStroke(Color.BLUE);
+                stitchLayer.getGraphicsContext2D().setStroke(Color.BLUE);
+                shapeLayer.getGraphicsContext2D().setStroke(Color.BLUE);
             }
         });
         blackButton.setGraphic(new ImageView(blackImg));
@@ -282,22 +288,20 @@ public class EmbroidItGUI extends Application
             {
                 if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
                 {
-                    prevCanvas = layerList.get(currLayerIndex);
-                    prevLayerIndex = currLayerIndex;
-                    layerList.get(currLayerIndex).getGraphicsContext2D().beginPath();
-                    layerList.get(currLayerIndex).getGraphicsContext2D().moveTo(mouseEvent.getX(), mouseEvent.getY());
-                    layerList.get(currLayerIndex).getGraphicsContext2D().stroke();
+                    stitchLayer.getGraphicsContext2D().beginPath();
+                    stitchLayer.getGraphicsContext2D().moveTo(mouseEvent.getX(), mouseEvent.getY());
+                    stitchLayer.getGraphicsContext2D().stroke();
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
                 {
-                    layerList.get(currLayerIndex).getGraphicsContext2D().lineTo(mouseEvent.getX(), mouseEvent.getY());
-                    layerList.get(currLayerIndex).getGraphicsContext2D().stroke();
+                    stitchLayer.getGraphicsContext2D().lineTo(mouseEvent.getX(), mouseEvent.getY());
+                    stitchLayer.getGraphicsContext2D().stroke();
                 }
             }  
         };
-        layerList.get(currLayerIndex).setOnMousePressed(mouseHandler);
-        layerList.get(currLayerIndex).setOnMouseDragged(mouseHandler);
-        layerList.get(currLayerIndex).setOnMouseReleased(mouseHandler);
+        stitchLayer.setOnMousePressed(mouseHandler);
+        stitchLayer.setOnMouseDragged(mouseHandler);
+        stitchLayer.setOnMouseReleased(mouseHandler);
     }
     
     private void lineDrawingMode()
@@ -326,15 +330,17 @@ public class EmbroidItGUI extends Application
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
                 {
-                    prevCanvas = layerList.get(currLayerIndex);
-                    prevLayerIndex = currLayerIndex;
-                    layerList.get(currLayerIndex).getGraphicsContext2D().strokeLine(startCoordX,startCoordY,coordX,coordY);
+                    stitchLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,coordX,coordY);
+                    shapeLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,coordX, coordY);
                 }
             }
         };
-        layerList.get(currLayerIndex).setOnMousePressed(mouseHandler);
-        layerList.get(currLayerIndex).setOnMouseDragged(mouseHandler);
-        layerList.get(currLayerIndex).setOnMouseReleased(mouseHandler);
+        stitchLayer.setOnMousePressed(mouseHandler);
+        stitchLayer.setOnMouseDragged(mouseHandler);
+        stitchLayer.setOnMouseReleased(mouseHandler);
+        shapeLayer.setOnMousePressed(mouseHandler);
+        shapeLayer.setOnMouseDragged(mouseHandler);
+        shapeLayer.setOnMouseReleased(mouseHandler);
     }
     
     private void rectDrawingMode()
@@ -355,6 +361,7 @@ public class EmbroidItGUI extends Application
                     coordY = mouseEvent.getY();
                     startCoordX = mouseEvent.getX();
                     startCoordY = mouseEvent.getY();
+                    rect = new Rectangle();
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
                 {
@@ -363,33 +370,66 @@ public class EmbroidItGUI extends Application
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
                 {  
-                    prevCanvas = layerList.get(currLayerIndex);
-                    prevLayerIndex = currLayerIndex;
                     if (startCoordX <= coordX && startCoordY <= coordY)
                     {
-                        layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
+                        rect.setX(startCoordX);
+                        rect.setY(startCoordY);
+                        rect.setWidth(coordX - startCoordX);
+                        rect.setHeight(coordY - startCoordY);
+                        A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
+                        A_EmbFill fillStrat = new EmbFillTatamiRect();
+                        fillStrat.fillShape(rectWrapper);
+                        drawLines(stitchLayer, rectWrapper.getLineList());
+                        shapeLayer.getGraphicsContext2D().strokeRect(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
                     }
                     else if (startCoordX > coordX)
                     {
                         if (startCoordY <= coordY)
                         {
-                            layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
+                            rect.setX(coordX);
+                            rect.setY(startCoordY);
+                            rect.setWidth(startCoordX - coordX);
+                            rect.setHeight(coordY - startCoordY);
+                            A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
+                            A_EmbFill fillStrat = new EmbFillTatamiRect();
+                            fillStrat.fillShape(rectWrapper);
+                            drawLines(stitchLayer, rectWrapper.getLineList());
+                            shapeLayer.getGraphicsContext2D().strokeRect(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
                         }
                         else if (startCoordY > coordY)
                         {
-                            layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
+                            rect.setX(coordX);
+                            rect.setY(coordY);
+                            rect.setWidth(startCoordX - coordX);
+                            rect.setHeight(startCoordY - coordY);
+                            A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
+                            A_EmbFill fillStrat = new EmbFillTatamiRect();
+                            fillStrat.fillShape(rectWrapper);
+                            drawLines(stitchLayer, rectWrapper.getLineList());
+                            shapeLayer.getGraphicsContext2D().strokeRect(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
                         }
                     }
                     else if (startCoordY > coordY)
                     {
-                        layerList.get(currLayerIndex).getGraphicsContext2D().strokeRect(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
+                        rect.setX(startCoordX);
+                        rect.setY(coordY);
+                        rect.setWidth(coordX - startCoordX);
+                        rect.setHeight(startCoordY - coordY);
+                        A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
+                        A_EmbFill fillStrat = new EmbFillTatamiRect();
+                        fillStrat.fillShape(rectWrapper);
+                        drawLines(stitchLayer, rectWrapper.getLineList());
+                        shapeLayer.getGraphicsContext2D().strokeRect(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
                     }
                 }
             }
         };
-        layerList.get(currLayerIndex).setOnMousePressed(mouseHandler);
-        layerList.get(currLayerIndex).setOnMouseDragged(mouseHandler);
-        layerList.get(currLayerIndex).setOnMouseReleased(mouseHandler);
+        stitchLayer.setOnMousePressed(mouseHandler);
+        stitchLayer.setOnMouseDragged(mouseHandler);
+        stitchLayer.setOnMouseReleased(mouseHandler);
+        shapeLayer.setOnMousePressed(mouseHandler);
+        shapeLayer.setOnMouseDragged(mouseHandler);
+        shapeLayer.setOnMouseReleased(mouseHandler);
     }
     
     private void ovalDrawingMode()
@@ -410,6 +450,7 @@ public class EmbroidItGUI extends Application
                     coordY = mouseEvent.getY();
                     startCoordX = mouseEvent.getX();
                     startCoordY = mouseEvent.getY();
+                    ellipse = new Ellipse();
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
                 {
@@ -418,33 +459,42 @@ public class EmbroidItGUI extends Application
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
                 {
-                    prevCanvas = layerList.get(currLayerIndex);
-                    prevLayerIndex = currLayerIndex;
                     if (startCoordX <= coordX && startCoordY <= coordY)
                     {
-                        layerList.get(currLayerIndex).getGraphicsContext2D().strokeOval(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
+                        ellipse.setCenterX((coordX-startCoordX)/2);
+                        ellipse.setCenterY((coordY-startCoordY)/2);
+                        ellipse.setRadiusX((coordX-startCoordX)/2);
+                        ellipse.setRadiusY((coordY-startCoordY)/2);
+                        A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
+                        A_EmbFill fillStrat = new EmbFillRadial();
+                        fillStrat.fillShape(ellipseWrapper);
+                        drawLines(stitchLayer, ellipseWrapper.getLineList());
+                        shapeLayer.getGraphicsContext2D().strokeOval(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
                     }
                     else if (startCoordX > coordX)
                     {
                         if (startCoordY <= coordY)
                         {
-                            layerList.get(currLayerIndex).getGraphicsContext2D().strokeOval(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
+                            shapeLayer.getGraphicsContext2D().strokeOval(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
                         }
                         else if (startCoordY > coordY)
                         {
-                            layerList.get(currLayerIndex).getGraphicsContext2D().strokeOval(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
+                            shapeLayer.getGraphicsContext2D().strokeOval(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
                         }
                     }
                     else if (startCoordY > coordY)
                     {
-                        layerList.get(currLayerIndex).getGraphicsContext2D().strokeOval(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
+                        shapeLayer.getGraphicsContext2D().strokeOval(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
                     }
                 }
             }
         };
-        layerList.get(currLayerIndex).setOnMousePressed(mouseHandler);
-        layerList.get(currLayerIndex).setOnMouseDragged(mouseHandler);
-        layerList.get(currLayerIndex).setOnMouseReleased(mouseHandler);
+        stitchLayer.setOnMousePressed(mouseHandler);
+        stitchLayer.setOnMouseDragged(mouseHandler);
+        stitchLayer.setOnMouseReleased(mouseHandler);
+        shapeLayer.setOnMousePressed(mouseHandler);
+        shapeLayer.setOnMouseDragged(mouseHandler);
+        shapeLayer.setOnMouseReleased(mouseHandler);
     }
     
     private void addLayer()
@@ -463,12 +513,6 @@ public class EmbroidItGUI extends Application
 //        stitchShapes(stitchList);
     }
     
-    private void undoButton()
-    {
-        this.canvas.getChildren().remove(this.layerList.get(currLayerIndex));
-        this.canvas.getChildren().add(this.prevCanvas);
-        layerList.set(this.currLayerIndex, this.prevCanvas);
-    }
     
     private void stitchShapes(List<EmbStitch> stitchList)
     {
@@ -478,13 +522,23 @@ public class EmbroidItGUI extends Application
         {
             if (!firstStitch)
             {
-                layerList.get(currLayerIndex).getGraphicsContext2D().setStroke(PECDecoder.getInstance().getColorByIndex(stitch.getColorIndex()));
-                layerList.get(currLayerIndex).getGraphicsContext2D().strokeLine(prevPoint.getX()+(this.layerList.get(currLayerIndex).getWidth()/2),prevPoint.getY()+(this.layerList.get(currLayerIndex).getHeight()/2),
-                                                                                stitch.getStitchPosition().getX()+(this.layerList.get(currLayerIndex).getWidth()/2),
-                                                                                stitch.getStitchPosition().getY()+(this.layerList.get(currLayerIndex).getHeight()/2));
+                stitchLayer.getGraphicsContext2D().setStroke(PECDecoder.getInstance().getColorByIndex(stitch.getColorIndex()));
+                stitchLayer.getGraphicsContext2D().strokeLine(prevPoint.getX()+(stitchLayer.getWidth()/2),prevPoint.getY()+(stitchLayer.getHeight()/2),
+                                                                                stitch.getStitchPosition().getX()+(stitchLayer.getWidth()/2),
+                                                                                stitch.getStitchPosition().getY()+(stitchLayer.getHeight()/2));
             }
             prevPoint = stitch.getStitchPosition();
             firstStitch = false;
+        }
+    }
+    
+    private void drawLines(Canvas drawingCanvas, List<Line> lineList)
+    {
+        for (Line line : lineList)
+        {
+            drawingCanvas.getGraphicsContext2D().strokeLine(line.getStartX(),line.getStartY(),
+                                                                                line.getEndX(),
+                                                                                line.getEndY());  
         }
     }
 }
