@@ -475,15 +475,39 @@ public class EmbroidItGUI extends Application
                     {
                         if (startCoordY <= coordY)
                         {
+                            ellipse.setCenterX((startCoordX-coordX)/2);
+                            ellipse.setCenterY((coordY-startCoordY)/2);
+                            ellipse.setRadiusX((startCoordX-coordX)/2);
+                            ellipse.setRadiusY((coordY-startCoordY)/2);
+                            A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
+                            A_EmbFill fillStrat = new EmbFillRadial();
+                            fillStrat.fillShape(ellipseWrapper);
+                            drawLines(stitchLayer, ellipseWrapper.getLineList());
                             shapeLayer.getGraphicsContext2D().strokeOval(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
                         }
                         else if (startCoordY > coordY)
                         {
+                            ellipse.setCenterX((startCoordX-coordX)/2);
+                            ellipse.setCenterY((startCoordY-coordY)/2);
+                            ellipse.setRadiusX((startCoordX-coordX)/2);
+                            ellipse.setRadiusY((startCoordY-coordY)/2);
+                            A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
+                            A_EmbFill fillStrat = new EmbFillRadial();
+                            fillStrat.fillShape(ellipseWrapper);
+                            drawLines(stitchLayer, ellipseWrapper.getLineList());
                             shapeLayer.getGraphicsContext2D().strokeOval(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
                         }
                     }
                     else if (startCoordY > coordY)
                     {
+                        ellipse.setCenterX((coordX-startCoordX)/2);
+                        ellipse.setCenterY((startCoordY-coordY)/2);
+                        ellipse.setRadiusX((coordX-startCoordX)/2);
+                        ellipse.setRadiusY((startCoordY-coordY)/2);
+                        A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
+                        A_EmbFill fillStrat = new EmbFillRadial();
+                        fillStrat.fillShape(ellipseWrapper);
+                        drawLines(stitchLayer, ellipseWrapper.getLineList());
                         shapeLayer.getGraphicsContext2D().strokeOval(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
                     }
                 }
