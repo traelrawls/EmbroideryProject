@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <VBox id="topContainer" prefHeight="50.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar id="menuBar">
+              <menus>
+                <Menu id="open" mnemonicParsing="false" text="Open">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu id="save" mnemonicParsing="false" text="Save">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <FlowPane id="layerOptions" alignment="CENTER" columnHalignment="CENTER" prefHeight="24.0" prefWidth="600.0" style="-fx-background-color: C8C8C8;">
+               <children>
+                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="STITCH" />
+                  <Button id="shapeLayerButton" mnemonicParsing="false" text="SHAPE" />
+               </children>
+            </FlowPane>
+         </children>
+      </VBox>
+   </top>
+   <left>
+      <VBox id="leftContainer" alignment="TOP_CENTER" prefHeight="650.0" prefWidth="100.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
+         <children>
+            <Button id="drawButton" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" style="-fx-background-image: DrawButton.png;" text="Draw">
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@DrawButton.PNG" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button id="lineButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" text="Line">
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@LineButton.PNG" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button id="rectButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" text="Rect">
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@RectButton.PNG" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button id="ovalButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" text="Oval">
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@OvalButton.PNG" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </VBox>
+   </left>
+   <bottom>
+      <VBox id="botContainer" prefHeight="38.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+         <children>
+            <ToolBar id="toolBar" prefHeight="40.0" prefWidth="200.0">
+              <items>
+                <Button id="blackButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" text="BK" />
+                  <Button id="redButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" text="RD" />
+                  <Button id="blueButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" text="BL" />
+              </items>
+            </ToolBar>
+         </children>
+      </VBox>
+   </bottom>
+   <right>
+      <VBox id="rightContainer" prefHeight="612.0" prefWidth="137.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
+         <children>
+            <Label id="xLabel" text="X:" />
+            <TextField id="xProperty" />
+            <Label id="yLabel" text="Y:" />
+            <TextField />
+            <Label id="heightLabel" text="Height:" />
+            <TextField id="heightProperty" />
+            <Label id="widthLabel" text="Width" />
+            <TextField id="widthProperty" />
+            <Label id="rotateLabel" text="Rotation:" />
+            <TextField id="rotateProperty" />
+         </children>
+      </VBox>
+   </right>
+   <center>
+      <Pane id="canvasContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: ffffff;" BorderPane.alignment="CENTER">
+         <children>
+            <Canvas height="500.0" width="500.0" />
+            <Canvas height="500.0" width="500.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="500.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" width="500.0" />
+         </children>
+      </Pane>
+   </center>
+</BorderPane>
