@@ -230,7 +230,7 @@ public class EmbPattern implements Serializable
     /**
      * Sets the List&lt;EmbStitch&gt; passed as the new stitch list for this
      * pattern.
-     * @param stitchList 
+     * @param stitchList List&lt;EmbStitch&gt;
      */
     public void setStitchList(List<EmbStitch> stitchList)
     {

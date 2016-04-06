@@ -19,7 +19,8 @@ public class EmbMathEllipse
     /**
      * Returns the length of an arc equal to 1/4th of the total perimeter
      * of the ellipse.
-     * @return 
+     * @param ellipse Ellipse
+     * @return double 
      */
     public static double getQuadArcLength(Ellipse ellipse)
     {

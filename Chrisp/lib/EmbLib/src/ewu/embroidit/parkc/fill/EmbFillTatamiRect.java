@@ -100,7 +100,7 @@ public class EmbFillTatamiRect extends A_EmbFill
      * alternating start end coordinates to reduce jump stitching in a fill.
      * 
      * NOTE: This doesn't account for stitch type or color appropriately yet.
-     * @param lineList
+     * @param lineList List&lt;Line&gt;
      * @return stitchList List&lt;EmbStitch&gt;
      */
     public List<EmbStitch> createStitchList(List<Line> lineList)

@@ -38,7 +38,7 @@ public class FileManager
     
     /**
      * Returns the pattern stored in the given file.
-     * @param filepath String
+     * @param file File
      * @return EmbPattern
      */
     public EmbPattern openPattern(File file)
@@ -67,7 +67,6 @@ public class FileManager
      * Saves a pattern to the given file.
      * @param pattern EmbPattern
      * @param file File
-     * @param name String
      */
     public void savePattern(EmbPattern pattern, File file)
     {
@@ -103,4 +102,28 @@ public class FileManager
     
     /*-----------------------------------------------------------------------*/
     
+    //Export(EmbPattern pattern)
+        //get wrapper list
+        //sort wrapper list by color
+        //figure out and mark jump and stop stitches
+        //encode to output file
+    /*-----------------------------------------------------------------------*/
+    
+    //get wrapper list(pattern)
+        //for each shape in the shape list
+        //grab its hashed wrapper and add it to a list
+    //return the created wrapper list
+    
+    /*-----------------------------------------------------------------------*/
+    //Sort Wrappers for Export (WrapperList)
+        //while old list not empty
+            //grab first element
+            //add element to new list
+            //remove that element from the old list
+            //for each element in old list
+            //if it color matches the first element
+                    //add it to new list
+                    //then remove it from old list
+    
+    /*-----------------------------------------------------------------------*/
 }
