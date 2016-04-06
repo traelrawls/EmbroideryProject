@@ -186,7 +186,7 @@ public abstract class A_EmbShapeWrapper
     
     /**
      * Sets the rgb color value of the thread for this shape.
-     * @param Color 
+     * @param color Color
      */
     public void setThreadcolor(Color color)
     {
@@ -211,6 +211,20 @@ public abstract class A_EmbShapeWrapper
      */
     public void setStitchLength(double length)
     { this.stitchLength = length; }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    
+    //Subdivide Segments
+        //for each line in line list
+        //break that line down into subdivisions based on the set stitch length
+        //add all of those into a new list
+        //replace the old list with the new list.
+    
+    /*-----------------------------------------------------------------------*/
+    
+    //Create stitchList
+    //override in child classes for specific implementations (make abstract here)
     
     /*-----------------------------------------------------------------------*/
     
