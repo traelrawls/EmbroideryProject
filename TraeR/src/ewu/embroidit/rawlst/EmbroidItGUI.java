@@ -19,7 +19,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.geometry.*;
-import java.util.ArrayList;
 import java.util.List;
 import ewu.embroidit.parkc.io.*;
 import ewu.embroidit.parkc.pattern.*;
@@ -37,18 +36,14 @@ import javafx.stage.DirectoryChooser;
  */
 public class EmbroidItGUI extends Application
 {
-    private final ArrayList<Canvas> layerList =  new ArrayList<>();
     private final FileChooser fileBrowser = new FileChooser();
     private final DirectoryChooser dirBrowser = new DirectoryChooser();
-    private final int STITCH_LAYER = 0, SHAPE_LAYER = 1;
-    private Rectangle rect;
-    private Ellipse ellipse;
+    private EmbPattern pattern = new EmbPattern();
     private Stage primaryStage;
-    private int currLayerIndex, prevLayerIndex;
     private BorderPane root;
-    private VBox canvas = new VBox();
+    private VBox centerContainer = new VBox();
     private StackPane canvasContainer = new StackPane();
-    private double coordX, coordY, originX, originY, startCoordX, startCoordY;
+    private double coordX, coordY, startCoordX, startCoordY;
     private Canvas stitchLayer, shapeLayer;
     
     public void openGUI(String[] args)
@@ -69,8 +64,8 @@ public class EmbroidItGUI extends Application
         this.stitchLayer = new Canvas(500,500);
         this.shapeLayer = new Canvas(500,500);
         this.canvasContainer.getChildren().addAll(stitchLayer,shapeLayer);
-        this.canvas.getChildren().add(this.canvasContainer);
-        this.canvas.setAlignment(Pos.CENTER);
+        this.centerContainer.getChildren().add(this.canvasContainer);
+        this.centerContainer.setAlignment(Pos.CENTER);
         
         VBox topContainer = createMenuBar();
         VBox botContainer = createColorBar();
@@ -81,7 +76,7 @@ public class EmbroidItGUI extends Application
         root.setLeft(leftContainer);
         root.setBottom(botContainer);
         root.setRight(rightContainer);
-        root.setCenter(this.canvas);
+        root.setCenter(this.centerContainer);
         
         Scene scene = new Scene(root,1000,700);
         freeDrawingMode();
@@ -115,8 +110,8 @@ public class EmbroidItGUI extends Application
         layerOptions.setStyle("-fx-background-color: #C8C8C8;");
         layerOptions.getChildren().addAll(stitchLayerButton,shapeLayerButton);
         Menu menuFile = new Menu("File");
-        MenuItem menuItemOpen = new MenuItem("Open");
-        menuItemOpen.setOnAction(new EventHandler<ActionEvent>(){
+        MenuItem menuItemImport = new MenuItem("Import");
+        menuItemImport.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e) {
                 File file = fileBrowser.showOpenDialog(primaryStage);
                 if (file != null) {
@@ -133,7 +128,7 @@ public class EmbroidItGUI extends Application
                 }
             }
         });
-        menuFile.getItems().addAll(menuItemOpen,menuItemSave);
+        menuFile.getItems().addAll(menuItemImport,menuItemSave);
         Menu menuEdit = new Menu("Edit");
         menuBar.getMenus().addAll(menuFile,menuEdit);
         newVBox.getChildren().addAll(menuBar,layerOptions);
@@ -299,9 +294,7 @@ public class EmbroidItGUI extends Application
                 }
             }  
         };
-        stitchLayer.setOnMousePressed(mouseHandler);
-        stitchLayer.setOnMouseDragged(mouseHandler);
-        stitchLayer.setOnMouseReleased(mouseHandler);
+        setMouseHandlers(mouseHandler);
     }
     
     private void lineDrawingMode()
@@ -335,12 +328,7 @@ public class EmbroidItGUI extends Application
                 }
             }
         };
-        stitchLayer.setOnMousePressed(mouseHandler);
-        stitchLayer.setOnMouseDragged(mouseHandler);
-        stitchLayer.setOnMouseReleased(mouseHandler);
-        shapeLayer.setOnMousePressed(mouseHandler);
-        shapeLayer.setOnMouseDragged(mouseHandler);
-        shapeLayer.setOnMouseReleased(mouseHandler);
+        setMouseHandlers(mouseHandler);
     }
     
     private void rectDrawingMode()
@@ -361,7 +349,6 @@ public class EmbroidItGUI extends Application
                     coordY = mouseEvent.getY();
                     startCoordX = mouseEvent.getX();
                     startCoordY = mouseEvent.getY();
-                    rect = new Rectangle();
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
                 {
@@ -372,64 +359,27 @@ public class EmbroidItGUI extends Application
                 {  
                     if (startCoordX <= coordX && startCoordY <= coordY)
                     {
-                        rect.setX(startCoordX);
-                        rect.setY(startCoordY);
-                        rect.setWidth(coordX - startCoordX);
-                        rect.setHeight(coordY - startCoordY);
-                        A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
-                        A_EmbFill fillStrat = new EmbFillTatamiRect();
-                        fillStrat.fillShape(rectWrapper);
-                        drawLines(stitchLayer, rectWrapper.getLineList());
-                        shapeLayer.getGraphicsContext2D().strokeRect(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
+                        drawRectangleToCanvas(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
                     }
                     else if (startCoordX > coordX)
                     {
                         if (startCoordY <= coordY)
                         {
-                            rect.setX(coordX);
-                            rect.setY(startCoordY);
-                            rect.setWidth(startCoordX - coordX);
-                            rect.setHeight(coordY - startCoordY);
-                            A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
-                            A_EmbFill fillStrat = new EmbFillTatamiRect();
-                            fillStrat.fillShape(rectWrapper);
-                            drawLines(stitchLayer, rectWrapper.getLineList());
-                            shapeLayer.getGraphicsContext2D().strokeRect(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
+                            drawRectangleToCanvas(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
                         }
                         else if (startCoordY > coordY)
                         {
-                            rect.setX(coordX);
-                            rect.setY(coordY);
-                            rect.setWidth(startCoordX - coordX);
-                            rect.setHeight(startCoordY - coordY);
-                            A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
-                            A_EmbFill fillStrat = new EmbFillTatamiRect();
-                            fillStrat.fillShape(rectWrapper);
-                            drawLines(stitchLayer, rectWrapper.getLineList());
-                            shapeLayer.getGraphicsContext2D().strokeRect(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
+                            drawRectangleToCanvas(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
                         }
                     }
                     else if (startCoordY > coordY)
                     {
-                        rect.setX(startCoordX);
-                        rect.setY(coordY);
-                        rect.setWidth(coordX - startCoordX);
-                        rect.setHeight(startCoordY - coordY);
-                        A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
-                        A_EmbFill fillStrat = new EmbFillTatamiRect();
-                        fillStrat.fillShape(rectWrapper);
-                        drawLines(stitchLayer, rectWrapper.getLineList());
-                        shapeLayer.getGraphicsContext2D().strokeRect(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
+                        drawRectangleToCanvas(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
                     }
                 }
             }
         };
-        stitchLayer.setOnMousePressed(mouseHandler);
-        stitchLayer.setOnMouseDragged(mouseHandler);
-        stitchLayer.setOnMouseReleased(mouseHandler);
-        shapeLayer.setOnMousePressed(mouseHandler);
-        shapeLayer.setOnMouseDragged(mouseHandler);
-        shapeLayer.setOnMouseReleased(mouseHandler);
+        setMouseHandlers(mouseHandler);
     }
     
     private void ovalDrawingMode()
@@ -450,7 +400,6 @@ public class EmbroidItGUI extends Application
                     coordY = mouseEvent.getY();
                     startCoordX = mouseEvent.getX();
                     startCoordY = mouseEvent.getY();
-                    ellipse = new Ellipse();
                 }
                 else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
                 {
@@ -461,84 +410,38 @@ public class EmbroidItGUI extends Application
                 {
                     if (startCoordX <= coordX && startCoordY <= coordY)
                     {
-                        ellipse.setCenterX((coordX-startCoordX)/2);
-                        ellipse.setCenterY((coordY-startCoordY)/2);
-                        ellipse.setRadiusX((coordX-startCoordX)/2);
-                        ellipse.setRadiusY((coordY-startCoordY)/2);
-                        A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
-                        A_EmbFill fillStrat = new EmbFillRadial();
-                        fillStrat.fillShape(ellipseWrapper);
-                        drawLines(stitchLayer, ellipseWrapper.getLineList());
-                        shapeLayer.getGraphicsContext2D().strokeOval(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
+                        drawEllipseToCanvas(startCoordX+(coordX-startCoordX)/2,startCoordY+(coordY-startCoordY)/2,(coordX-startCoordX)/2,(coordY-startCoordY)/2);
                     }
                     else if (startCoordX > coordX)
                     {
                         if (startCoordY <= coordY)
                         {
-                            ellipse.setCenterX((startCoordX-coordX)/2);
-                            ellipse.setCenterY((coordY-startCoordY)/2);
-                            ellipse.setRadiusX((startCoordX-coordX)/2);
-                            ellipse.setRadiusY((coordY-startCoordY)/2);
-                            A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
-                            A_EmbFill fillStrat = new EmbFillRadial();
-                            fillStrat.fillShape(ellipseWrapper);
-                            drawLines(stitchLayer, ellipseWrapper.getLineList());
-                            shapeLayer.getGraphicsContext2D().strokeOval(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
+                            drawEllipseToCanvas(coordX+(startCoordX-coordX)/2,startCoordY+(coordY-startCoordY)/2,(startCoordX-coordX)/2,(coordY-startCoordY)/2);
                         }
                         else if (startCoordY > coordY)
                         {
-                            ellipse.setCenterX((startCoordX-coordX)/2);
-                            ellipse.setCenterY((startCoordY-coordY)/2);
-                            ellipse.setRadiusX((startCoordX-coordX)/2);
-                            ellipse.setRadiusY((startCoordY-coordY)/2);
-                            A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
-                            A_EmbFill fillStrat = new EmbFillRadial();
-                            fillStrat.fillShape(ellipseWrapper);
-                            drawLines(stitchLayer, ellipseWrapper.getLineList());
-                            shapeLayer.getGraphicsContext2D().strokeOval(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
+                            drawEllipseToCanvas(coordX+(startCoordX-coordX)/2,coordY+(startCoordY-coordY)/2,(startCoordX-coordX)/2,(startCoordY-coordY)/2);
                         }
                     }
                     else if (startCoordY > coordY)
                     {
-                        ellipse.setCenterX((coordX-startCoordX)/2);
-                        ellipse.setCenterY((startCoordY-coordY)/2);
-                        ellipse.setRadiusX((coordX-startCoordX)/2);
-                        ellipse.setRadiusY((startCoordY-coordY)/2);
-                        A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
-                        A_EmbFill fillStrat = new EmbFillRadial();
-                        fillStrat.fillShape(ellipseWrapper);
-                        drawLines(stitchLayer, ellipseWrapper.getLineList());
-                        shapeLayer.getGraphicsContext2D().strokeOval(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
+                        drawEllipseToCanvas(startCoordX+(coordX-startCoordX)/2,coordY+(startCoordY-coordY)/2,(coordX-startCoordX)/2,(startCoordY-coordY)/2);
                     }
                 }
             }
         };
-        stitchLayer.setOnMousePressed(mouseHandler);
-        stitchLayer.setOnMouseDragged(mouseHandler);
-        stitchLayer.setOnMouseReleased(mouseHandler);
-        shapeLayer.setOnMousePressed(mouseHandler);
-        shapeLayer.setOnMouseDragged(mouseHandler);
-        shapeLayer.setOnMouseReleased(mouseHandler);
-    }
-    
-    private void addLayer()
-    {
-        this.currLayerIndex = this.layerList.size();
-        this.layerList.add(initializeCanvas(new Canvas(500,500)));
-        this.canvas.getChildren().add(this.layerList.get(this.currLayerIndex));
-        freeDrawingMode();
-        this.layerList.get(this.currLayerIndex).toFront();
+        setMouseHandlers(mouseHandler);
     }
     
     private void openFile(File file)
     {
         FormatPES formatter = new FormatPES(file);
         List<EmbStitch> stitchList = formatter.getPattern().getStitchList();
-        stitchShapes(stitchList);
+        stitchFromStitchList(stitchList);
     }
     
     
-    private void stitchShapes(List<EmbStitch> stitchList)
+    private void stitchFromStitchList(List<EmbStitch> stitchList)
     {
         Point2D prevPoint = null;
         boolean firstStitch = true;
@@ -556,13 +459,53 @@ public class EmbroidItGUI extends Application
         }
     }
     
-    private void drawLines(Canvas drawingCanvas, List<Line> lineList)
+    private void drawRectangleToCanvas(double xCoor, double yCoor, double width, double height)
+    {
+        Rectangle newRect = new Rectangle();
+        newRect.setX(xCoor);
+        newRect.setY(yCoor);
+        newRect.setWidth(width);
+        newRect.setHeight(height);
+        A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(newRect);
+        pattern.addShape(newRect);
+        pattern.addShapeWrapper(rectWrapper);
+        A_EmbFill fillStrat = new EmbFillTatamiRect();
+        fillStrat.fillShape(rectWrapper);
+        drawLinesFromList(stitchLayer, rectWrapper.getLineList());
+        shapeLayer.getGraphicsContext2D().strokeRect(xCoor,yCoor,width,height);
+    }
+    
+    private void drawEllipseToCanvas(double centerX, double centerY, double radiusX, double radiusY)
+    {
+        Ellipse newEllipse = new Ellipse();
+        newEllipse.setCenterX(centerX);
+        newEllipse.setCenterY(centerY);
+        newEllipse.setRadiusX(radiusX);
+        newEllipse.setRadiusY(radiusY);
+        A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(newEllipse);
+        A_EmbFill fillStrat = new EmbFillRadial();
+        pattern.addShape(newEllipse);
+        pattern.addShapeWrapper(ellipseWrapper);
+        fillStrat.fillShape(ellipseWrapper);
+        drawLinesFromList(stitchLayer, ellipseWrapper.getLineList());
+        shapeLayer.getGraphicsContext2D().strokeOval(centerX-radiusX,centerY-radiusY,radiusX*2,radiusY*2);    
+    }
+    
+    private void drawLinesFromList(Canvas drawingCanvas, List<Line> lineList)
     {
         for (Line line : lineList)
         {
-            drawingCanvas.getGraphicsContext2D().strokeLine(line.getStartX(),line.getStartY(),
-                                                                                line.getEndX(),
-                                                                                line.getEndY());  
+            drawingCanvas.getGraphicsContext2D().strokeLine(line.getStartX(),line.getStartY(),line.getEndX(),line.getEndY());  
         }
+    }
+    
+    private void setMouseHandlers(EventHandler mouseHandler)
+    {
+        stitchLayer.setOnMousePressed(mouseHandler);
+        stitchLayer.setOnMouseDragged(mouseHandler);
+        stitchLayer.setOnMouseReleased(mouseHandler);
+        shapeLayer.setOnMousePressed(mouseHandler);
+        shapeLayer.setOnMouseDragged(mouseHandler);
+        shapeLayer.setOnMouseReleased(mouseHandler);
     }
 }
