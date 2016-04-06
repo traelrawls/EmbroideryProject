@@ -43,7 +43,7 @@ public class EmbroidItGUI extends Application
     private BorderPane root;
     private VBox centerContainer = new VBox();
     private StackPane canvasContainer = new StackPane();
-    private double coordX, coordY, startCoordX, startCoordY;
+    private double startCoordX, startCoordY, endCoordX, endCoordY;
     private Canvas stitchLayer, shapeLayer;
     
     public void openGUI(String[] args)
@@ -276,161 +276,176 @@ public class EmbroidItGUI extends Application
     
     private void freeDrawingMode()
     {
-        EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>()
+        EventHandler<MouseEvent> mousePressedHandler = new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent mouseEvent)
             {
-                if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
-                {
-                    stitchLayer.getGraphicsContext2D().beginPath();
-                    stitchLayer.getGraphicsContext2D().moveTo(mouseEvent.getX(), mouseEvent.getY());
-                    stitchLayer.getGraphicsContext2D().stroke();
-                }
-                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
-                {
-                    stitchLayer.getGraphicsContext2D().lineTo(mouseEvent.getX(), mouseEvent.getY());
-                    stitchLayer.getGraphicsContext2D().stroke();
-                }
+                stitchLayer.getGraphicsContext2D().beginPath();
+                stitchLayer.getGraphicsContext2D().moveTo(mouseEvent.getX(), mouseEvent.getY());
+                stitchLayer.getGraphicsContext2D().stroke();
+            }
+        };
+        EventHandler<MouseEvent> mouseDraggedHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {
+                stitchLayer.getGraphicsContext2D().lineTo(mouseEvent.getX(), mouseEvent.getY());
+                stitchLayer.getGraphicsContext2D().stroke();
             }  
         };
-        setMouseHandlers(mouseHandler);
+        EventHandler<MouseEvent> mouseReleasedHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {
+                // Do nothing
+            }  
+        };
+        setMouseHandlers(mousePressedHandler,mouseDraggedHandler,mouseReleasedHandler);
     }
     
     private void lineDrawingMode()
     {
-        coordX = 0;
-        coordY = 0;
-        startCoordX = 0;
-        startCoordY = 0;
-
-        EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>()
+        EventHandler<MouseEvent> mousePressedHandler = new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent mouseEvent)
             {    
-                if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
-                {
-                    coordX = mouseEvent.getX();
-                    coordY = mouseEvent.getY();
-                    startCoordX = mouseEvent.getX();
-                    startCoordY = mouseEvent.getY();
-                }
-                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
-                {
-                    coordX = mouseEvent.getX();
-                    coordY = mouseEvent.getY();
-                }
-                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
-                {
-                    stitchLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,coordX,coordY);
-                    shapeLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,coordX, coordY);
-                }
+                startCoordX = mouseEvent.getX();
+                startCoordY = mouseEvent.getY();
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
             }
         };
-        setMouseHandlers(mouseHandler);
+        EventHandler<MouseEvent> mouseDraggedHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {    
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
+            }
+        };
+        EventHandler<MouseEvent> mouseReleasedHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {    
+                stitchLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX,endCoordY);
+                shapeLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX, endCoordY);
+            }
+        };
+        setMouseHandlers(mousePressedHandler,mouseDraggedHandler,mouseReleasedHandler);
     }
     
     private void rectDrawingMode()
     {
-        coordX = 0;
-        coordY = 0;
+        endCoordX = 0;
+        endCoordY = 0;
         startCoordX = 0;
         startCoordY = 0;
 
-        EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>()
+        EventHandler<MouseEvent> mousePressedHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {
+                startCoordX = mouseEvent.getX();
+                startCoordY = mouseEvent.getY();
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
+            }
+        };
+        EventHandler<MouseEvent> mouseDraggedHandler = new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent mouseEvent)
             {    
-                if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
+            }
+        };
+
+        EventHandler<MouseEvent> mouseReleasedHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {    
+                if (startCoordX <= endCoordX && startCoordY <= endCoordY)
                 {
-                    coordX = mouseEvent.getX();
-                    coordY = mouseEvent.getY();
-                    startCoordX = mouseEvent.getX();
-                    startCoordY = mouseEvent.getY();
+                    drawRectangleToCanvas(startCoordX,startCoordY,endCoordX-startCoordX,endCoordY-startCoordY);
                 }
-                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
+                else if (startCoordX > endCoordX)
                 {
-                    coordX = mouseEvent.getX();
-                    coordY = mouseEvent.getY();
+                    if (startCoordY <= endCoordY)
+                    {
+                        drawRectangleToCanvas(endCoordX,startCoordY,startCoordX-endCoordX,endCoordY-startCoordY);
+                    }
+                    else if (startCoordY > endCoordY)
+                    {
+                        drawRectangleToCanvas(endCoordX,endCoordY,startCoordX-endCoordX,startCoordY-endCoordY);
+                    }
                 }
-                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
-                {  
-                    if (startCoordX <= coordX && startCoordY <= coordY)
-                    {
-                        drawRectangleToCanvas(startCoordX,startCoordY,coordX-startCoordX,coordY-startCoordY);
-                    }
-                    else if (startCoordX > coordX)
-                    {
-                        if (startCoordY <= coordY)
-                        {
-                            drawRectangleToCanvas(coordX,startCoordY,startCoordX-coordX,coordY-startCoordY);
-                        }
-                        else if (startCoordY > coordY)
-                        {
-                            drawRectangleToCanvas(coordX,coordY,startCoordX-coordX,startCoordY-coordY);
-                        }
-                    }
-                    else if (startCoordY > coordY)
-                    {
-                        drawRectangleToCanvas(startCoordX,coordY,coordX-startCoordX,startCoordY-coordY);
-                    }
+                else if (startCoordY > endCoordY)
+                {
+                    drawRectangleToCanvas(startCoordX,endCoordY,endCoordX-startCoordX,startCoordY-endCoordY);
                 }
             }
         };
-        setMouseHandlers(mouseHandler);
+        setMouseHandlers(mousePressedHandler,mouseDraggedHandler,mouseReleasedHandler);
     }
     
     private void ovalDrawingMode()
     {
-        coordX = 0;
-        coordY = 0;
-        startCoordX = 0;
-        startCoordY = 0;
-
-        EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>()
+        EventHandler<MouseEvent> mousePressedHandler = new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent mouseEvent)
             {    
-                if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
-                {
-                    coordX = mouseEvent.getX();
-                    coordY = mouseEvent.getY();
-                    startCoordX = mouseEvent.getX();
-                    startCoordY = mouseEvent.getY();
-                }
-                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
-                {
-                    coordX = mouseEvent.getX();
-                    coordY = mouseEvent.getY();
-                }
-                else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
-                {
-                    if (startCoordX <= coordX && startCoordY <= coordY)
-                    {
-                        drawEllipseToCanvas(startCoordX+(coordX-startCoordX)/2,startCoordY+(coordY-startCoordY)/2,(coordX-startCoordX)/2,(coordY-startCoordY)/2);
-                    }
-                    else if (startCoordX > coordX)
-                    {
-                        if (startCoordY <= coordY)
-                        {
-                            drawEllipseToCanvas(coordX+(startCoordX-coordX)/2,startCoordY+(coordY-startCoordY)/2,(startCoordX-coordX)/2,(coordY-startCoordY)/2);
-                        }
-                        else if (startCoordY > coordY)
-                        {
-                            drawEllipseToCanvas(coordX+(startCoordX-coordX)/2,coordY+(startCoordY-coordY)/2,(startCoordX-coordX)/2,(startCoordY-coordY)/2);
-                        }
-                    }
-                    else if (startCoordY > coordY)
-                    {
-                        drawEllipseToCanvas(startCoordX+(coordX-startCoordX)/2,coordY+(startCoordY-coordY)/2,(coordX-startCoordX)/2,(startCoordY-coordY)/2);
-                    }
-                }
+                startCoordX = mouseEvent.getX();
+                startCoordY = mouseEvent.getY();
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
             }
         };
-        setMouseHandlers(mouseHandler);
+        EventHandler<MouseEvent> mouseDraggedHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();                
+            }    
+        };
+        EventHandler<MouseEvent> mouseReleasedHandler = new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {
+                if (startCoordX <= endCoordX && startCoordY <= endCoordY)
+                {
+                    drawEllipseToCanvas(startCoordX+(endCoordX-startCoordX)/2,startCoordY+(endCoordY-startCoordY)/2,(endCoordX-startCoordX)/2,(endCoordY-startCoordY)/2);
+                }
+                else if (startCoordX > endCoordX)
+                {
+                    if (startCoordY <= endCoordY)
+                    {
+                        drawEllipseToCanvas(endCoordX+(startCoordX-endCoordX)/2,startCoordY+(endCoordY-startCoordY)/2,(startCoordX-endCoordX)/2,(endCoordY-startCoordY)/2);
+                    }
+                    else if (startCoordY > endCoordY)
+                    {
+                        drawEllipseToCanvas(endCoordX+(startCoordX-endCoordX)/2,endCoordY+(startCoordY-endCoordY)/2,(startCoordX-endCoordX)/2,(startCoordY-endCoordY)/2);
+                    }
+                }
+                else if (startCoordY > endCoordY)
+                {
+                    drawEllipseToCanvas(startCoordX+(endCoordX-startCoordX)/2,endCoordY+(startCoordY-endCoordY)/2,(endCoordX-startCoordX)/2,(startCoordY-endCoordY)/2);
+                }  
+            }    
+        };
+        setMouseHandlers(mousePressedHandler,mouseDraggedHandler,mouseReleasedHandler);
     }
     
     private void openFile(File file)
@@ -499,13 +514,13 @@ public class EmbroidItGUI extends Application
         }
     }
     
-    private void setMouseHandlers(EventHandler mouseHandler)
+    private void setMouseHandlers(EventHandler pressedHandler, EventHandler draggedHandler, EventHandler releasedHandler)
     {
-        stitchLayer.setOnMousePressed(mouseHandler);
-        stitchLayer.setOnMouseDragged(mouseHandler);
-        stitchLayer.setOnMouseReleased(mouseHandler);
-        shapeLayer.setOnMousePressed(mouseHandler);
-        shapeLayer.setOnMouseDragged(mouseHandler);
-        shapeLayer.setOnMouseReleased(mouseHandler);
+        stitchLayer.setOnMousePressed(pressedHandler);
+        stitchLayer.setOnMouseDragged(draggedHandler);
+        stitchLayer.setOnMouseReleased(releasedHandler);
+        shapeLayer.setOnMousePressed(pressedHandler);
+        shapeLayer.setOnMouseDragged(draggedHandler);
+        shapeLayer.setOnMouseReleased(releasedHandler);
     }
 }
