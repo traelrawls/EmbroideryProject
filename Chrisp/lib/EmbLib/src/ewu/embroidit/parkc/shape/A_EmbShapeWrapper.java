@@ -30,6 +30,7 @@ public abstract class A_EmbShapeWrapper
     protected Color threadColor;
     protected double stitchLength;
     
+    
     /*-----------------------------------------------------------------------*/
     
     /**
@@ -210,21 +211,14 @@ public abstract class A_EmbShapeWrapper
      * @param length double
      */
     public void setStitchLength(double length)
-    { this.stitchLength = length; }
-    
-    /*-----------------------------------------------------------------------*/
-    
-    
-    //Subdivide Segments
-        //for each line in line list
-        //break that line down into subdivisions based on the set stitch length
-        //add all of those into a new list
-        //replace the old list with the new list.
-    
-    /*-----------------------------------------------------------------------*/
-    
-    //Create stitchList
-    //override in child classes for specific implementations (make abstract here)
+    { 
+        this.stitchLength = length;
+        
+        if (this.stitchLength < DEFAULT_STITCH_LENGTH)
+            this.stitchLength = DEFAULT_STITCH_LENGTH;
+        
+        //Add stitch length cap check here
+    }
     
     /*-----------------------------------------------------------------------*/
     
