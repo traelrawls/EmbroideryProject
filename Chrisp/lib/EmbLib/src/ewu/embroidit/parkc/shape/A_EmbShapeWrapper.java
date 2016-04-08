@@ -108,8 +108,8 @@ public abstract class A_EmbShapeWrapper
         this.validateObject(lineList);
         this.lineList = lineList;
     }
-    /*-----------------------------------------------------------------------*/
     
+    /*-----------------------------------------------------------------------*/
     /**
      * Gets the list of stitches.
      * @return List&lt;EmbStitch&gt;

@@ -108,7 +108,7 @@ public class StitchFillTest extends Application
         System.err.println("Line List Size is: " + lineList.size());
         
         gc.setStroke(color);
-        gc.setLineWidth(3);
+        gc.setLineWidth(2);
         gc.setLineCap(StrokeLineCap.SQUARE);
         
         for(Line line : lineList)

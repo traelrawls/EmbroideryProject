@@ -1,5 +1,6 @@
 package ewu.embroidit.parkc.fill;
 
+import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
 import ewu.embroidit.parkc.util.math.EmbMathEllipse;
 import java.util.ArrayList;
@@ -41,8 +42,8 @@ public class EmbFillRadial extends A_EmbFill
         lineList = new ArrayList<>();
 
         fillEllipse(ellipse, lineList);
-        
         shapeWrapper.setLineList(lineList);
+        this.subDivideFillLines(shapeWrapper);
     }
     
     /*-----------------------------------------------------------------------*/
@@ -74,6 +75,15 @@ public class EmbFillRadial extends A_EmbFill
             lineList.add(radialLine);
             degree += degreeInterval;
         }
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    @Override
+    protected List<EmbStitch> generateStitchList(A_EmbShapeWrapper shapeWrapper)
+    {
+        //TODO: Implement Stitch generator
+        return null;
     }
     
     /*-----------------------------------------------------------------------*/

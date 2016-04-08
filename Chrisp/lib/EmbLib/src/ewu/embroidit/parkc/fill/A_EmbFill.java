@@ -3,7 +3,9 @@ package ewu.embroidit.parkc.fill;
 import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
 
 /*-----------------------------------------------------------------------*/
@@ -59,21 +61,16 @@ public abstract class A_EmbFill
         stitchLength = shapeWrapper.getStitchLength();
         
         for(Line line : lineList)
-        {
             modifiedLineList.addAll(singleLineDivide(line, stitchLength));
-        }
-        //Subdivide Segments
-        //for each line in line list
-        //break that line down into subdivisions based on the set stitch length
-        //add all of those into a new list
-        //replace the old list with the new list.
+        
+        shapeWrapper.setLineList(modifiedLineList);
     }
     
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Break a line segment down into as many sub divisions of the given
-     * stitch length as possible.
+     * Break a line segment down into as many sub sub lines of the stitch length
+     * as possible.
      * @param line Line
      * @param stitchLength double
      * @return List&lt;Line&gt;
@@ -82,8 +79,37 @@ public abstract class A_EmbFill
     {
         List<Line>dividedList;
         Line tempLine;
+        Point2D startPoint, endPoint, normal, maxEndPoint;
+
+        dividedList = new ArrayList<>();
+        maxEndPoint = new Point2D(line.getEndX(), line.getEndY());
+        tempLine = new Line(line.getStartX(), line.getStartY(),
+                            line.getEndX(), line.getEndY());
         
-        //LEFT OFF HERE 4/7/16
+        while(true)
+        {
+            startPoint = new Point2D(tempLine.getStartX(), tempLine.getStartY());
+            normal = startPoint.normalize();
+            endPoint = startPoint.add(normal.multiply(stitchLength));
+            
+            //This wont work. It should account for when the line
+            //is exceeded, not if its greater. the coordinates could be
+            //positive or negative.
+            if(endPoint.getX() >= maxEndPoint.getX() || endPoint.getY() >= maxEndPoint.getY())
+                break;
+            
+            dividedList.add(new Line(startPoint.getX(), startPoint.getY(),
+                            endPoint.getX(), endPoint.getY()));
+            
+            tempLine = new Line(endPoint.getX(), endPoint.getY(),
+                                tempLine.getEndX(), tempLine.getEndY());
+        }
+            
+        dividedList.add(new Line(startPoint.getX(), startPoint.getY(),
+                        tempLine.getEndX(), tempLine.getEndY()));
+        
+        return dividedList;
+        
     }
     
     /*-----------------------------------------------------------------------*/
