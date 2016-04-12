@@ -66,7 +66,6 @@ public abstract class A_EmbShapeWrapper
         
         if(stitchLength < DEFAULT_STITCH_LENGTH)
             this.stitchLength = DEFAULT_STITCH_LENGTH;
-        
     }
     /*-----------------------------------------------------------------------*/
     

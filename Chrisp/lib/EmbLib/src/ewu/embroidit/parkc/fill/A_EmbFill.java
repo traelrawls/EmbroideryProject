@@ -3,7 +3,6 @@ package ewu.embroidit.parkc.fill;
 import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
@@ -69,7 +68,7 @@ public abstract class A_EmbFill
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Break a line segment down into as many sub sub lines of the stitch length
+     * Break a line segment down into as many sub lines of the stitch length
      * as possible.
      * @param line Line
      * @param stitchLength double
@@ -79,7 +78,7 @@ public abstract class A_EmbFill
     {
         List<Line>dividedList;
         Line tempLine;
-        Point2D startPoint, endPoint, normal, maxEndPoint;
+        Point2D startPoint, endPoint, unitVec, maxEndPoint;
 
         dividedList = new ArrayList<>();
         maxEndPoint = new Point2D(line.getEndX(), line.getEndY());
@@ -89,13 +88,16 @@ public abstract class A_EmbFill
         while(true)
         {
             startPoint = new Point2D(tempLine.getStartX(), tempLine.getStartY());
-            normal = startPoint.normalize();
-            endPoint = startPoint.add(normal.multiply(stitchLength));
+            unitVec = new Point2D(
+                    (tempLine.getEndX() - tempLine.getStartX()),
+                    (tempLine.getEndY() - tempLine.getStartY()));
+            unitVec = unitVec.normalize();
+            unitVec = unitVec.multiply(stitchLength);
+            endPoint = startPoint.add(unitVec);
             
-            //This wont work. It should account for when the line
-            //is exceeded, not if its greater. the coordinates could be
-            //positive or negative.
-            if(endPoint.getX() >= maxEndPoint.getX() || endPoint.getY() >= maxEndPoint.getY())
+            //if the new line segment extends beyond the old one exit the loop.
+            if(this.calculateDistance(startPoint, endPoint) >= 
+                    this.calculateDistance(startPoint, maxEndPoint))
                 break;
             
             dividedList.add(new Line(startPoint.getX(), startPoint.getY(),
@@ -109,11 +111,28 @@ public abstract class A_EmbFill
                         tempLine.getEndX(), tempLine.getEndY()));
         
         return dividedList;
-        
     }
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Return the distance between two points.
+     * TODO: (Refactor into math package or find JavaFX library replacement)
+     * @param point1 Point2D
+     * @param point2 Point2D
+     * @return double
+     */
+    private double calculateDistance(Point2D point1, Point2D point2)
+    {
+        double deltaX, deltaY;
+        
+        deltaX = Math.pow((point1.getX() - point2.getX()), 2);
+        deltaY = Math.pow((point1.getY() - point2.getY()), 2);
+        
+        return Math.sqrt(deltaX + deltaY);
+    }
+    
+    /*-----------------------------------------------------------------------*/
     /**
      * Ensures that the object sent as a parameter exists.
      * @param obj Object

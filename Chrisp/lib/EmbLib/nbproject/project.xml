@@ -14,6 +14,7 @@
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
             <word>int</word>
             <word>javafx</word>
+            <word>Refactor</word>
             <word>rgb</word>
         </spellchecker-wordlist>
     </configuration>

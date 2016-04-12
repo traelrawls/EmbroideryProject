@@ -36,7 +36,7 @@ public class StitchFillTest extends Application
         /*-----------------------------------------------------------------------*/
         //TEST Rectangle Fill
         Rectangle rect = new Rectangle(32, 128, 128, 64);
-        A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect, new Point2D(0,0), 0.0, 0.0 );
+        A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
         EmbFillTatamiRect rectFillStrat = new EmbFillTatamiRect();                
         rectFillStrat.fillShape(rectWrapper);
         /*-----------------------------------------------------------------------*/
@@ -44,7 +44,7 @@ public class StitchFillTest extends Application
         /*-----------------------------------------------------------------------*/
         //TEST Ellipse Fill
         Ellipse ellipse = new Ellipse(96, 64, 64, 32);
-        A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse, new Point2D(0,0) );
+        A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
         EmbFillRadial ellipseFillStrat = new EmbFillRadial();
         ellipseFillStrat.fillShape(ellipseWrapper);
         /*-----------------------------------------------------------------------*/
@@ -113,13 +113,13 @@ public class StitchFillTest extends Application
         
         for(Line line : lineList)
         {
-            System.err.println("Line points: (" + line.getStartX() + ", " + line.getStartY() + ") " +
-                                            "(" + line.getEndX() + ", " + line.getEndY() + ")" );
-            
+//            System.err.println("Line points: (" + line.getStartX() + ", " + line.getStartY() + ") " +
+//                                            "(" + line.getEndX() + ", " + line.getEndY() + ")" );
+//            
             gc.strokeLine(line.getStartX() + 0.5,
-                    line.getStartY(),
+                    line.getStartY() + 0.5,
                     line.getEndX() + 0.5,
-                    line.getEndY());
+                    line.getEndY() + 0.5 );
         }
     }
     
