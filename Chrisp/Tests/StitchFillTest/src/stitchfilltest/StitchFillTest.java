@@ -2,6 +2,7 @@ package stitchfilltest;
 
 import ewu.embroidit.parkc.fill.EmbFillRadial;
 import ewu.embroidit.parkc.fill.EmbFillTatamiRect;
+import ewu.embroidit.parkc.io.FileManager;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -9,11 +10,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
+import ewu.embroidit.parkc.shape.EmbShapeWrapperLine;
 import ewu.embroidit.parkc.shape.EmbShapeWrapperRadialFill;
 import ewu.embroidit.parkc.shape.EmbShapeWrapperTatamiFill;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
@@ -22,13 +25,15 @@ import javafx.scene.shape.StrokeLineCap;
 
 /*-----------------------------------------------------------------------*/
 /**
- *
+ * Unit Tests for Stitch filling algorithms, shape 
+ * color sorting. (more to come)
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
 public class StitchFillTest extends Application 
 {
     /*-----------------------------------------------------------------------*/
     @Override
+    @SuppressWarnings("UnusedAssignment")
     public void start(Stage primaryStage) 
     {
         primaryStage.setTitle("StitchFillTest");
@@ -39,6 +44,7 @@ public class StitchFillTest extends Application
         A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(rect);
         EmbFillTatamiRect rectFillStrat = new EmbFillTatamiRect();                
         rectFillStrat.fillShape(rectWrapper);
+        //END TEST Rectangle Fill
         /*-----------------------------------------------------------------------*/
         
         /*-----------------------------------------------------------------------*/
@@ -47,6 +53,7 @@ public class StitchFillTest extends Application
         A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(ellipse);
         EmbFillRadial ellipseFillStrat = new EmbFillRadial();
         ellipseFillStrat.fillShape(ellipseWrapper);
+        //END TEST Ellipse Fill
         /*-----------------------------------------------------------------------*/
         
         /*-----------------------------------------------------------------------*/
@@ -62,10 +69,88 @@ public class StitchFillTest extends Application
         drawFill(gc, ellipseWrapper, Color.CHOCOLATE);
         
         root.getChildren().add(canvas);
+        //END TEST Rendering
+        /*-----------------------------------------------------------------------*/
+        
+        /*-----------------------------------------------------------------------*/
+        //TEST Color Sorting
+        A_EmbShapeWrapper wrapper;
+        List<A_EmbShapeWrapper> wrapperList;
+        
+        int sortCount;
+        wrapperList = new ArrayList<>();
+        
+        //Create Wrappers
+        for(int i = 0; i < 3 ; i++)
+        {
+            wrapper = new EmbShapeWrapperTatamiFill(
+                    new Rectangle(32, 128, 128, 64));
+            wrapperList.add(wrapper);
+            wrapper = new EmbShapeWrapperRadialFill(
+                    new Ellipse(96, 64, 64, 32));
+            wrapperList.add(wrapper);
+            wrapper = new EmbShapeWrapperLine(new Line(0, 0, 10, 10));
+            wrapperList.add(wrapper);
+        }
+        
+        //Test 2 Colors (5/4 Ratio)
+        System.err.println("2 Colors");
+        for( sortCount = 0; sortCount < wrapperList.size(); sortCount++)
+        {
+            if (sortCount < 4)
+                wrapperList.get(sortCount).setThreadColor(Color.BLUE);
+            else
+                wrapperList.get(sortCount).setThreadColor(Color.GREEN);
+        }
+        wrapperList = this.testSort(wrapperList);
+        
+        //TEST 3 Colors (Even Ratio)
+        System.err.println("3 Colors");
+        for( sortCount = 0; sortCount < wrapperList.size(); sortCount++)
+        {
+            if (sortCount < 3)
+                wrapperList.get(sortCount).setThreadColor(Color.BLUE);
+            if (sortCount >= 3 || sortCount < 6)
+                wrapperList.get(sortCount).setThreadColor(Color.GREEN);
+            else
+                wrapperList.get(sortCount).setThreadColor(Color.RED);
+        }
+        wrapperList = this.testSort(wrapperList);
+        
+        //TEST Single Color
+        System.err.println("1 Colors");
+        for( sortCount = 0; sortCount < wrapperList.size(); sortCount++)
+            wrapperList.get(sortCount).setThreadColor(Color.BLUE);
+        
+        wrapperList = this.testSort(wrapperList);
+        //END TEST Color Sorting
         /*-----------------------------------------------------------------------*/
         
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Used to test color sorting of shapes.
+     * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
+     */
+    private List<A_EmbShapeWrapper> testSort(List<A_EmbShapeWrapper> wrapperList)
+    {
+        Collections.shuffle(wrapperList);
+        
+        System.err.println("List Randomized:");
+        for(A_EmbShapeWrapper wrap : wrapperList)
+            System.err.println("Color: " + wrap.getThreadColor().toString());
+        
+        wrapperList = FileManager.getInstance().sortWrappersByColor(wrapperList);
+        
+        System.err.println("List Sorted:");
+        for(A_EmbShapeWrapper wrap : wrapperList)
+            System.err.println("Color: " + wrap.getThreadColor().toString());
+        
+        return wrapperList;
     }
     
     /*-----------------------------------------------------------------------*/
@@ -112,10 +197,7 @@ public class StitchFillTest extends Application
         gc.setLineCap(StrokeLineCap.SQUARE);
         
         for(Line line : lineList)
-        {
-//            System.err.println("Line points: (" + line.getStartX() + ", " + line.getStartY() + ") " +
-//                                            "(" + line.getEndX() + ", " + line.getEndY() + ")" );
-//            
+        {           
             gc.strokeLine(line.getStartX() + 0.5,
                     line.getStartY() + 0.5,
                     line.getEndX() + 0.5,

@@ -1,11 +1,15 @@
 package ewu.embroidit.parkc.io;
 
 import ewu.embroidit.parkc.pattern.EmbPattern;
+import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.scene.shape.Shape;
 
 
 /*-----------------------------------------------------------------------*/
@@ -102,28 +106,78 @@ public class FileManager
     
     /*-----------------------------------------------------------------------*/
     
-    //Export(EmbPattern pattern)
-        //get wrapper list
-        //sort wrapper list by color
-        //figure out and mark jump and stop stitches
-        //encode to output file
+    /**
+     * Exports a pattern to PES file. Shapes are pre-sorted by color to reduce
+     * unnecessary thread changes. (thrashing)
+     * @param pattern EmbPattern
+     */
+    public void patternToPes(EmbPattern pattern)
+    {
+        List<A_EmbShapeWrapper> wrapperList;
+        List<A_EmbShapeWrapper> sortedWrapperList;
+        
+        wrapperList = this.getWrapperList(pattern);
+        sortedWrapperList = this.sortWrappersByColor(wrapperList);
+        
+        //NEXT:
+        //figure out when and how to mark jump and stop stitches.
+        //Set up bitmasked output encoding with PES and PEC.
+    }
+    
     /*-----------------------------------------------------------------------*/
     
-    //get wrapper list(pattern)
-        //for each shape in the shape list
-        //grab its hashed wrapper and add it to a list
-    //return the created wrapper list
+    /**
+     * Returns the shape wrapper list for the given pattern.
+     * @param pattern EmbPattern
+     * @return List&lt;EmbPattern&gt;
+     */
+    private List<A_EmbShapeWrapper> getWrapperList(EmbPattern pattern)
+    {
+        List<Shape> shapeList;
+        List<A_EmbShapeWrapper> wrapperList;
+        
+        shapeList = pattern.getShapeList();
+        wrapperList = new ArrayList<>();
+        
+        for(Shape shape: shapeList)
+            wrapperList.add(pattern.getShapeWrapper(shape));
+        
+        return wrapperList;
+    }
     
     /*-----------------------------------------------------------------------*/
-    //Sort Wrappers for Export (WrapperList)
-        //while old list not empty
-            //grab first element
-            //add element to new list
-            //remove that element from the old list
-            //for each element in old list
-            //if it color matches the first element
-                    //add it to new list
-                    //then remove it from old list
+    
+    /**
+     * Returns a color sorted (with color group ordering arbitrary) version
+     * of the given list.
+     * @param wrapperList
+     * @return List&lt;A_EmbShapeWrapper&gt;
+     */
+    public List<A_EmbShapeWrapper> sortWrappersByColor(List<A_EmbShapeWrapper> wrapperList)
+    {
+        A_EmbShapeWrapper coloredShape;
+        List<A_EmbShapeWrapper> sortedWrapperList;
+        List<A_EmbShapeWrapper> colorChunk;
+        
+        sortedWrapperList = new ArrayList<>();
+        
+        while(!wrapperList.isEmpty())
+        {
+            coloredShape = wrapperList.get(0);
+            colorChunk = new ArrayList<>();
+            
+            for(A_EmbShapeWrapper wrapper : wrapperList)
+                if(coloredShape.getThreadColor().equals(wrapper.getThreadColor()))
+                    colorChunk.add(wrapper);
+            
+            for(A_EmbShapeWrapper wrapper : colorChunk)
+                wrapperList.remove(wrapper);
+            
+            sortedWrapperList.addAll(colorChunk);
+        }
+        
+        return sortedWrapperList;
+    }
     
     /*-----------------------------------------------------------------------*/
 }

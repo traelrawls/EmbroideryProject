@@ -188,7 +188,7 @@ public abstract class A_EmbShapeWrapper
      * Sets the rgb color value of the thread for this shape.
      * @param color Color
      */
-    public void setThreadcolor(Color color)
+    public void setThreadColor(Color color)
     {
         this.validateObject(color);
         this.threadColor = color;

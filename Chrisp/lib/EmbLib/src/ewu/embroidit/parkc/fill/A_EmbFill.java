@@ -88,9 +88,8 @@ public abstract class A_EmbFill
         while(true)
         {
             startPoint = new Point2D(tempLine.getStartX(), tempLine.getStartY());
-            unitVec = new Point2D(
-                    (tempLine.getEndX() - tempLine.getStartX()),
-                    (tempLine.getEndY() - tempLine.getStartY()));
+            unitVec = new Point2D((tempLine.getEndX() - tempLine.getStartX()),
+                                  (tempLine.getEndY() - tempLine.getStartY()));
             unitVec = unitVec.normalize();
             unitVec = unitVec.multiply(stitchLength);
             endPoint = startPoint.add(unitVec);
