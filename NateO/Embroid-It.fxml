@@ -9,7 +9,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ewu.embroidit.rawlst.EmbroidItGUI">
    <top>
       <VBox id="topContainer" prefHeight="50.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -58,7 +58,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button id="rectButton" fx:id="rectButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#rectDrawingMode" prefHeight="70.0" prefWidth="70.0" text="Rect">
+            <Button id="rectButton" fx:id="rectButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" text="Rect">
                <graphic>
                   <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -137,11 +137,11 @@
             <StackPane id="canvasContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: ffffff;">
                <children>
                   <Canvas fx:id="shapeLayer" height="500.0" width="500.0" />
-                  <Canvas fx:id="stitchLayer" height="500.0" width="500.0" />
+                  <Canvas fx:id="stitchLayer" height="500.0" visible="false" width="500.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="500.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" width="500.0" />
                </children>
             </StackPane>
          </children>
       </VBox>
    </center>
-</fx:root>
+</BorderPane>
