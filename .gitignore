@@ -8,3 +8,6 @@
 /Chrisp/Tests/StitchFillTest/dist/
 /Chrisp/Tests/StitchFillTest/build/
 *.doc#
+/Embroid-It/Embroid-It/nbproject/private/
+/Embroid-It/Embroid-It/dist/
+/Embroid-It/Embroid-It/build/
