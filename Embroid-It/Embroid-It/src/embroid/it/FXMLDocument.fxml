@@ -23,7 +23,7 @@
                         <MenuItem mnemonicParsing="false" text="Save" />
                         <MenuItem mnemonicParsing="false" text="Save As..." />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Import" />
+                        <MenuItem fx:id="menuItemImport" mnemonicParsing="false" onAction="#menuImportFile" text="Import" />
                         <MenuItem mnemonicParsing="false" text="Export" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" text="Exit" />
@@ -39,8 +39,8 @@
             </MenuBar>
             <FlowPane id="layerOptions" alignment="CENTER" columnHalignment="CENTER" prefHeight="24.0" prefWidth="600.0" style="-fx-background-color: C8C8C8;">
                <children>
-                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="STITCH" />
-                  <Button id="shapeLayerButton" mnemonicParsing="false" text="SHAPE" />
+                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" text="STITCH" />
+                  <Button id="shapeLayerButton" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" text="SHAPE" />
                </children>
             </FlowPane>
          </children>

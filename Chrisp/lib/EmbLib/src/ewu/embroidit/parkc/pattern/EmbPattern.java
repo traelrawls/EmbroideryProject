@@ -257,6 +257,25 @@ public class EmbPattern implements Serializable
     /*-----------------------------------------------------------------------*/
     
     /**
+     * Returns the thread color at the given index if it exists.
+     * @param index int
+     * @return Color
+     */
+    public Color getThread(int index)
+    {
+        if(index >= this.threadList.size())
+        {
+            System.out.print("Error: Attempted to get a thread out of list index");
+            System.exit(1);
+        }
+        
+        return this.threadList.get(index).getThreadColor();
+        
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
      * [NOT CURRENTLY IN USE] Returns the maximum color 
      * index found in this patterns stitch list.
      * @return maxIndex int
