@@ -58,7 +58,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button id="rectButton" fx:id="rectButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" text="Rect">
+            <Button id="rectButton" fx:id="rectButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#rectDrawingMode" prefHeight="70.0" prefWidth="70.0" text="Rect">
                <graphic>
                   <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -67,7 +67,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button id="ovalButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" text="Oval">
+            <Button id="ovalButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#ellipseDrawingMode" prefHeight="70.0" prefWidth="70.0" text="Oval">
                <graphic>
                   <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
