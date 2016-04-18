@@ -205,7 +205,8 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) 
     {
-        this.shapeLayer.getGraphicsContext2D().strokeLine(0, 0, 20, 20);    
+        this.shapeLayer.setVisible(true);
+        this.stitchLayer.setVisible(false);
     }
     
     /*-----------------------------------------------------------------------*/
