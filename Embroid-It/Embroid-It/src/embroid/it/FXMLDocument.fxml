@@ -11,7 +11,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="embroid.it.FXMLDocumentController">
    <top>
-      <VBox id="topContainer" prefHeight="50.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <VBox id="topContainer" prefHeight="83.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
             <MenuBar id="menuBar">
               <menus>
@@ -37,45 +37,72 @@
                   </Menu>
               </menus>
             </MenuBar>
-            <FlowPane id="layerOptions" alignment="CENTER" columnHalignment="CENTER" prefHeight="24.0" prefWidth="600.0" style="-fx-background-color: C8C8C8;">
+            <FlowPane id="layerOptions" alignment="CENTER" columnHalignment="CENTER" prefHeight="81.0" prefWidth="1000.0" style="-fx-background-color: C8C8C8;">
                <children>
-                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" text="STITCH" />
-                  <Button id="shapeLayerButton" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" text="SHAPE" />
+                  <Label alignment="CENTER" text="LAYER">
+                     <font>
+                        <Font name="Arial Bold" size="13.0" />
+                     </font>
+                     <FlowPane.margin>
+                        <Insets left="-160.0" />
+                     </FlowPane.margin>
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                  </Label>
+                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" prefHeight="50.0" prefWidth="60.0" text="STITCH">
+                     <graphic>
+                        <ImageView fitHeight="45.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@res/Stitch2.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" prefHeight="50.0" prefWidth="60.0" text="SHAPE" textAlignment="CENTER">
+                     <graphic>
+                        <ImageView fitHeight="45.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@res/Shapes.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                </children>
             </FlowPane>
          </children>
       </VBox>
    </top>
    <left>
-      <VBox id="leftContainer" alignment="TOP_CENTER" prefHeight="650.0" prefWidth="100.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
+      <VBox id="leftContainer" alignment="TOP_CENTER" prefHeight="579.0" prefWidth="57.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
          <children>
-            <Button id="lineButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#lineDrawingMode" prefHeight="70.0" prefWidth="70.0" text="Line">
+            <Button id="lineButton" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#lineDrawingMode" prefHeight="40.0" prefWidth="40.0" text="Line">
                <graphic>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@res/Line.gif" />
                      </image>
                   </ImageView>
                </graphic>
             </Button>
-            <Button id="rectButton" fx:id="rectButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#rectDrawingMode" prefHeight="70.0" prefWidth="70.0" text="Rect">
+            <Button id="rectButton" fx:id="rectButton" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#rectDrawingMode" prefHeight="40.0" prefWidth="40.0" text="Rect">
                <graphic>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@res/Rect.gif" />
                      </image>
                   </ImageView>
                </graphic>
             </Button>
-            <Button id="ovalButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#ellipseDrawingMode" prefHeight="70.0" prefWidth="70.0" text="Oval">
+            <Button id="ovalButton" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ellipseDrawingMode" prefHeight="40.0" prefWidth="40.0" text="Oval">
                <graphic>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@res/Oval.gif" />
                      </image>
                   </ImageView>
                </graphic>
             </Button>
+            <Separator prefHeight="13.0" prefWidth="57.0" />
+            <ColorPicker fx:id="colorPicker" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="40.0" />
          </children>
       </VBox>
    </left>
@@ -83,62 +110,40 @@
       <VBox id="botContainer" prefHeight="38.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
             <ToolBar id="toolBar" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: C8C8C8;">
-              <items>
-                <Button id="blackButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" text="BK" />
-                  <Button id="redButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" text="RD" />
-                  <Button id="blueButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" text="BL" />
-              </items>
-            </ToolBar>
+               <items>
+                  <Label fx:id="coordinateLabel" alignment="CENTER" text="Coordinates" />
+               </items></ToolBar>
          </children>
       </VBox>
    </bottom>
    <right>
-      <VBox id="rightContainer" prefHeight="612.0" prefWidth="137.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
+      <VBox id="rightContainer" prefHeight="579.0" prefWidth="224.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
          <children>
-            <Label id="propertiesLabel" text="Object Properties">
-               <VBox.margin>
-                  <Insets left="20.0" top="5.0" />
-               </VBox.margin>
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-            <Label id="xLabel" text="X:">
-               <VBox.margin>
-                  <Insets left="5.0" top="10.0" />
-               </VBox.margin></Label>
-            <TextField id="xProperty" />
-            <Label id="yLabel" text="Y:">
-               <VBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </VBox.margin></Label>
-            <TextField />
-            <Label id="heightLabel" text="Height:">
-               <VBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </VBox.margin></Label>
-            <TextField id="heightProperty" />
-            <Label id="widthLabel" text="Width">
-               <VBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </VBox.margin></Label>
-            <TextField id="widthProperty" />
-            <Label id="rotateLabel" text="Rotation:">
-               <VBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </VBox.margin></Label>
-            <TextField id="rotateProperty" />
+            <TitledPane animated="false" prefHeight="326.0" prefWidth="224.0" text="Object Properties">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="8.0" text="X:" />
+                        <TextField layoutX="35.0" layoutY="4.0" prefHeight="25.0" prefWidth="52.0" />
+                        <Label layoutX="106.0" layoutY="8.0" text="Y:" />
+                        <TextField layoutX="126.0" layoutY="4.0" prefHeight="25.0" prefWidth="52.0" />
+                        <TextField layoutX="61.0" layoutY="45.0" prefHeight="25.0" prefWidth="107.0" />
+                        <Label layoutX="11.0" layoutY="49.0" text="Height:" />
+                     </children></AnchorPane>
+              </content>
+            </TitledPane>
          </children>
       </VBox>
    </right>
    <center>
-      <VBox id="centerContainer" fx:id="centerContainer" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox id="centerContainer" fx:id="centerContainer" alignment="CENTER" prefHeight="579.0" prefWidth="759.0" BorderPane.alignment="CENTER">
          <children>
             <StackPane id="canvasContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: ffffff;">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="500.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" width="500.0" />
                   <Canvas fx:id="shapeLayer" height="500.0" width="500.0" />
                   <Canvas fx:id="stitchLayer" height="500.0" visible="false" width="500.0" />
+                  <Canvas fx:id="previewLayer" height="500.0" width="500.0" />
                </children>
             </StackPane>
          </children>
