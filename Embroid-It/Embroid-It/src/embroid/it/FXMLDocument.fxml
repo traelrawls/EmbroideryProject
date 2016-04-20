@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
@@ -11,7 +12,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="embroid.it.FXMLDocumentController">
    <top>
-      <VBox id="topContainer" prefHeight="83.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+      <VBox id="topContainer" prefHeight="58.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
             <MenuBar id="menuBar">
               <menus>
@@ -37,36 +38,34 @@
                   </Menu>
               </menus>
             </MenuBar>
-            <FlowPane id="layerOptions" alignment="CENTER" columnHalignment="CENTER" prefHeight="81.0" prefWidth="1000.0" style="-fx-background-color: C8C8C8;">
+            <FlowPane id="layerOptions" alignment="CENTER_LEFT" columnHalignment="CENTER" prefHeight="40.0" prefWidth="1000.0" style="-fx-background-color: C8C8C8;">
                <children>
-                  <Label alignment="CENTER" text="LAYER">
-                     <font>
-                        <Font name="Arial Bold" size="13.0" />
-                     </font>
-                     <FlowPane.margin>
-                        <Insets left="-160.0" />
-                     </FlowPane.margin>
-                     <padding>
-                        <Insets right="5.0" />
-                     </padding>
-                  </Label>
-                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" prefHeight="50.0" prefWidth="60.0" text="STITCH">
+                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" prefHeight="40.0" prefWidth="40.0" text="STITCH">
                      <graphic>
-                        <ImageView fitHeight="45.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@res/Stitch2.gif" />
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" prefHeight="50.0" prefWidth="60.0" text="SHAPE" textAlignment="CENTER">
+                  <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" prefHeight="40.0" prefWidth="40.0" text="SHAPE" textAlignment="CENTER">
                      <graphic>
-                        <ImageView fitHeight="45.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@res/Shapes.gif" />
                            </image>
                         </ImageView>
-                     </graphic></Button>
+                     </graphic>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding></Button>
                </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
             </FlowPane>
          </children>
       </VBox>
@@ -104,6 +103,9 @@
             <Separator prefHeight="13.0" prefWidth="57.0" />
             <ColorPicker fx:id="colorPicker" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="40.0" />
          </children>
+         <padding>
+            <Insets top="20.0" />
+         </padding>
       </VBox>
    </left>
    <bottom>
@@ -129,6 +131,10 @@
                         <TextField layoutX="126.0" layoutY="4.0" prefHeight="25.0" prefWidth="52.0" />
                         <TextField layoutX="61.0" layoutY="45.0" prefHeight="25.0" prefWidth="107.0" />
                         <Label layoutX="11.0" layoutY="49.0" text="Height:" />
+                        <Label layoutX="11.0" layoutY="82.0" text="Width:" />
+                        <TextField layoutX="61.0" layoutY="78.0" prefHeight="25.0" prefWidth="107.0" />
+                        <Label layoutX="6.0" layoutY="115.0" text="Rotation:" />
+                        <TextField layoutX="61.0" layoutY="111.0" prefHeight="25.0" prefWidth="107.0" />
                      </children></AnchorPane>
               </content>
             </TitledPane>
@@ -141,9 +147,9 @@
             <StackPane id="canvasContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: ffffff;">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="500.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" width="500.0" />
+                  <Canvas fx:id="previewLayer" height="500.0" width="500.0" />
                   <Canvas fx:id="shapeLayer" height="500.0" width="500.0" />
                   <Canvas fx:id="stitchLayer" height="500.0" visible="false" width="500.0" />
-                  <Canvas fx:id="previewLayer" height="500.0" width="500.0" />
                </children>
             </StackPane>
          </children>
