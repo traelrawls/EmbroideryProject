@@ -140,8 +140,9 @@
             </TitledPane>
             <TitledPane fx:id="shapeListContainer" animated="false" prefHeight="335.0" prefWidth="224.0" text="Shape List">
               <content>
-                <AnchorPane fx:id="shapeList" minHeight="0.0" minWidth="0.0" prefHeight="309.0" prefWidth="0.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="309.0" prefWidth="0.0">
                      <children>
+                        <ListView fx:id="shapeListView" layoutX="-1.0" layoutY="-5.0" prefHeight="318.0" prefWidth="224.0" />
                         <ScrollBar layoutX="208.0" orientation="VERTICAL" prefHeight="310.0" prefWidth="14.0" />
                      </children>
                   </AnchorPane>
