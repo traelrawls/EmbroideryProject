@@ -79,17 +79,4 @@ public class EmbShapeWrapperTatamiFill extends A_EmbShapeWrapper
     { this.angle = angle; }
     
     /*-----------------------------------------------------------------------*/
-    
-    /**
-     * Generates a list of stitches for the shape wrapper.
-     */
-    @Override
-    public void toStitchList()
-    {
-        //look at alternating the ordereing for each line segment 
-        //in stitch subdivision so that stitches can just be created
-        //in an interative loop.
-    }
-    
-    /*-----------------------------------------------------------------------*/
 }

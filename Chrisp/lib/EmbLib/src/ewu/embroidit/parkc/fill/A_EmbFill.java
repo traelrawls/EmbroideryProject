@@ -1,8 +1,8 @@
 package ewu.embroidit.parkc.fill;
 
-import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
@@ -44,15 +44,27 @@ public abstract class A_EmbFill
         List<Line> lineList;
         List<Line> modifiedLineList;
         double stitchLength;
+        boolean isOdd;
         
         this.validateObject(shapeWrapper);
         lineList = shapeWrapper.getLineList();
         modifiedLineList = new ArrayList<>();
         stitchLength = shapeWrapper.getStitchLength();
+        isOdd = true;
         
         for(Line line : lineList)
-            modifiedLineList.addAll(singleLineDivide(line, stitchLength));
-        
+        {
+            if(isOdd)
+            {
+                modifiedLineList.addAll(singleLineDivide(line, stitchLength));
+                isOdd = false;
+            }
+            else
+            {
+                modifiedLineList.addAll(invertLineSegments(singleLineDivide(line, stitchLength)));
+                isOdd = true;
+            }
+        }
         shapeWrapper.setLineList(modifiedLineList);
     }
     
@@ -101,6 +113,31 @@ public abstract class A_EmbFill
                         tempLine.getEndX(), tempLine.getEndY()));
         
         return dividedList;
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Helper method for inverting segment order for improved stitch digitizing.
+     * Reverses the List order, and swaps start and end coordinates.
+     * @param segmentList List&lt;Line&gt;
+     */
+    private List<Line> invertLineSegments(List<Line> segmentList)
+    {
+        double tempX, tempY;
+        
+        Collections.reverse(segmentList);
+        for(Line line : segmentList)
+        {
+            tempX = line.getStartX();
+            tempY = line.getStartY();
+            line.setStartX(line.getEndX());
+            line.setStartY(line.getEndY());
+            line.setEndX(tempX);
+            line.setEndY(tempY);
+        }
+        
+        return segmentList;
     }
     
     /*-----------------------------------------------------------------------*/

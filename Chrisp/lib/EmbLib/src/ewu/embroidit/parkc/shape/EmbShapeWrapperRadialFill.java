@@ -47,19 +47,4 @@ public class EmbShapeWrapperRadialFill extends A_EmbShapeWrapper
         super(wrappedShape, startPoint);
     }
     
-    /*-----------------------------------------------------------------------*/
-    
-    /**
-     * Generates a list of stitches for the shape wrapper.
-     */
-    @Override
-    public void toStitchList()
-    {
-        //sitch coords from center to outer
-        //the outer to center
-        //center to outer
-        //outer to center
-        //etc (will create fan effect)
-    }
-    
     /*-----------------------------------------------------------------------*/}

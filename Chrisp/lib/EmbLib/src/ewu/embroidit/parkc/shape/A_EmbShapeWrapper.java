@@ -30,7 +30,6 @@ public abstract class A_EmbShapeWrapper
     protected Color threadColor;
     protected double stitchLength;
     
-    
     /*-----------------------------------------------------------------------*/
     
     /**
@@ -90,9 +89,23 @@ public abstract class A_EmbShapeWrapper
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Break down a line list into a collection of stitches.
+     * Break down a line list into a collection of stitches. No encoding is used
+     * in this step. Each line segment.
      */
-    public abstract void toStitchList();
+    public void toStitchList()
+    {
+        Point2D tempPoint;
+        
+        for(Line line : this.lineList)
+        {
+            tempPoint = new Point2D(line.getStartX(), line.getStartY());
+            this.stitchList.add(new EmbStitch(tempPoint));
+            tempPoint = new Point2D(line.getEndX(), line.getEndY());
+            this.stitchList.add(new EmbStitch(tempPoint));
+        }
+        
+        //Go through the stitch list an remove duplicate stitches.
+    }
     
     /*-----------------------------------------------------------------------*/
     

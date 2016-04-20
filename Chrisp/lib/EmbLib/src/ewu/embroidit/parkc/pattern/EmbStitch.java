@@ -1,5 +1,6 @@
 package ewu.embroidit.parkc.pattern;
 
+import ewu.embroidit.parkc.io.StitchCode;
 import javafx.geometry.Point2D;
 
 
@@ -16,6 +17,35 @@ public class EmbStitch
     private int colorIndex;          //Color number
     private Point2D absPosition;     //Absolute (x,y) position
     
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Constructs an embroidery stitch with the given position, initialized
+     * with a normal encoding.
+     * @param absPosition Point2D
+     */
+    public EmbStitch(Point2D absPosition)
+    {
+        this.validateObject(absPosition);
+        this.absPosition = absPosition;
+        this.flag = StitchCode.NORMAL;
+        //color index uncessesary here? Shape wrapper contains color for fills.
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Constructs an embroidery stitch with the given position and encoding
+     * flag.
+     * @param absPosition Point2D
+     * @param flag int
+     */
+    public EmbStitch(Point2D absPosition, int flag)
+    {
+        this.validateObject(absPosition);
+        this.absPosition = absPosition;
+        this.flag = flag;
+    }
     /*-----------------------------------------------------------------------*/
     
     /**
