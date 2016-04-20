@@ -1,6 +1,5 @@
 package ewu.embroidit.parkc.fill;
 
-import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
 import ewu.embroidit.parkc.util.VerticalLineSort;
 import java.util.ArrayList;
@@ -89,15 +88,6 @@ public class EmbFillTatamiRect extends A_EmbFill
                 rect.getY() + rect.getHeight());
         
         lineList.add(midPointLine);
-    }
-
-    /*-----------------------------------------------------------------------*/
-    
-    @Override
-    protected List<EmbStitch> generateStitchList(A_EmbShapeWrapper shapeWrapper)
-    {
-        //TODO: Implement Stitch generator
-        return null;
     }
     
     /*-----------------------------------------------------------------------*/

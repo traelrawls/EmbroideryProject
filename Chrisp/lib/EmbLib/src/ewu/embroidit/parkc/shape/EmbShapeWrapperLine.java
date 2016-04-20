@@ -35,5 +35,17 @@ public class EmbShapeWrapperLine extends A_EmbShapeWrapper
     }
     
     /*-----------------------------------------------------------------------*/
-
+    
+    /**
+     * Generates a list of stitches for the shape wrapper.
+     */
+    @Override
+    public void toStitchList()
+    {
+        //for each line in the line list. add its start and end points as embstitches
+        //to stitch list.
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
 }

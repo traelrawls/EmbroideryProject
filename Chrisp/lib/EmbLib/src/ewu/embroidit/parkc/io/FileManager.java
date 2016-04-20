@@ -120,7 +120,23 @@ public class FileManager
         sortedWrapperList = this.sortWrappersByColor(wrapperList);
         
         //NEXT:
-        //figure out when and how to mark jump and stop stitches.
+        //Break down stitches
+            //break down shapes into points (EmbStitch) (Done is Shape Wrappers)
+        
+        //encode stitches    
+        //for each shape
+                //grab the last stitch
+                //iterate to next shape
+                //if that shapes color is the same and the distance
+                //between the end and start points respectively
+                //is greater than MM_TO_PXL * 12.00
+                //duplicate the start stitch of the next shape
+                //add that stitch as a jump stitch
+                //(starting stitch remains, jump stitches do not
+                //stitch, they move.)
+                
+                //if the shapes are not the same color, a stop stitch should
+                //be encoded.
         //Set up bitmasked output encoding with PES and PEC.
     }
     
