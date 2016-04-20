@@ -121,9 +121,9 @@
    <right>
       <VBox id="rightContainer" prefHeight="579.0" prefWidth="224.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
          <children>
-            <TitledPane animated="false" prefHeight="326.0" prefWidth="224.0" text="Object Properties">
+            <TitledPane animated="false" prefHeight="181.0" prefWidth="224.0" text="Object Properties">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="236.0" prefWidth="222.0">
                      <children>
                         <Label layoutX="14.0" layoutY="8.0" text="X:" />
                         <TextField layoutX="35.0" layoutY="4.0" prefHeight="25.0" prefWidth="52.0" />
@@ -136,6 +136,16 @@
                         <Label layoutX="6.0" layoutY="115.0" text="Rotation:" />
                         <TextField layoutX="61.0" layoutY="111.0" prefHeight="25.0" prefWidth="107.0" />
                      </children></AnchorPane>
+              </content>
+            </TitledPane>
+            <TitledPane fx:id="shapeListContainer" animated="false" prefHeight="335.0" prefWidth="224.0" text="Shape List">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="shapeList" layoutX="-1.0" layoutY="-5.0" prefHeight="315.0" prefWidth="224.0" />
+                        <ScrollBar layoutX="208.0" orientation="VERTICAL" prefHeight="310.0" prefWidth="14.0" />
+                     </children>
+                  </AnchorPane>
               </content>
             </TitledPane>
          </children>
