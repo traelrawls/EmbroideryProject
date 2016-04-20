@@ -9,7 +9,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 
-
 /*-----------------------------------------------------------------------*/
 /**
  * Base abstract class for Shape wrappers. 
