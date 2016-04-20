@@ -29,6 +29,7 @@ public abstract class A_EmbShapeWrapper
     protected Point2D startPoint;
     protected Color threadColor;
     protected double stitchLength;
+    protected String name;
     
     /*-----------------------------------------------------------------------*/
     
@@ -44,6 +45,7 @@ public abstract class A_EmbShapeWrapper
         this.lineList = new ArrayList<>();
         this.threadColor = Color.BLACK;
         this.stitchLength = DEFAULT_STITCH_LENGTH;
+        this.name = "";
     }
     
     /*-----------------------------------------------------------------------*/
@@ -62,6 +64,7 @@ public abstract class A_EmbShapeWrapper
         this.lineList = new ArrayList<>();
         this.threadColor = Color.BLACK;
         this.stitchLength = stitchLength;
+        this.name = "";
         
         if(stitchLength < DEFAULT_STITCH_LENGTH)
             this.stitchLength = DEFAULT_STITCH_LENGTH;
@@ -84,6 +87,7 @@ public abstract class A_EmbShapeWrapper
         this.lineList = new ArrayList<>();
         this.threadColor = Color.BLACK;
         this.stitchLength = DEFAULT_STITCH_LENGTH;
+        this.name = "";
     }
     
     /*-----------------------------------------------------------------------*/
@@ -239,6 +243,26 @@ public abstract class A_EmbShapeWrapper
         //Add stitch length cap check here
     }
     
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Gets the name of the contained shape.
+     * @return String
+     */
+    public String getName()
+    { return this.name; }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Sets the name of the contained shape.
+     * @param name String
+     */
+    public void setName(String name)
+    {
+        this.validateObject(name);
+        this.name = name;
+    }
     /*-----------------------------------------------------------------------*/
     
     /**
