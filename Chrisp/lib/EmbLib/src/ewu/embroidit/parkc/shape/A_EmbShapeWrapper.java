@@ -90,6 +90,13 @@ public abstract class A_EmbShapeWrapper
     /*-----------------------------------------------------------------------*/
     
     /**
+     * Break down a line list into a collection of stitches.
+     */
+    public abstract void toStitchList();
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
      * Returns the fill line list for the wrappers corresponding shape.
      * @return List&lt;Line&gt;
      */

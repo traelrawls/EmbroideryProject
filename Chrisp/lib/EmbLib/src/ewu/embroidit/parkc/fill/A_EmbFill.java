@@ -30,15 +30,6 @@ public abstract class A_EmbFill
      */
     public abstract void fillShape(A_EmbShapeWrapper shapeWrapper);
     
-    /*-----------------------------------------------------------------------*/
-    
-    /**
-     * Takes the takes a line list and breaks it down into
-     * an ordered sequence of stitches.
-     * @param lineList List&lt;Line&gt;
-     * @return ArrayList&lt;EmbStitch&gt;
-     */
-    protected abstract List<EmbStitch> generateStitchList(A_EmbShapeWrapper shapeWrapper);
     
     /*-----------------------------------------------------------------------*/
     

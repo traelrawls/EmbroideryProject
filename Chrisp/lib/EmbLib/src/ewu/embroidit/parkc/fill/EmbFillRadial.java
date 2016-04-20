@@ -78,13 +78,4 @@ public class EmbFillRadial extends A_EmbFill
     }
     
     /*-----------------------------------------------------------------------*/
-    
-    @Override
-    protected List<EmbStitch> generateStitchList(A_EmbShapeWrapper shapeWrapper)
-    {
-        //TODO: Implement Stitch generator
-        return null;
-    }
-    
-    /*-----------------------------------------------------------------------*/
 }
