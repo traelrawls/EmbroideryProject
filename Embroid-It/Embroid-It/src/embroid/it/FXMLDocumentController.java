@@ -58,6 +58,8 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Canvas shapeLayer;
     @FXML
+    private Canvas previewLayer;
+    @FXML
     private Label label;
     
     /*-----------------------------------------------------------------------*/
@@ -70,8 +72,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void lineDrawingMode()
     {
-        this.mouseDraggedGeneric = this.mouseDraggedHandlerLine;
-        this.mouseReleasedGeneric = this.mouseReleasedHandlerLine;
+        this.mouseHandlerGeneric = this.mouseHandlerLine;
         this.setMouseHandlers();
     }
     
@@ -83,8 +84,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void rectDrawingMode()
     {
-        this.mouseDraggedGeneric = this.mouseDraggedHandlerRect;
-        this.mouseReleasedGeneric = this.mouseReleasedHandlerRect;
+        this.mouseHandlerGeneric = this.mouseHandlerRect;
         this.setMouseHandlers();
     }
     
@@ -96,8 +96,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void ellipseDrawingMode()
     {
-        this.mouseDraggedGeneric = this.mouseDraggedHandlerRect;
-        this.mouseReleasedGeneric = this.mouseReleasedHandlerEllipse;
+        this.mouseHandlerGeneric = this.mouseHandlerEllipse;
         this.setMouseHandlers();
     }
     
@@ -197,65 +196,61 @@ public class FXMLDocumentController implements Initializable {
     //EVENT HANDLERS
     /*-----------------------------------------------------------------------*/
     
-    EventHandler<MouseEvent> mouseDraggedGeneric;
-    EventHandler<MouseEvent> mouseReleasedGeneric;
-    
-    EventHandler<MouseEvent> mousePressedHandler = new EventHandler<MouseEvent>()
-    {
-        @Override
-        public void handle(MouseEvent mouseEvent)
-        {    
-            startCoordX = mouseEvent.getX();
-            startCoordY = mouseEvent.getY();
-            endCoordX = mouseEvent.getX();
-            endCoordY = mouseEvent.getY();
-        }
-    };
+    EventHandler<MouseEvent> mouseHandlerGeneric;
     
     /*-----------------------------------------------------------------------*/
     
-    EventHandler<MouseEvent> mouseDraggedHandlerLine = new EventHandler<MouseEvent>()
+    EventHandler<MouseEvent> mouseHandlerLine = new EventHandler<MouseEvent>()
     {
         @Override
         public void handle(MouseEvent mouseEvent)
         {    
-            endCoordX = mouseEvent.getX();
-            endCoordY = mouseEvent.getY();
+            if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
+            {
+                startCoordX = mouseEvent.getX();
+                startCoordY = mouseEvent.getY();
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
+            }
+            else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
+            {
+                previewLayer.getGraphicsContext2D().clearRect(0,0,previewLayer.getWidth(),previewLayer.getHeight());
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
+                previewLayer.getGraphicsContext2D().strokeLine(startCoordX, startCoordY, endCoordX, endCoordY);
+            }
+            else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
+            {
+                stitchLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX,endCoordY);
+                shapeLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX, endCoordY);
+                previewLayer.getGraphicsContext2D().clearRect(0,0,previewLayer.getWidth(),previewLayer.getHeight());
+            }
         }
     };
         
     /*-----------------------------------------------------------------------*/
     
-    EventHandler<MouseEvent> mouseDraggedHandlerRect = new EventHandler<MouseEvent>()
-    {
-        //Redundant - Same as Dragged Line and Dragged Rect
-        @Override
-            public void handle(MouseEvent mouseEvent)
-            {
-                endCoordX = mouseEvent.getX();
-                endCoordY = mouseEvent.getY();                
-            }   
-    };
-    
-    /*-----------------------------------------------------------------------*/
-    
-    EventHandler<MouseEvent> mouseReleasedHandlerLine = new EventHandler<MouseEvent>()
+    EventHandler<MouseEvent> mouseHandlerRect = new EventHandler<MouseEvent>()
     {
         @Override
         public void handle(MouseEvent mouseEvent)
-        {    
-            stitchLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX,endCoordY);
-            shapeLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX, endCoordY);
-        }
-    };
-    
-    /*-----------------------------------------------------------------------*/
-    
-    EventHandler<MouseEvent> mouseReleasedHandlerRect = new EventHandler<MouseEvent>()
-    {
-       @Override
-            public void handle(MouseEvent mouseEvent)
-            {    
+        {
+            if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
+            {
+                startCoordX = mouseEvent.getX();
+                startCoordY = mouseEvent.getY();
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
+            }
+            else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
+            {
+                previewLayer.getGraphicsContext2D().clearRect(0,0,previewLayer.getWidth(),previewLayer.getHeight());
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
+                previewRectangleOnCanvas();
+            }
+            else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
+            {
                 if (startCoordX <= endCoordX && startCoordY <= endCoordY)
                 {
                     drawRectangleToCanvas(startCoordX,startCoordY,endCoordX-startCoordX,endCoordY-startCoordY);
@@ -275,36 +270,62 @@ public class FXMLDocumentController implements Initializable {
                 {
                     drawRectangleToCanvas(startCoordX,endCoordY,endCoordX-startCoordX,startCoordY-endCoordY);
                 }
+                previewLayer.getGraphicsContext2D().clearRect(0, 0, previewLayer.getWidth(), previewLayer.getHeight());
             }
+        }
     };
     
     /*-----------------------------------------------------------------------*/
     
-    EventHandler<MouseEvent> mouseReleasedHandlerEllipse = new EventHandler<MouseEvent>()
+    
+    /*-----------------------------------------------------------------------*/
+
+    
+    /*-----------------------------------------------------------------------*/
+    
+    EventHandler<MouseEvent> mouseHandlerEllipse = new EventHandler<MouseEvent>()
     {
         @Override
         public void handle(MouseEvent mouseEvent)
         {
-            if (startCoordX <= endCoordX && startCoordY <= endCoordY)
+            if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
             {
-                drawEllipseToCanvas(startCoordX+(endCoordX-startCoordX)/2,startCoordY+(endCoordY-startCoordY)/2,(endCoordX-startCoordX)/2,(endCoordY-startCoordY)/2);
+                startCoordX = mouseEvent.getX();
+                startCoordY = mouseEvent.getY();
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
             }
-            else if (startCoordX > endCoordX)
+            else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED)
             {
-                if (startCoordY <= endCoordY)
+                previewLayer.getGraphicsContext2D().clearRect(0, 0, previewLayer.getWidth(), previewLayer.getHeight());
+                endCoordX = mouseEvent.getX();
+                endCoordY = mouseEvent.getY();
+                previewEllipseOnCanvas();
+            }
+            else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
+            {
+                if (startCoordX <= endCoordX && startCoordY <= endCoordY)
                 {
-                    drawEllipseToCanvas(endCoordX+(startCoordX-endCoordX)/2,startCoordY+(endCoordY-startCoordY)/2,(startCoordX-endCoordX)/2,(endCoordY-startCoordY)/2);
+                    drawEllipseToCanvas(startCoordX+(endCoordX-startCoordX)/2,startCoordY+(endCoordY-startCoordY)/2,(endCoordX-startCoordX)/2,(endCoordY-startCoordY)/2);
+                }
+                else if (startCoordX > endCoordX)
+                {
+                    if (startCoordY <= endCoordY)
+                    {
+                        drawEllipseToCanvas(endCoordX+(startCoordX-endCoordX)/2,startCoordY+(endCoordY-startCoordY)/2,(startCoordX-endCoordX)/2,(endCoordY-startCoordY)/2);
+                    }
+                    else if (startCoordY > endCoordY)
+                    {
+                        drawEllipseToCanvas(endCoordX+(startCoordX-endCoordX)/2,endCoordY+(startCoordY-endCoordY)/2,(startCoordX-endCoordX)/2,(startCoordY-endCoordY)/2);
+                    }
                 }
                 else if (startCoordY > endCoordY)
                 {
-                    drawEllipseToCanvas(endCoordX+(startCoordX-endCoordX)/2,endCoordY+(startCoordY-endCoordY)/2,(startCoordX-endCoordX)/2,(startCoordY-endCoordY)/2);
+                    drawEllipseToCanvas(startCoordX+(endCoordX-startCoordX)/2,endCoordY+(startCoordY-endCoordY)/2,(endCoordX-startCoordX)/2,(startCoordY-endCoordY)/2);
                 }
+                previewLayer.getGraphicsContext2D().clearRect(0, 0, previewLayer.getWidth(), previewLayer.getHeight());
             }
-            else if (startCoordY > endCoordY)
-            {
-                drawEllipseToCanvas(startCoordX+(endCoordX-startCoordX)/2,endCoordY+(startCoordY-endCoordY)/2,(endCoordX-startCoordX)/2,(startCoordY-endCoordY)/2);
-            }  
-        }    
+        }
     };
     
     /*-----------------------------------------------------------------------*/
@@ -316,12 +337,16 @@ public class FXMLDocumentController implements Initializable {
      */
     private void setMouseHandlers()
     {
-        this.stitchLayer.setOnMousePressed(this.mousePressedHandler);
-        this.stitchLayer.setOnMouseDragged(this.mouseDraggedGeneric);
-        this.stitchLayer.setOnMouseReleased(this.mouseReleasedGeneric);
-        this.shapeLayer.setOnMousePressed(this.mousePressedHandler);
-        this.shapeLayer.setOnMouseDragged(this.mouseDraggedGeneric);
-        this.shapeLayer.setOnMouseReleased(this.mouseReleasedGeneric);
+        this.stitchLayer.setOnMouseEntered(this.mouseHandlerGeneric);
+        this.stitchLayer.setOnMouseMoved(this.mouseHandlerGeneric);
+        this.stitchLayer.setOnMousePressed(this.mouseHandlerGeneric);
+        this.stitchLayer.setOnMouseDragged(this.mouseHandlerGeneric);
+        this.stitchLayer.setOnMouseReleased(this.mouseHandlerGeneric);
+        this.shapeLayer.setOnMouseEntered(this.mouseHandlerGeneric);
+        this.shapeLayer.setOnMouseMoved(this.mouseHandlerGeneric);
+        this.shapeLayer.setOnMousePressed(this.mouseHandlerGeneric);
+        this.shapeLayer.setOnMouseDragged(this.mouseHandlerGeneric);
+        this.shapeLayer.setOnMouseReleased(this.mouseHandlerGeneric);
     }
     
     /*-----------------------------------------------------------------------*/
@@ -362,6 +387,31 @@ public class FXMLDocumentController implements Initializable {
             firstStitch = false;
         }
     }
+
+    /*-----------------------------------------------------------------------*/    
+    
+    private void previewRectangleOnCanvas()
+    {
+        if (startCoordX <= endCoordX && startCoordY <= endCoordY)
+        {
+            previewLayer.getGraphicsContext2D().strokeRect(startCoordX,startCoordY,endCoordX-startCoordX,endCoordY-startCoordY);
+        }
+        else if (startCoordX > endCoordX)
+        {
+            if (startCoordY <= endCoordY)
+            {
+                previewLayer.getGraphicsContext2D().strokeRect(endCoordX,startCoordY,startCoordX-endCoordX,endCoordY-startCoordY);
+            }
+            else if (startCoordY > endCoordY)
+            {
+                previewLayer.getGraphicsContext2D().strokeRect(endCoordX,endCoordY,startCoordX-endCoordX,startCoordY-endCoordY);
+            }
+        }
+        else if (startCoordY > endCoordY)
+        {
+            previewLayer.getGraphicsContext2D().strokeRect(startCoordX,endCoordY,endCoordX-startCoordX,startCoordY-endCoordY);
+        }
+    }
     
     /*-----------------------------------------------------------------------*/
     
@@ -379,6 +429,31 @@ public class FXMLDocumentController implements Initializable {
         fillStrat.fillShape(rectWrapper);
         drawLinesFromList(stitchLayer, rectWrapper.getLineList());
         shapeLayer.getGraphicsContext2D().strokeRect(xCoor,yCoor,width,height);
+    }
+    
+     /*-----------------------------------------------------------------------*/
+    
+    private void previewEllipseOnCanvas()
+    {
+        if (startCoordX <= endCoordX && startCoordY <= endCoordY)
+        {
+            previewLayer.getGraphicsContext2D().strokeOval(startCoordX,startCoordY,endCoordX-startCoordX,endCoordY-startCoordY);
+        }
+        else if (startCoordX > endCoordX)
+        {
+            if (startCoordY <= endCoordY)
+            {
+                previewLayer.getGraphicsContext2D().strokeOval(endCoordX,startCoordY,startCoordX-endCoordX,endCoordY-startCoordY);
+            }
+            else if (startCoordY > endCoordY)
+            {
+                previewLayer.getGraphicsContext2D().strokeOval(endCoordX,endCoordY,startCoordX-endCoordX,startCoordY-endCoordY);
+            }
+        }
+        else if (startCoordY > endCoordY)
+        {
+            previewLayer.getGraphicsContext2D().strokeOval(startCoordX,endCoordY,endCoordX-startCoordX,startCoordY-endCoordY);
+        }          
     }
     
     /*-----------------------------------------------------------------------*/
