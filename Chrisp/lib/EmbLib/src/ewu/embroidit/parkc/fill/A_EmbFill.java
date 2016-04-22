@@ -32,7 +32,6 @@ public abstract class A_EmbFill
     
     
     /*-----------------------------------------------------------------------*/
-    
        
     /**
      * Takes the shapeWrappers line list and breaks it down into chains of
@@ -119,7 +118,9 @@ public abstract class A_EmbFill
     
     /**
      * Helper method for inverting segment order for improved stitch digitizing.
-     * Reverses the List order, and swaps start and end coordinates.
+     * Reverses the Line list order, and swaps start and end coordinates. This
+     * Sets segments coordinates up for sequential breakdown, and eliminates
+     * potential in fill jump stitches.
      * @param segmentList List&lt;Line&gt;
      */
     private List<Line> invertLineSegments(List<Line> segmentList)
@@ -160,6 +161,7 @@ public abstract class A_EmbFill
     }
     
     /*-----------------------------------------------------------------------*/
+    
     /**
      * Ensures that the object sent as a parameter exists.
      * @param obj Object
@@ -169,5 +171,6 @@ public abstract class A_EmbFill
         if (obj == null)
         { throw new RuntimeException("A_EmbFill: Null reference error"); }
     }
+    
     /*-----------------------------------------------------------------------*/
 }

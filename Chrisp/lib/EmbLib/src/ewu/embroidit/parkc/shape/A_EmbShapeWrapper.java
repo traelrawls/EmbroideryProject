@@ -93,11 +93,18 @@ public abstract class A_EmbShapeWrapper
     
     /**
      * Break down a line list into a collection of stitches. No encoding is used
-     * in this step. Each line segment.
+     * in this step. Each line segment ordered for proper breakdown by its fill
+     * strategy. After all points are broken down into stitches. duplicates
+     * are removed.
      */
     public void toStitchList()
     {
-        Point2D tempPoint;
+        Point2D tempPoint; 
+        EmbStitch prevStitch;
+        List<EmbStitch> duplicateList;
+        
+        duplicateList = new ArrayList<>();
+        prevStitch = new EmbStitch(new Point2D(9999, 9999)); //arbitrarily large to ensure no initial match.
         
         for(Line line : this.lineList)
         {
@@ -107,7 +114,17 @@ public abstract class A_EmbShapeWrapper
             this.stitchList.add(new EmbStitch(tempPoint));
         }
         
-        //Go through the stitch list an remove duplicate stitches.
+        for(EmbStitch stitch : this.stitchList)
+        {
+            if(stitch.getStitchPosition().getX() == prevStitch.getStitchPosition().getX() 
+            && stitch.getStitchPosition().getY() == prevStitch.getStitchPosition().getY())
+                duplicateList.add(stitch); 
+            
+            prevStitch = stitch;
+        }
+        
+        for(EmbStitch stitch : duplicateList)
+            this.stitchList.remove(stitch);
     }
     
     /*-----------------------------------------------------------------------*/

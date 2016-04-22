@@ -1,6 +1,5 @@
 package ewu.embroidit.parkc.fill;
 
-import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
 import ewu.embroidit.parkc.util.math.EmbMathEllipse;
 import java.util.ArrayList;

@@ -144,7 +144,7 @@ public class PECDecoder
      * Gets the stitches from file and adds them to the pattern.
      * Pulls byte values out of the PES file and references them against the 
      * stitch codes (StitchCode) to determine the stitch type, color, and 
-     * location of each stitch, which are then stored a pattern.
+     * location of each stitch, which are then stored in a pattern.
      * @param pattern EmbPattern
      * @param inFile  RandomAccessFile
      */

@@ -34,7 +34,6 @@ public class FileManager
         return FileManagerHolder.INSTANCE;
     }
     
-    
     private static class FileManagerHolder
     { private static final FileManager INSTANCE = new FileManager(); }
     
@@ -57,7 +56,6 @@ public class FileManager
             inObject = new ObjectInputStream(inFile);
             pattern = (EmbPattern) inObject.readObject();
             inObject.close();
-            
         }
         catch(Exception e)
         { System.err.println("FileManager: openPattern: " + e); }
@@ -123,7 +121,6 @@ public class FileManager
         //Break down stitches
             //break down shapes into points (EmbStitch) (Done is Shape Wrappers)
         
-        //encode stitches    
         //for each shape
                 //grab the last stitch
                 //iterate to next shape
