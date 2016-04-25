@@ -117,10 +117,7 @@ public class FileManager
         wrapperList = this.getWrapperList(pattern);
         sortedWrapperList = this.sortWrappersByColor(wrapperList);
         
-        //NEXT:
-        //Break down stitches
-            //break down shapes into points (EmbStitch) (Done is Shape Wrappers)
-        
+        //Encode Stitches
         //for each shape
                 //grab the last stitch
                 //iterate to next shape
