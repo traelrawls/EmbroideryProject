@@ -117,21 +117,34 @@ public class FileManager
         wrapperList = this.getWrapperList(pattern);
         sortedWrapperList = this.sortWrappersByColor(wrapperList);
         
-        //Encode Stitches
-        //for each shape
-                //grab the last stitch
-                //iterate to next shape
-                //if that shapes color is the same and the distance
-                //between the end and start points respectively
-                //is greater than MM_TO_PXL * 12.00
-                //duplicate the start stitch of the next shape
-                //add that stitch as a jump stitch
-                //(starting stitch remains, jump stitches do not
-                //stitch, they move.)
-                
-                //if the shapes are not the same color, a stop stitch should
-                //be encoded.
+        assignStitchCodes(wrapperList);
+        
         //Set up bitmasked output encoding with PES and PEC.
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Iterates through all shape stitch lists, and assigns stitch code values
+     * for use in encoding.
+     * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
+     */
+    private void assignStitchCodes(List<A_EmbShapeWrapper> wrapperList)
+    {
+        //for each stitch in each shape
+            //blanket encode them to normal
+        
+        //for each shape
+            //get last stitch
+            //move to next shape
+                //if shape color is the same &&
+                //distance between stitches is > 12mm * MM_TO_PXL
+                    //duplicate that starting stitch and set it as a jump
+                //if the color is different
+                    //duplicate starting stitch and set as stop stitch
+        //set last stitch in last shape as end stitch.
+        
+        //run PEC and PES Encoding for export (PECDecoder, PESFormat)
     }
     
     /*-----------------------------------------------------------------------*/
