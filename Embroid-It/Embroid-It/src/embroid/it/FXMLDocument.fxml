@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.input.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
@@ -18,36 +19,81 @@
               <menus>
                 <Menu id="save" mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="New" />
-                        <MenuItem mnemonicParsing="false" text="Open" />
+                    <MenuItem mnemonicParsing="false" text="New">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem mnemonicParsing="false" text="Open">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Save" />
-                        <MenuItem mnemonicParsing="false" text="Save As..." />
+                        <MenuItem disable="true" mnemonicParsing="false" text="Save">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem disable="true" mnemonicParsing="false" text="Save As..." />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="menuItemImport" mnemonicParsing="false" onAction="#menuImportFile" text="Import" />
-                        <MenuItem mnemonicParsing="false" text="Export" />
+                        <MenuItem fx:id="menuItemImport" mnemonicParsing="false" onAction="#menuImportFile" text="Import">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem disable="true" mnemonicParsing="false" text="Export">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Exit" />
+                        <MenuItem mnemonicParsing="false" text="Exit">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="F4" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Undo" />
-                        <MenuItem mnemonicParsing="false" text="Redo" />
+                      <MenuItem disable="true" mnemonicParsing="false" text="Undo">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="U" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem disable="true" mnemonicParsing="false" text="Redo">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
                     </items>
                   </Menu>
               </menus>
             </MenuBar>
             <FlowPane id="layerOptions" alignment="CENTER_LEFT" columnHalignment="CENTER" prefHeight="40.0" prefWidth="1000.0" style="-fx-background-color: C8C8C8;">
                <children>
-                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" prefHeight="40.0" prefWidth="40.0" text="STITCH">
+                  <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" prefHeight="40.0" prefWidth="40.0" text="Undo" textAlignment="CENTER">
                      <graphic>
                         <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@res/Stitch2.gif" />
+                              <Image url="@res/Undo.gif" />
                            </image>
                         </ImageView>
-                     </graphic></Button>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="Undo" />
+                     </tooltip>
+                  </Button>
+                  <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
+                     <graphic>
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@res/Redo.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="Redo" />
+                     </tooltip>
+                  </Button>
+                  <Separator orientation="VERTICAL" prefHeight="40.0" prefWidth="12.0">
+                     <padding>
+                        <Insets left="5.0" right="2.0" />
+                     </padding>
+                  </Separator>
                   <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" prefHeight="40.0" prefWidth="40.0" text="SHAPE" textAlignment="CENTER">
                      <graphic>
                         <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
@@ -56,9 +102,20 @@
                            </image>
                         </ImageView>
                      </graphic>
-                     <padding>
-                        <Insets left="5.0" />
-                     </padding></Button>
+                     <tooltip>
+                        <Tooltip text="Shape Layer" />
+                     </tooltip></Button>
+                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" prefHeight="40.0" prefWidth="40.0" text="STITCH">
+                     <graphic>
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@res/Stitch2.gif" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="Stitch Layer" />
+                     </tooltip></Button>
                </children>
                <VBox.margin>
                   <Insets />
