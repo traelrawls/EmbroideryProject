@@ -1,8 +1,10 @@
 package stitchfilltest;
 
+import ewu.embroidit.parkc.fill.EmbFillLine;
 import ewu.embroidit.parkc.fill.EmbFillRadial;
 import ewu.embroidit.parkc.fill.EmbFillTatamiRect;
 import ewu.embroidit.parkc.io.FileManager;
+import ewu.embroidit.parkc.pattern.EmbStitch;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -57,23 +59,43 @@ public class StitchFillTest extends Application
         /*-----------------------------------------------------------------------*/
         
         /*-----------------------------------------------------------------------*/
-        //TEST Rendering
+        //Test Line Fill
+        Line line = new Line(170, 170, 202, 202);
+        A_EmbShapeWrapper lineWrapper = new EmbShapeWrapperLine(line);
+        EmbFillLine lineFillStrat = new EmbFillLine();
+        lineFillStrat.fillShape(lineWrapper);
+        //END TEST Line Fill
+        /*-----------------------------------------------------------------------*/
+        
+        /*-----------------------------------------------------------------------*/
+        //TEST Shape Rendering
+        
         Group root = new Group();
         Canvas canvas = new Canvas(300, 250);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
+        //Rectangle
         drawRect(gc, rectWrapper);
         drawFill(gc, rectWrapper, Color.CORNFLOWERBLUE);
         
+        //Ellipse
         drawEllipse(gc, ellipseWrapper);
         drawFill(gc, ellipseWrapper, Color.CHOCOLATE);
         
+        //Line
+        //drawLine(gc, lineWrapper);
+        drawFill(gc, lineWrapper, Color.BROWN);
+        
         root.getChildren().add(canvas);
+        
         //END TEST Rendering
         /*-----------------------------------------------------------------------*/
         
         /*-----------------------------------------------------------------------*/
         //TEST Color Sorting
+        System.err.println();
+        System.err.println("---COLOR SORT TESTS---");
+        
         A_EmbShapeWrapper wrapper;
         List<A_EmbShapeWrapper> wrapperList;
         
@@ -123,11 +145,54 @@ public class StitchFillTest extends Application
             wrapperList.get(sortCount).setThreadColor(Color.BLUE);
         
         wrapperList = this.testSort(wrapperList);
+        
+        System.err.println("---END COLOR SORT TESTS---");
         //END TEST Color Sorting
+        /*-----------------------------------------------------------------------*/
+        
+        /*-----------------------------------------------------------------------*/
+        //TEST Stitch Breakdown Values
+        //Description: Prints out the stitch lists created by each shape's stitch
+        //fill strategy to check for expected coordinate progression.
+        System.err.println();
+        System.err.println("---STITCH BREAKDOWN TESTS---");
+        System.err.println("Rectangle Stitch List:");
+        printStitchList(rectWrapper);
+        System.err.println();
+        System.err.println("Ellipse Stitch List:");
+        printStitchList(ellipseWrapper);
+        System.err.println();
+        System.err.println("Line Stitch List:");
+        printStitchList(lineWrapper);
+        System.err.println("---END STITCH BREAKDOWN TESTS---");
+        //END Stitch Breakdown Values
         /*-----------------------------------------------------------------------*/
         
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Prints the shape wrappers stitch list to System.err.
+     * @param shapeWrapper A_EmbShapeWrapper
+     */
+    private void printStitchList(A_EmbShapeWrapper shapeWrapper)
+    {
+        
+        int count = 1;
+        List<EmbStitch> stitchList = shapeWrapper.getStitchList();
+        
+        for(EmbStitch stitch : stitchList)
+        {
+            System.err.println("Stitch #: " + count);
+            System.err.println("Coord: X: " + stitch.getStitchPosition().getX());
+            System.err.println("Coord: Y: " + stitch.getStitchPosition().getY());
+            count++;
+        }
+        
+        System.err.println("Total Stitch Count: " + (count - 1) +".");
     }
     
     /*-----------------------------------------------------------------------*/
@@ -155,6 +220,11 @@ public class StitchFillTest extends Application
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Draws the given ellipse.
+     * @param gc GraphicsContext
+     * @param shapeWrapper A_EmbShapeWrapper
+     */
     private void drawEllipse(GraphicsContext gc, A_EmbShapeWrapper shapeWrapper)
     {
         Ellipse ellipse = (Ellipse) shapeWrapper.getWrappedShape();
@@ -171,6 +241,11 @@ public class StitchFillTest extends Application
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Draw the given rectangle.
+     * @param gc GraphicsContext
+     * @param shapeWrapper A_EmbShapeWrapper
+     */
     private void drawRect(GraphicsContext gc, A_EmbShapeWrapper shapeWrapper )
     {
         Rectangle rect = (Rectangle) shapeWrapper.getWrappedShape();
@@ -186,6 +261,31 @@ public class StitchFillTest extends Application
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Draws the given line.
+     * @param gc GraphicsContext
+     * @param shapeWrapper A_EmbShapeWrapper
+     */
+    private void drawLine(GraphicsContext gc, A_EmbShapeWrapper shapeWrapper)
+    {
+        Line line = (Line) shapeWrapper.getWrappedShape();
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+        gc.strokeLine(
+                line.getStartX(),
+                line.getStartY(),
+                line.getEndX(),
+                line.getEndY());
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Draws the fill line segments from the given shape wrapper.
+     * @param gc GraphicsContext
+     * @param shapeWrapper A_EmbShapeWrapper
+     * @param color Color
+     */
     private void drawFill(GraphicsContext gc, A_EmbShapeWrapper shapeWrapper, Color color)
     {
         List<Line> lineList = shapeWrapper.getLineList();

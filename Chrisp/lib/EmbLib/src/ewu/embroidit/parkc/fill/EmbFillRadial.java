@@ -39,10 +39,10 @@ public class EmbFillRadial extends A_EmbFill
         
         ellipse = (Ellipse) shapeWrapper.getWrappedShape();
         lineList = new ArrayList<>();
-
         fillEllipse(ellipse, lineList);
         shapeWrapper.setLineList(lineList);
         this.subDivideFillLines(shapeWrapper);
+        shapeWrapper.toStitchList();
     }
     
     /*-----------------------------------------------------------------------*/

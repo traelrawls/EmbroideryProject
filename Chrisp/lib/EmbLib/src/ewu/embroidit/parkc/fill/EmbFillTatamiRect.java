@@ -41,12 +41,11 @@ public class EmbFillTatamiRect extends A_EmbFill
         
         rect = (Rectangle) shapeWrapper.getWrappedShape();
         lineList = new ArrayList<>();
-        
         divideRectRecursive(rect, lineList);
-        
         Collections.sort(lineList, new VerticalLineSort());
         shapeWrapper.setLineList(lineList);
         this.subDivideFillLines(shapeWrapper);
+        shapeWrapper.toStitchList();
     }
     
     /*-----------------------------------------------------------------------*/
