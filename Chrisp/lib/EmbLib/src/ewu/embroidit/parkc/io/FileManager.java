@@ -1,7 +1,10 @@
 package ewu.embroidit.parkc.io;
 
+import ewu.embroidit.parkc.fill.A_EmbFill;
 import ewu.embroidit.parkc.pattern.EmbPattern;
+import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
+import ewu.embroidit.parkc.util.math.EmbMathPoint;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Shape;
 
 
@@ -120,31 +124,77 @@ public class FileManager
         assignStitchCodes(wrapperList);
         
         //Set up bitmasked output encoding with PES and PEC.
+        //run PEC and PES Encoding for export (PECDecoder, PESFormat)
     }
     
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Iterates through all shape stitch lists, and assigns stitch code values
-     * for use in encoding.
+     * Iterates through all shape stitch lists, and assigns stitch code flag 
+     * values for use in encoding. First it makes a complete pass and sets all
+     * stitch flags to normal. Then it iterates over the lists again looking for
+     * specific jump/stop/end code instances, and inserts the necessary duplicate
+     * stitches where needed.
      * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
      */
     private void assignStitchCodes(List<A_EmbShapeWrapper> wrapperList)
     {
-        //for each stitch in each shape
-            //blanket encode them to normal
+        A_EmbShapeWrapper prevWrapper;
+        List<EmbStitch> tempStitchList;
+        EmbStitch prevStitch, startStitch, duplicateStitch;
+        Point2D tempPoint;
+        boolean isFirstShape = true;
+        double dist;
         
-        //for each shape
-            //get last stitch
-            //move to next shape
-                //if shape color is the same &&
-                //distance between stitches is > 12mm * MM_TO_PXL
-                    //duplicate that starting stitch and set it as a jump
-                //if the color is different
-                    //duplicate starting stitch and set as stop stitch
-        //set last stitch in last shape as end stitch.
+        for(A_EmbShapeWrapper wrapper : wrapperList)
+        {
+            tempStitchList = wrapper.getStitchList();
+            for(EmbStitch stitch : tempStitchList)
+                stitch.setFlag(StitchCode.NORMAL);
+        }
         
-        //run PEC and PES Encoding for export (PECDecoder, PESFormat)
+        prevWrapper = wrapperList.get(0);
+        prevStitch = new EmbStitch(new Point2D(0, 0));
+        for(A_EmbShapeWrapper wrapper : wrapperList)
+        {
+            if(!isFirstShape)
+            {
+                startStitch = wrapper.getStitchList().get(0);
+                dist = EmbMathPoint.calculateDistance(prevStitch.getStitchPosition(),
+                        startStitch.getStitchPosition());
+                
+                tempPoint = new Point2D(startStitch.getStitchPosition().getX(),
+                    startStitch.getStitchPosition().getX());
+                    duplicateStitch = new EmbStitch(tempPoint);
+                    
+                if(wrapper.getThreadColor().equals(prevWrapper.getThreadColor())
+                && dist >= 12.01 * A_EmbFill.MM_TO_PXL)
+                {                    
+                    duplicateStitch.setFlag(StitchCode.JUMP);   
+                    wrapper.getStitchList().add(0, duplicateStitch);
+                }
+                else if(!wrapper.getThreadColor().equals(prevWrapper.getThreadColor()))
+                {   
+                    duplicateStitch.setFlag(StitchCode.STOP);   
+                    wrapper.getStitchList().add(0, duplicateStitch);
+                }
+            }
+            
+            prevWrapper = wrapper;
+            tempStitchList = prevWrapper.getStitchList();
+            prevStitch = tempStitchList.get(tempStitchList.size() - 1);
+            
+            if(isFirstShape)
+                isFirstShape = false;
+        }
+        
+        tempStitchList = wrapperList.get(wrapperList.size() - 1).getStitchList();
+        tempPoint = new Point2D(
+                tempStitchList.get(tempStitchList.size() - 1).getStitchPosition().getX(),
+                tempStitchList.get(tempStitchList.size() - 1).getStitchPosition().getY());
+        duplicateStitch = new EmbStitch(tempPoint);
+        duplicateStitch.setFlag(StitchCode.END);
+        tempStitchList.add(duplicateStitch);
     }
     
     /*-----------------------------------------------------------------------*/

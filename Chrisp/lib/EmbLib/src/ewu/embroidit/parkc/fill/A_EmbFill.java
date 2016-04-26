@@ -1,6 +1,7 @@
 package ewu.embroidit.parkc.fill;
 
 import ewu.embroidit.parkc.shape.*;
+import ewu.embroidit.parkc.util.math.EmbMathPoint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -97,8 +98,8 @@ public abstract class A_EmbFill
             endPoint = startPoint.add(unitVec);
             
             //if the new line segment extends beyond the old one exit the loop.
-            if(this.calculateDistance(startPoint, endPoint) >= 
-                    this.calculateDistance(startPoint, maxEndPoint))
+            if(EmbMathPoint.calculateDistance(startPoint, endPoint) >= 
+                    EmbMathPoint.calculateDistance(startPoint, maxEndPoint))
                 break;
             
             dividedList.add(new Line(startPoint.getX(), startPoint.getY(),
@@ -139,25 +140,6 @@ public abstract class A_EmbFill
         }
         
         return segmentList;
-    }
-    
-    /*-----------------------------------------------------------------------*/
-    
-    /**
-     * Return the distance between two points.
-     * TODO: (Refactor into math package or find JavaFX library replacement)
-     * @param point1 Point2D
-     * @param point2 Point2D
-     * @return double
-     */
-    private double calculateDistance(Point2D point1, Point2D point2)
-    {
-        double deltaX, deltaY;
-        
-        deltaX = Math.pow((point1.getX() - point2.getX()), 2);
-        deltaY = Math.pow((point1.getY() - point2.getY()), 2);
-        
-        return Math.sqrt(deltaX + deltaY);
     }
     
     /*-----------------------------------------------------------------------*/
