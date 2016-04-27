@@ -294,14 +294,14 @@ public class StitchFillTest extends Application
         
         gc.setStroke(color);
         gc.setLineWidth(2);
-        gc.setLineCap(StrokeLineCap.SQUARE);
+        gc.setLineCap(StrokeLineCap.BUTT);
         
         for(Line line : lineList)
         {           
-            gc.strokeLine(line.getStartX() + 0.5,
-                    line.getStartY() + 0.5,
+            gc.strokeLine(line.getStartX()+ 0.5,
+                    line.getStartY(),// + 0.5,
                     line.getEndX() + 0.5,
-                    line.getEndY() + 0.5 );
+                    line.getEndY());// + 0.5 );
         }
     }
     
