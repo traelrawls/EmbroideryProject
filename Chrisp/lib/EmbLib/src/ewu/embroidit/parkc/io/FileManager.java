@@ -121,7 +121,7 @@ public class FileManager
         wrapperList = this.getWrapperList(pattern);
         sortedWrapperList = this.sortWrappersByColor(wrapperList);
         
-        assignStitchCodes(wrapperList);
+        this.assignStitchCodes(wrapperList);
         
         //Set up bitmasked output encoding with PES and PEC.
         //run PEC and PES Encoding for export (PECDecoder, PESFormat)
@@ -134,7 +134,7 @@ public class FileManager
      * values for use in encoding. First it makes a complete pass and sets all
      * stitch flags to normal. Then it iterates over the lists again looking for
      * specific jump/stop/end code instances, and inserts the necessary duplicate
-     * stitches where needed.
+     * stitches (encodings) where needed.
      * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
      */
     private void assignStitchCodes(List<A_EmbShapeWrapper> wrapperList)
@@ -162,22 +162,10 @@ public class FileManager
                 startStitch = wrapper.getStitchList().get(0);
                 dist = EmbMathPoint.calculateDistance(prevStitch.getStitchPosition(),
                         startStitch.getStitchPosition());
-                
                 tempPoint = new Point2D(startStitch.getStitchPosition().getX(),
                     startStitch.getStitchPosition().getX());
-                    duplicateStitch = new EmbStitch(tempPoint);
-                    
-                if(wrapper.getThreadColor().equals(prevWrapper.getThreadColor())
-                && dist >= 12.01 * A_EmbFill.MM_TO_PXL)
-                {                    
-                    duplicateStitch.setFlag(StitchCode.JUMP);   
-                    wrapper.getStitchList().add(0, duplicateStitch);
-                }
-                else if(!wrapper.getThreadColor().equals(prevWrapper.getThreadColor()))
-                {   
-                    duplicateStitch.setFlag(StitchCode.STOP);   
-                    wrapper.getStitchList().add(0, duplicateStitch);
-                }
+                duplicateStitch = new EmbStitch(tempPoint);
+                this.encodeJumpStop(wrapper, prevWrapper, duplicateStitch, dist);
             }
             
             prevWrapper = wrapper;
@@ -199,6 +187,33 @@ public class FileManager
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Helper method. Given two wrappers, the distance between their ordered
+     * stitches, and a copy of the arriving stitch between them, the method 
+     * checks for encoding conditions and applies the appropriate encoding as 
+     * necessary.
+     * @param curWrapper A_EmbShapeWrapper
+     * @param prevWrapper A_EmbShapeWrapper
+     * @param duplicateStitch EmbStitch
+     * @param dist double
+     */
+    private void encodeJumpStop(A_EmbShapeWrapper curWrapper, A_EmbShapeWrapper prevWrapper,
+            EmbStitch duplicateStitch, double dist)
+    {
+        if(curWrapper.getThreadColor().equals(prevWrapper.getThreadColor())
+                && dist >= 12.01 * A_EmbFill.MM_TO_PXL)
+                {                    
+                    duplicateStitch.setFlag(StitchCode.JUMP);   
+                    curWrapper.getStitchList().add(0, duplicateStitch);
+                }
+                else if(!curWrapper.getThreadColor().equals(prevWrapper.getThreadColor()))
+                {   
+                    duplicateStitch.setFlag(StitchCode.STOP);   
+                    curWrapper.getStitchList().add(0, duplicateStitch);
+                }
+    }
+    
+    /*-----------------------------------------------------------------------*/
     /**
      * Returns the shape wrapper list for the given pattern.
      * @param pattern EmbPattern

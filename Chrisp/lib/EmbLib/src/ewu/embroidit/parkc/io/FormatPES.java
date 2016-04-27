@@ -28,6 +28,19 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Basic constructor that does not initialize any importing functionality.
+     * Use for exporting functionality
+     */
+    public FormatPES()
+    {}
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Constructs a pattern from the imported file.
+     * @param file 
+     */
     public FormatPES(File file)
     {
         this.validateObject(file);

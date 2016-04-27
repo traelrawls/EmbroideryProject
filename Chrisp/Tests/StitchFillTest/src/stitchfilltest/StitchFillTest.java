@@ -166,6 +166,21 @@ public class StitchFillTest extends Application
         printStitchList(lineWrapper);
         System.err.println("---END STITCH BREAKDOWN TESTS---");
         //END Stitch Breakdown Values
+        
+        /*-----------------------------------------------------------------------*/
+        //TEST Encoding Values
+        
+        //create a wrapper list based from test shapes
+        //make at least 3, 2 of which should share color values.
+        //case: all shapes > 12 mm apart
+            //print encoding values
+        //case all shapes < 12 mm apart
+            //print encoding values
+        //case: 2 of 3 shapes >12 mm apart
+            //print encoding values
+        
+        //END TEST Encoding Values
+        
         /*-----------------------------------------------------------------------*/
         
         primaryStage.setScene(new Scene(root));
