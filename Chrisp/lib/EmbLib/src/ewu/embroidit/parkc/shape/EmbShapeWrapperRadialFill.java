@@ -1,6 +1,7 @@
 package ewu.embroidit.parkc.shape;
 
 import javafx.geometry.Point2D;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
@@ -45,6 +46,23 @@ public class EmbShapeWrapperRadialFill extends A_EmbShapeWrapper
     public EmbShapeWrapperRadialFill(Shape wrappedShape, Point2D startPoint)
     {
         super(wrappedShape, startPoint);
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Returns an object containing the dimensional properties of this
+     * wrappers contained shape.
+     * @return EmbShapeDimension
+     */
+    @Override
+    public EmbShapeDimension getDimensions()
+    {
+        Ellipse ellipse = (Ellipse) this.getWrappedShape();
+        EmbShapeDimension dims = new EmbShapeDimension("ellipse",
+                new Point2D(ellipse.getCenterX(),ellipse.getCenterY()),
+        ellipse.getRadiusX(), ellipse.getRadiusY());
+        return dims;
     }
     
     /*-----------------------------------------------------------------------*/}

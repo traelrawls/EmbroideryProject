@@ -1,6 +1,7 @@
 package ewu.embroidit.parkc.shape;
 
 import javafx.geometry.Point2D;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
@@ -77,6 +78,22 @@ public class EmbShapeWrapperTatamiFill extends A_EmbShapeWrapper
      */
     public void setAngle(double angle)
     { this.angle = angle; }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Returns an object containing the dimensional properties of this
+     * wrappers contained shape.
+     * @return EmbShapeDimension
+     */
+    @Override
+    public EmbShapeDimension getDimensions()
+    {
+        Rectangle rect = (Rectangle) this.getWrappedShape();
+                new Point2D(rect.getX(), rect.getY()),
+                rect.getWidth(), rect.getHeight());
+        return dims;
+    }
     
     /*-----------------------------------------------------------------------*/
 }

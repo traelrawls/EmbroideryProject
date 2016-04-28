@@ -32,6 +32,10 @@ public abstract class A_EmbShapeWrapper
     
     /*-----------------------------------------------------------------------*/
     
+    public abstract EmbShapeDimension getDimensions();
+    
+    /*-----------------------------------------------------------------------*/
+    
     /**
      * Constructs a wrapper containing a JavaFX shape, and default values.
      * @param wrappedShape Shape

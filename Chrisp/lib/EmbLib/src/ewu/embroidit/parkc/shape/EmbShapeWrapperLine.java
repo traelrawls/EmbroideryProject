@@ -1,6 +1,6 @@
 package ewu.embroidit.parkc.shape;
 
-import java.util.List;
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 
@@ -38,4 +38,21 @@ public class EmbShapeWrapperLine extends A_EmbShapeWrapper
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Returns an object containing the dimensional properties of this
+     * wrappers contained shape.
+     * @return EmbShapeDimension
+     */
+    @Override
+    public EmbShapeDimension getDimensions()
+    {
+        Line line = (Line) this.getWrappedShape();
+        EmbShapeDimension dims = new EmbShapeDimension("line",
+                new Point2D(line.getStartX(), line.getStartY()),
+                new Point2D(line.getEndX(), line.getEndY()));
+        
+        return dims;
+    }
+    
+    /*-----------------------------------------------------------------------*/
 }
