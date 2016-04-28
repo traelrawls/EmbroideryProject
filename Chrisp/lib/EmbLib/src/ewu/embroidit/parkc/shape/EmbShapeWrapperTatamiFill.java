@@ -90,6 +90,7 @@ public class EmbShapeWrapperTatamiFill extends A_EmbShapeWrapper
     public EmbShapeDimension getDimensions()
     {
         Rectangle rect = (Rectangle) this.getWrappedShape();
+        EmbShapeDimension dims = new EmbShapeDimension("rectangle",
                 new Point2D(rect.getX(), rect.getY()),
                 rect.getWidth(), rect.getHeight());
         return dims;
