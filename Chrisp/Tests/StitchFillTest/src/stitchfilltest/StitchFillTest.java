@@ -154,6 +154,8 @@ public class StitchFillTest extends Application
         //TEST Stitch Breakdown Values
         //Description: Prints out the stitch lists created by each shape's stitch
         //fill strategy to check for expected coordinate progression.
+        
+        /*
         System.err.println();
         System.err.println("---STITCH BREAKDOWN TESTS---");
         System.err.println("Rectangle Stitch List:");
@@ -165,26 +167,67 @@ public class StitchFillTest extends Application
         System.err.println("Line Stitch List:");
         printStitchList(lineWrapper);
         System.err.println("---END STITCH BREAKDOWN TESTS---");
+        */
+        
         //END Stitch Breakdown Values
         
         /*-----------------------------------------------------------------------*/
         //TEST Encoding Values
         
-        //create a wrapper list based from test shapes
-        //make at least 3, 2 of which should share color values.
-        //case: all shapes > 12 mm apart
-            //print encoding values
-        //case all shapes < 12 mm apart
-            //print encoding values
-        //case: 2 of 3 shapes >12 mm apart
-            //print encoding values
+        System.err.println();
+        System.err.println("---STITCH ENCODE TEST---");
+        List<A_EmbShapeWrapper> encodeWrapperList = new ArrayList<>();
         
+        Rectangle encodeRect = new Rectangle(0, 0, 32, 32);
+        A_EmbShapeWrapper encodeRectWrapper = new EmbShapeWrapperTatamiFill(encodeRect);
+        encodeRectWrapper.setThreadColor(Color.BLUE);
+        EmbFillTatamiRect encodeRectFillStrat = new EmbFillTatamiRect();                
+        encodeRectFillStrat.fillShape(encodeRectWrapper);
+        
+        encodeWrapperList.add(encodeRectWrapper);
+        
+        Ellipse encodeEllipse = new Ellipse(0, 0, 32, 32);
+        A_EmbShapeWrapper encodeEllipseWrapper = new EmbShapeWrapperRadialFill(encodeEllipse);
+        encodeEllipseWrapper.setThreadColor(Color.BLACK);
+        EmbFillRadial encodeEllipseFillStrat = new EmbFillRadial();
+        encodeEllipseFillStrat.fillShape(encodeEllipseWrapper);
+        
+        encodeWrapperList.add(encodeEllipseWrapper);
+        
+        
+        
+        System.err.println();
+        System.err.println("Wrapper Count: " + encodeWrapperList.size());
+        
+        //encode the wrapperList
+        FileManager.getInstance().assignStitchCodes(encodeWrapperList);
+        this.printStitchFlags(encodeWrapperList);
+        
+        
+        System.err.println("---END STITCH ENCODE TEST---");
         //END TEST Encoding Values
-        
         /*-----------------------------------------------------------------------*/
         
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+    }
+    
+    
+    /*-----------------------------------------------------------------------*/
+    
+    private void printStitchFlags(List<A_EmbShapeWrapper> wrapperList)
+    {
+        //print flag values
+        List<EmbStitch> encodeStitchList;
+        for(A_EmbShapeWrapper wrap : wrapperList)
+        {
+            encodeStitchList = wrap.getStitchList();
+            System.err.println("---Shape Start---");
+            for(EmbStitch stitch : encodeStitchList)
+                System.err.println("Stitch Code: " + stitch.getFlag());
+            
+            System.err.println("---Shape End---");
+        }
     }
     
     /*-----------------------------------------------------------------------*/

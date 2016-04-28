@@ -137,7 +137,7 @@ public class FileManager
      * stitches (encodings) where needed.
      * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
      */
-    private void assignStitchCodes(List<A_EmbShapeWrapper> wrapperList)
+    public void assignStitchCodes(List<A_EmbShapeWrapper> wrapperList)
     {
         A_EmbShapeWrapper prevWrapper;
         List<EmbStitch> tempStitchList;
