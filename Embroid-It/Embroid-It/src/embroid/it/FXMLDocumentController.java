@@ -15,26 +15,32 @@ import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
 import ewu.embroidit.parkc.shape.EmbShapeWrapperRadialFill;
 import ewu.embroidit.parkc.shape.EmbShapeWrapperTatamiFill;
+import ewu.embroidit.parkc.shape.EmbShapeDimension;
 import java.io.File;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.collections.ObservableList;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.ChangeListener;
+
 
 /**
  *
@@ -46,12 +52,15 @@ public class FXMLDocumentController implements Initializable {
     
     private final FileChooser fileBrowser = new FileChooser();
     private final DirectoryChooser dirBrowser = new DirectoryChooser();
+    private final ObservableList listViewShapes = FXCollections.observableArrayList();
     private EmbPattern pattern = new EmbPattern();
+    private List<A_EmbShapeWrapper> shapeList = new ArrayList();
     private Stage primaryStage;
     private BorderPane root;
     private VBox centerContainer = new VBox();
     private StackPane canvasContainer = new StackPane();
     private double startCoordX, startCoordY, endCoordX, endCoordY;
+    private int rectNameNum, ellipseNameNum, lineNameNum;
     
     @FXML
     private Canvas stitchLayer;
@@ -60,7 +69,11 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Canvas previewLayer;
     @FXML
-    private Label label;
+    private Label coordinateLabel;
+    @FXML
+    private ListView shapeListView;
+    @FXML
+    private TextField xField, yField, heightField, widthField, rotationField;
     
     /*-----------------------------------------------------------------------*/
     //Buttons
@@ -204,7 +217,8 @@ public class FXMLDocumentController implements Initializable {
     {
         @Override
         public void handle(MouseEvent mouseEvent)
-        {    
+        {
+            coordinateLabel.setText("[X, Y] : " + "[" + (mouseEvent.getX()-stitchLayer.getWidth()/2) + ", " + (mouseEvent.getY()-stitchLayer.getHeight()/2) + "]");
             if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
             {
                 startCoordX = mouseEvent.getX();
@@ -235,6 +249,7 @@ public class FXMLDocumentController implements Initializable {
         @Override
         public void handle(MouseEvent mouseEvent)
         {
+            coordinateLabel.setText("[X, Y] : " + "[" + (mouseEvent.getX()-stitchLayer.getWidth()/2) + ", " + (mouseEvent.getY()-stitchLayer.getHeight()/2) + "]");
             if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
             {
                 startCoordX = mouseEvent.getX();
@@ -288,6 +303,7 @@ public class FXMLDocumentController implements Initializable {
         @Override
         public void handle(MouseEvent mouseEvent)
         {
+            coordinateLabel.setText("[X, Y] : " + "[" + (mouseEvent.getX()-stitchLayer.getWidth()/2) + ", " + (mouseEvent.getY()-stitchLayer.getHeight()/2) + "]");
             if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED)
             {
                 startCoordX = mouseEvent.getX();
@@ -423,8 +439,12 @@ public class FXMLDocumentController implements Initializable {
         newRect.setWidth(width);
         newRect.setHeight(height);
         A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(newRect);
+        rectWrapper.setName("Rectangle" + this.rectNameNum);
+        this.rectNameNum++;
         pattern.addShape(newRect);
         pattern.addShapeWrapper(rectWrapper);
+        this.shapeList.add(rectWrapper);
+        listViewShapes.add(rectWrapper.getName());
         A_EmbFill fillStrat = new EmbFillTatamiRect();
         fillStrat.fillShape(rectWrapper);
         drawLinesFromList(stitchLayer, rectWrapper.getLineList());
@@ -467,8 +487,12 @@ public class FXMLDocumentController implements Initializable {
         newEllipse.setRadiusY(radiusY);
         A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(newEllipse);
         A_EmbFill fillStrat = new EmbFillRadial();
+        ellipseWrapper.setName("Ellipse" + this.ellipseNameNum);
+        this.ellipseNameNum++;
         pattern.addShape(newEllipse);
         pattern.addShapeWrapper(ellipseWrapper);
+        this.shapeList.add(ellipseWrapper);
+        listViewShapes.add(ellipseWrapper.getName());
         fillStrat.fillShape(ellipseWrapper);
         drawLinesFromList(stitchLayer, ellipseWrapper.getLineList());
         shapeLayer.getGraphicsContext2D().strokeOval(centerX-radiusX,centerY-radiusY,radiusX*2,radiusY*2);    
@@ -481,6 +505,18 @@ public class FXMLDocumentController implements Initializable {
     {
         this.shapeLayer.setVisible(true);
         this.stitchLayer.setVisible(false);
+        this.shapeListView.setItems(listViewShapes);
+        this.shapeListView.getSelectionModel().selectedItemProperty().addListener(
+            new ChangeListener<String>() {
+                public void changed(ObservableValue<? extends String> ov, 
+                    String old_val, String new_val) {
+                        EmbShapeDimension dims = shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()).getDimensions();
+                        xField.setText(""+dims.getStartCoord().getX());
+                        yField.setText(""+dims.getStartCoord().getY());
+                        heightField.setText(""+dims.getHeight());
+                        widthField.setText(""+dims.getWidth());
+            }
+        });
     }
     
     /*-----------------------------------------------------------------------*/
