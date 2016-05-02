@@ -20,7 +20,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 import javafx.collections.FXCollections;
-import javafx.event.EventHandler;
+import javafx.event.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -34,6 +34,7 @@ import javafx.scene.shape.Shape;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -72,6 +73,8 @@ public class FXMLDocumentController implements Initializable {
     private Label coordinateLabel;
     @FXML
     private ListView shapeListView;
+    @FXML
+    private ColorPicker colorPicker;
     @FXML
     private TextField xField, yField, heightField, widthField, rotationField;
     
@@ -448,7 +451,7 @@ public class FXMLDocumentController implements Initializable {
         A_EmbFill fillStrat = new EmbFillTatamiRect();
         fillStrat.fillShape(rectWrapper);
         drawLinesFromList(stitchLayer, rectWrapper.getLineList());
-        shapeLayer.getGraphicsContext2D().strokeRect(xCoor,yCoor,width,height);
+        shapeLayer.getGraphicsContext2D().fillRect(xCoor,yCoor,width,height);
     }
     
      /*-----------------------------------------------------------------------*/
@@ -495,7 +498,29 @@ public class FXMLDocumentController implements Initializable {
         listViewShapes.add(ellipseWrapper.getName());
         fillStrat.fillShape(ellipseWrapper);
         drawLinesFromList(stitchLayer, ellipseWrapper.getLineList());
-        shapeLayer.getGraphicsContext2D().strokeOval(centerX-radiusX,centerY-radiusY,radiusX*2,radiusY*2);    
+        shapeLayer.getGraphicsContext2D().fillOval(centerX-radiusX,centerY-radiusY,radiusX*2,radiusY*2);    
+    }
+    
+    @FXML
+    private void resetGUI()
+    {
+        this.stitchLayer.getGraphicsContext2D().clearRect(0,0,previewLayer.getWidth(),previewLayer.getHeight());
+        this.shapeLayer.getGraphicsContext2D().clearRect(0,0,previewLayer.getWidth(),previewLayer.getHeight());
+        this.xField.setText("");
+        this.yField.setText("");
+        this.heightField.setText("");
+        this.widthField.setText("");
+        this.pattern = new EmbPattern();
+        this.shapeList.clear();
+        this.listViewShapes.clear();
+        this.rectNameNum = 0;
+        this.ellipseNameNum = 0;
+        this.lineNameNum = 0;
+        this.colorPicker.setValue(Color.BLACK);
+        this.stitchLayer.getGraphicsContext2D().setStroke(Color.BLACK);
+        this.stitchLayer.getGraphicsContext2D().setFill(Color.BLACK);
+        this.shapeLayer.getGraphicsContext2D().setStroke(Color.BLACK);
+        this.stitchLayer.getGraphicsContext2D().setFill(Color.BLACK);
     }
     
     /*-----------------------------------------------------------------------*/
@@ -515,6 +540,14 @@ public class FXMLDocumentController implements Initializable {
                         yField.setText(""+dims.getStartCoord().getY());
                         heightField.setText(""+dims.getHeight());
                         widthField.setText(""+dims.getWidth());
+            }
+        });
+        this.colorPicker.setOnAction(new EventHandler() {
+            public void handle(Event t) {
+                        stitchLayer.getGraphicsContext2D().setStroke(colorPicker.getValue());
+                        stitchLayer.getGraphicsContext2D().setFill(colorPicker.getValue());
+                        shapeLayer.getGraphicsContext2D().setStroke(colorPicker.getValue());
+                        shapeLayer.getGraphicsContext2D().setFill(colorPicker.getValue());
             }
         });
     }
