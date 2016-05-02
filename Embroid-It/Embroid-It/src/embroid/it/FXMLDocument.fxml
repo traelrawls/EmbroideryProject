@@ -189,6 +189,7 @@
                         <Label fx:id="rotationLabel" layoutX="6.0" layoutY="115.0" text="Rotation:" />
                         <TextField fx:id="rotationField" layoutX="61.0" layoutY="111.0" prefHeight="25.0" prefWidth="107.0" />
                         <Button fx:id="changeButton" layoutX="84.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Change" />
+                        <Button fx:id="deleteButton" layoutX="24.0" layoutY="146.0" mnemonicParsing="false" text="Delete" />
                      </children></AnchorPane>
               </content>
             </TitledPane>
