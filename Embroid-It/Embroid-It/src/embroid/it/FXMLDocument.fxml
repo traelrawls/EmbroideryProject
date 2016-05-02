@@ -13,13 +13,13 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="embroid.it.FXMLDocumentController">
    <top>
-      <VBox id="topContainer" prefHeight="58.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+      <VBox id="topContainer" prefHeight="74.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
             <MenuBar id="menuBar">
               <menus>
                 <Menu id="save" mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="New">
+                    <MenuItem mnemonicParsing="false" onAction="#resetGUI" text="New">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
@@ -63,33 +63,9 @@
                   </Menu>
               </menus>
             </MenuBar>
-            <FlowPane id="layerOptions" alignment="CENTER_LEFT" columnHalignment="CENTER" prefHeight="40.0" prefWidth="1000.0" style="-fx-background-color: C8C8C8;">
+            <FlowPane id="layerOptions" alignment="CENTER" columnHalignment="CENTER" prefHeight="49.0" prefWidth="1000.0" style="-fx-background-color: C8C8C8;">
                <children>
-                  <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Undo" textAlignment="CENTER">
-                     <graphic>
-                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@res/Undo.gif" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Undo" />
-                     </tooltip>
-                  </Button>
-                  <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
-                     <graphic>
-                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@res/Redo.gif" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Redo" />
-                     </tooltip>
-                  </Button>
-                  <Separator orientation="VERTICAL" prefHeight="40.0" prefWidth="12.0" />
+                  <Label fx:id="endXLabel1" text="Shape" />
                   <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" prefHeight="40.0" prefWidth="40.0" text="SHAPE" textAlignment="CENTER">
                      <graphic>
                         <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
@@ -112,6 +88,7 @@
                      <tooltip>
                         <Tooltip text="Stitch Layer" />
                      </tooltip></Button>
+                  <Label fx:id="endXLabel11" text="Stitch" />
                </children>
                <VBox.margin>
                   <Insets />
@@ -126,6 +103,30 @@
    <left>
       <VBox id="leftContainer" alignment="TOP_CENTER" prefHeight="579.0" prefWidth="57.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
          <children>
+            <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Undo" textAlignment="CENTER">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@res/Undo.gif" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Undo" />
+               </tooltip>
+            </Button>
+            <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@res/Redo.gif" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Redo" />
+               </tooltip>
+            </Button>
             <Button id="lineButton" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#lineDrawingMode" prefHeight="40.0" prefWidth="40.0" text="Line">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
@@ -178,26 +179,28 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="179.0" prefWidth="222.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="8.0" text="X:" fx:id="xLabel" />
-                        <TextField layoutX="35.0" layoutY="4.0" prefHeight="25.0" prefWidth="52.0" fx:id="xField" />
-                        <Label fx:id="yLabel" layoutX="106.0" layoutY="8.0" text="Y:" />
-                        <TextField fx:id="yField" layoutX="126.0" layoutY="4.0" prefHeight="25.0" prefWidth="52.0" />
-                        <TextField fx:id="heightField" layoutX="61.0" layoutY="45.0" prefHeight="25.0" prefWidth="107.0" />
-                        <Label fx:id="heightLabel" layoutX="11.0" layoutY="49.0" text="Height:" />
-                        <Label fx:id="widthLabel" layoutX="11.0" layoutY="82.0" text="Width:" />
-                        <TextField fx:id="widthField" layoutX="61.0" layoutY="78.0" prefHeight="25.0" prefWidth="107.0" />
-                        <Label fx:id="rotationLabel" layoutX="6.0" layoutY="115.0" text="Rotation:" />
-                        <TextField fx:id="rotationField" layoutX="61.0" layoutY="111.0" prefHeight="25.0" prefWidth="107.0" />
-                        <Button fx:id="changeButton" layoutX="84.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Change" />
-                        <Button fx:id="deleteButton" layoutX="24.0" layoutY="146.0" mnemonicParsing="false" text="Delete" />
+                        <Label layoutX="27.0" layoutY="8.0" text="X:" fx:id="xLabel" />
+                        <TextField layoutX="49.0" layoutY="4.0" prefHeight="25.0" prefWidth="52.0" fx:id="xField" />
+                        <Label fx:id="yLabel" layoutX="131.0" layoutY="8.0" text="Y:" />
+                        <TextField fx:id="yField" layoutX="152.0" layoutY="2.0" prefHeight="25.0" prefWidth="52.0" />
+                        <TextField fx:id="heightField" layoutX="63.0" layoutY="80.0" prefHeight="25.0" prefWidth="95.0" />
+                        <Label fx:id="heightLabel" layoutX="11.0" layoutY="84.0" text="Height:" />
+                        <Label fx:id="widthLabel" layoutX="13.0" layoutY="113.0" text="Width:" />
+                        <TextField fx:id="widthField" layoutX="63.0" layoutY="109.0" prefHeight="25.0" prefWidth="95.0" />
+                        <Button fx:id="changeButton" layoutX="117.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Change" />
+                        <Button fx:id="deleteButton" layoutX="45.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Delete" />
+                        <Label fx:id="endXLabel" layoutX="7.0" layoutY="43.0" text="end X:" />
+                        <TextField fx:id="endXField" layoutX="49.0" layoutY="39.0" prefHeight="25.0" prefWidth="52.0" />
+                        <Label fx:id="endYLabel" layoutX="109.0" layoutY="43.0" text="end Y:" />
+                        <TextField fx:id="endYField" layoutX="152.0" layoutY="39.0" prefHeight="25.0" prefWidth="52.0" />
                      </children></AnchorPane>
               </content>
             </TitledPane>
-            <TitledPane fx:id="shapeListContainer" animated="false" prefHeight="298.0" prefWidth="224.0" text="Shape List">
+            <TitledPane fx:id="shapeListContainer" animated="false" prefHeight="387.0" prefWidth="224.0" text="Shape List">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="309.0" prefWidth="0.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="373.0" prefWidth="222.0">
                      <children>
-                        <ListView fx:id="shapeListView" layoutX="-1.0" layoutY="-3.0" prefHeight="318.0" prefWidth="224.0" />
+                        <ListView fx:id="shapeListView" layoutX="-1.0" layoutY="-3.0" prefHeight="365.0" prefWidth="224.0" />
                         <ScrollBar layoutX="208.0" orientation="VERTICAL" prefHeight="310.0" prefWidth="14.0" />
                      </children>
                   </AnchorPane>
