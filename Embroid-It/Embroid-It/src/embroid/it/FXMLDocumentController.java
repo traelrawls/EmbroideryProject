@@ -12,10 +12,7 @@ import ewu.embroidit.parkc.io.FormatPES;
 import ewu.embroidit.parkc.io.PECDecoder;
 import ewu.embroidit.parkc.pattern.EmbPattern;
 import ewu.embroidit.parkc.pattern.EmbStitch;
-import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
-import ewu.embroidit.parkc.shape.EmbShapeWrapperRadialFill;
-import ewu.embroidit.parkc.shape.EmbShapeWrapperTatamiFill;
-import ewu.embroidit.parkc.shape.EmbShapeDimension;
+import ewu.embroidit.parkc.shape.*;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -35,6 +32,7 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -76,7 +74,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ColorPicker colorPicker;
     @FXML
-    private TextField xField, yField, heightField, widthField, rotationField;
+    private TextField xField, yField, heightField, widthField, rotationField, endXField, endYField;
     
     /*-----------------------------------------------------------------------*/
     //Buttons
@@ -238,6 +236,15 @@ public class FXMLDocumentController implements Initializable {
             }
             else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED)
             {
+                Line newLine = new Line(startCoordX, startCoordY, endCoordX, endCoordY);
+                A_EmbShapeWrapper lineWrapper = new EmbShapeWrapperLine(newLine);
+                lineWrapper.setName("Line" + lineNameNum);
+                lineWrapper.setThreadColor(colorPicker.getValue());
+                lineNameNum++;
+                pattern.addShape(newLine);
+                pattern.addShapeWrapper(lineWrapper);
+                shapeList.add(lineWrapper);
+                listViewShapes.add(lineWrapper.getName());
                 stitchLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX,endCoordY);
                 shapeLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX, endCoordY);
                 previewLayer.getGraphicsContext2D().clearRect(0,0,previewLayer.getWidth(),previewLayer.getHeight());
@@ -443,6 +450,7 @@ public class FXMLDocumentController implements Initializable {
         newRect.setHeight(height);
         A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(newRect);
         rectWrapper.setName("Rectangle" + this.rectNameNum);
+        rectWrapper.setThreadColor(colorPicker.getValue());
         this.rectNameNum++;
         pattern.addShape(newRect);
         pattern.addShapeWrapper(rectWrapper);
@@ -491,6 +499,7 @@ public class FXMLDocumentController implements Initializable {
         A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(newEllipse);
         A_EmbFill fillStrat = new EmbFillRadial();
         ellipseWrapper.setName("Ellipse" + this.ellipseNameNum);
+        ellipseWrapper.setThreadColor(colorPicker.getValue());
         this.ellipseNameNum++;
         pattern.addShape(newEllipse);
         pattern.addShapeWrapper(ellipseWrapper);
@@ -499,6 +508,50 @@ public class FXMLDocumentController implements Initializable {
         fillStrat.fillShape(ellipseWrapper);
         drawLinesFromList(stitchLayer, ellipseWrapper.getLineList());
         shapeLayer.getGraphicsContext2D().fillOval(centerX-radiusX,centerY-radiusY,radiusX*2,radiusY*2);    
+    }
+    
+    private void redrawCanvas()
+    {
+        stitchLayer.getGraphicsContext2D().clearRect(0, 0, previewLayer.getWidth(), previewLayer.getHeight());
+        shapeLayer.getGraphicsContext2D().clearRect(0, 0, previewLayer.getWidth(), previewLayer.getHeight()); 
+        for (int i = 0; i < this.shapeList.size(); i++)
+        {
+            EmbShapeDimension dims = this.shapeList.get(i).getDimensions();
+            setColor(this.shapeList.get(i).getThreadColor());
+            if (this.pattern.getShapeList().get(i).getClass().getSimpleName().equals("Rectangle"))
+            {
+                Rectangle newRect = new Rectangle();
+                newRect.setX(dims.getStartCoord().getX());
+                newRect.setY(dims.getStartCoord().getY());
+                newRect.setWidth(dims.getWidth());
+                newRect.setHeight(dims.getHeight());
+                A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(newRect);
+                A_EmbFill fillStrat = new EmbFillTatamiRect();
+                fillStrat.fillShape(rectWrapper);
+                drawLinesFromList(stitchLayer, rectWrapper.getLineList());
+                shapeLayer.getGraphicsContext2D().fillRect(dims.getStartCoord().getX(),dims.getStartCoord().getY(),dims.getWidth(),dims.getHeight());        
+            }
+            else if (this.pattern.getShapeList().get(i).getClass().getSimpleName().equals("Ellipse"))
+            {
+                Ellipse newEllipse = new Ellipse();
+                newEllipse.setCenterX(dims.getStartCoord().getX() + (dims.getWidth()/2));
+                newEllipse.setCenterY(dims.getStartCoord().getY() + (dims.getHeight()/2));
+                newEllipse.setRadiusX(dims.getWidth()/2);
+                newEllipse.setRadiusY(dims.getHeight()/2);
+                A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(newEllipse);
+                A_EmbFill fillStrat = new EmbFillRadial();
+                fillStrat.fillShape(ellipseWrapper);
+                drawLinesFromList(stitchLayer, ellipseWrapper.getLineList());
+                shapeLayer.getGraphicsContext2D().fillOval(dims.getStartCoord().getX(),dims.getStartCoord().getY(),dims.getWidth(),dims.getHeight());                   
+            }
+            else if (this.pattern.getShapeList().get(i).getClass().getSimpleName().equals("Line"))
+            {
+                stitchLayer.getGraphicsContext2D().strokeLine(dims.getStartCoord().getX(),dims.getStartCoord().getY(),
+                                                             dims.getEndCoord().getX(),dims.getEndCoord().getY());
+                shapeLayer.getGraphicsContext2D().strokeLine(dims.getStartCoord().getX(),dims.getStartCoord().getY(),
+                                                             dims.getEndCoord().getX(),dims.getEndCoord().getY());
+            }
+        }
     }
     
     @FXML
@@ -517,10 +570,58 @@ public class FXMLDocumentController implements Initializable {
         this.ellipseNameNum = 0;
         this.lineNameNum = 0;
         this.colorPicker.setValue(Color.BLACK);
-        this.stitchLayer.getGraphicsContext2D().setStroke(Color.BLACK);
-        this.stitchLayer.getGraphicsContext2D().setFill(Color.BLACK);
-        this.shapeLayer.getGraphicsContext2D().setStroke(Color.BLACK);
-        this.stitchLayer.getGraphicsContext2D().setFill(Color.BLACK);
+        setColor(Color.BLACK);
+    }
+    
+    @FXML
+    public void editShape()
+    {      
+        Shape shapeToEdit = this.pattern.getShapeList().get(shapeListView.getSelectionModel().getSelectedIndex());
+        double xCoor = Double.parseDouble(xField.getText());
+        double yCoor = Double.parseDouble(yField.getText());
+        if (shapeToEdit.getClass().getSimpleName().equals("Line"))
+        {
+            double endXCoor = Double.parseDouble(endXField.getText());
+            double endYCoor = Double.parseDouble(endYField.getText());
+            Line newLine = new Line(xCoor, yCoor, endXCoor, endYCoor);
+            this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(),newLine);
+            this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), new EmbShapeWrapperLine(newLine));
+        }
+        else
+        {
+
+            double height = Double.parseDouble(heightField.getText());
+            double width = Double.parseDouble(widthField.getText()); 
+            if (shapeToEdit.getClass().getSimpleName().equals("Rectangle"))
+            {
+                Rectangle newRect = new Rectangle();
+                newRect.setX(xCoor);
+                newRect.setY(yCoor);
+                newRect.setHeight(height);
+                newRect.setWidth(width);
+                this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(),newRect);
+                this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), new EmbShapeWrapperTatamiFill(newRect));
+            }
+            else if (shapeToEdit.getClass().getSimpleName().equals("Ellipse"))
+            {
+                Ellipse newEllipse = new Ellipse();
+                newEllipse.setCenterX(xCoor + (width/2));
+                newEllipse.setCenterY(yCoor + (height/2));
+                newEllipse.setRadiusX(width/2);
+                newEllipse.setRadiusY(height/2);
+                this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(),newEllipse);
+                this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), new EmbShapeWrapperRadialFill(newEllipse));           
+            }        
+        }
+        redrawCanvas();
+    }
+    
+    private void setColor(Paint color)
+    {
+        this.stitchLayer.getGraphicsContext2D().setStroke(color);
+        this.stitchLayer.getGraphicsContext2D().setFill(color);
+        this.shapeLayer.getGraphicsContext2D().setStroke(color);
+        this.shapeLayer.getGraphicsContext2D().setFill(color);       
     }
     
     /*-----------------------------------------------------------------------*/
@@ -531,15 +632,30 @@ public class FXMLDocumentController implements Initializable {
         this.shapeLayer.setVisible(true);
         this.stitchLayer.setVisible(false);
         this.shapeListView.setItems(listViewShapes);
+        this.colorPicker.setValue(Color.BLACK);
+        
         this.shapeListView.getSelectionModel().selectedItemProperty().addListener(
             new ChangeListener<String>() {
                 public void changed(ObservableValue<? extends String> ov, 
                     String old_val, String new_val) {
-                        EmbShapeDimension dims = shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()).getDimensions();
+                        A_EmbShapeWrapper selectedShape = shapeList.get(shapeListView.getSelectionModel().getSelectedIndex());
+                        EmbShapeDimension dims = selectedShape.getDimensions();
+                        endXField.setText("");
+                        endYField.setText("");
+                        heightField.setText("");
+                        widthField.setText("");
                         xField.setText(""+dims.getStartCoord().getX());
                         yField.setText(""+dims.getStartCoord().getY());
-                        heightField.setText(""+dims.getHeight());
-                        widthField.setText(""+dims.getWidth());
+                        if (selectedShape.getClass().getSimpleName().equals("EmbShapeWrapperLine"))
+                        {
+                            endXField.setText(""+dims.getEndCoord().getX());
+                            endYField.setText(""+dims.getEndCoord().getY());
+                        }
+                        else
+                        {
+                            heightField.setText(""+dims.getHeight());
+                            widthField.setText(""+dims.getWidth());
+                        }
             }
         });
         this.colorPicker.setOnAction(new EventHandler() {
