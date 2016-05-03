@@ -56,6 +56,11 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
+    public FormatPES(File file, EmbPattern pattern)
+    {
+        
+    }
+    
     /**
      * Creates a new RandomAccessFile with the given file.
      * @param file File
@@ -143,6 +148,99 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
+/*
+pesWriteSewSegSection
+
+-calc bounding box
+
+
+/*Stitch Blocks as far as I can tell are sections of stitches that share the same color 
+(Count stitches and stitch blocks) (takes pattern and file pointer)
+*/
+    
+/*
+while there is a stitch
+{
+
+    get its flag
+    get its color and count if not counted yet (if new)
+    for(there is a stitch && it has the same flag)
+    {
+	count the stitches.
+	get next stitch
+    }
+
+    count a stitch block
+}
+
+write blockcount to file as Short
+write 0xFFFF to file as UShort
+write 0x00 to file as Short
+write 0x07 to file as Short
+write string literal as it is
+
+color count  =-1
+block count = 0;
+
+while (there is a stitch)
+{
+    get its flag
+    get its thread color
+    if a new color
+    {
+        add a increase colorinfoindex and write 
+        blockcount to that position 
+        repeat iwth new color code
+    }
+
+    count = 0;
+
+    while(there is a stitch and the flag is the same)
+    {
+   	count stitches
+    }
+
+    if (flag is jump)
+    {stitchtype = 1}
+    else {stitchtype = 0}
+
+    write stitchtype as short to file
+    write colorcode as typecast (short) to file
+    write count as short to file
+
+    while there is a stitch && the flags match
+    {
+	write absX - left bounds as typecast short to file
+	write absY - top bounds as typecast short to file
+	//top left justify??
+    }
+    if(current stitch after while is not null)
+    {
+	write 0x8003 as short to file	
+    }
+    blockcount++
+    reset stitch list to beginning
+}
+
+write colorCount to file as short
+for each color in the color count
+{
+    binaryWriteShort(file, colorInfo[i * 2]);
+    binaryWriteShort(file, colorInfo[i * 2 + 1])
+}
+write 0 int to file
+if(colorInfo)
+{
+	set to 0;
+}
+
+//here is their code for both Short and UShort methods //(overloaded method) (file, short)(file, Ushort)
+//embFile_putc(data & 0xFF, file);
+//embFile_putc((data >> 8) & 0xFF, file); 
+*/
+    
+    
+    /*-----------------------------------------------------------------------*/
     /**
      * Returns the pattern containing the thread and stitch lists created from 
      * the imported PES file.

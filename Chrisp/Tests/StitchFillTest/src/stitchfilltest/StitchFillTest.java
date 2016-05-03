@@ -40,6 +40,20 @@ public class StitchFillTest extends Application
     {
         primaryStage.setTitle("StitchFillTest");
         
+        //Heap Check
+        long heapSize, heapMaxSize, heapFreeSize;
+        
+        heapSize = Runtime.getRuntime().totalMemory();
+        heapMaxSize = Runtime.getRuntime().maxMemory();
+        heapFreeSize = Runtime.getRuntime().freeMemory();
+        
+        System.err.println("--HEAP MEMORY--");
+        System.err.println("Heap Size: " + heapSize);
+        System.err.println("Heap Max: " + heapMaxSize);
+        System.err.println("Heap Free: " + heapFreeSize);
+        System.err.println();
+        //End Heap Check
+        
         /*-----------------------------------------------------------------------*/
         //TEST Rectangle Fill
         Rectangle rect = new Rectangle(32, 128, 128, 64);
