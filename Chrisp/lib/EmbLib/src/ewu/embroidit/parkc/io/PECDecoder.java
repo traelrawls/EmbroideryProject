@@ -35,9 +35,7 @@ public class PECDecoder
      * @return PECDecoder
      */
     public static PECDecoder getInstance()
-    {
-        return PECDecoderHolder.INSTANCE;
-    }
+    { return PECDecoderHolder.INSTANCE; }
     
     /*-----------------------------------------------------------------------*/
     
