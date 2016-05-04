@@ -212,6 +212,11 @@
    <center>
       <VBox id="centerContainer" fx:id="centerContainer" alignment="CENTER" prefHeight="597.0" prefWidth="717.0" BorderPane.alignment="CENTER">
          <children>
+            <ImageView fitHeight="36.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/horizontalScale.gif" />
+               </image>
+            </ImageView>
             <StackPane id="canvasContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: ffffff;">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="500.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" width="500.0" />
