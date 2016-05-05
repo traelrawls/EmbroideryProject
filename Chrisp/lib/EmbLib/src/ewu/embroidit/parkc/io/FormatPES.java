@@ -2,6 +2,7 @@ package ewu.embroidit.parkc.io;
 
 import ewu.embroidit.parkc.pattern.EmbPattern;
 import ewu.embroidit.parkc.pattern.EmbStitch;
+import ewu.embroidit.parkc.util.math.EmbMathScale;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class FormatPES
     
     private int pecStart;               //Starting location of PEC code block.
     private int threadCount;            //Number of threads used in this PES file.
-    private RandomAccessFile inFile;    //The input stream.
+    private RandomAccessFile fileStream;//The input stream.
     private EmbPattern pattern;         //Pattern used to hold PES data.
     
     /*-----------------------------------------------------------------------*/
@@ -68,7 +69,7 @@ public class FormatPES
     private void openFile(File file, String mode)
     {   
         try
-        { this.inFile = new RandomAccessFile(file, mode); }
+        { this.fileStream = new RandomAccessFile(file, mode); }
         catch(FileNotFoundException e)
         { System.err.println("FormatPES openFile: " + e); }
     }
@@ -81,7 +82,7 @@ public class FormatPES
     private void closeFile()
     {   
         try
-        { this.inFile.close(); }
+        { this.fileStream.close(); }
         catch(IOException e)
         { System.err.println("FormatPES closeFile: " + e); }
     }
@@ -95,11 +96,11 @@ public class FormatPES
     {   
         try
         {
-            this.inFile.seek(PEC_OFFSET);
-            this.pecStart = this.inFile.readUnsignedByte();
-            this.pecStart = this.pecStart | this.inFile.readUnsignedByte() << 8;
-            this.pecStart = this.pecStart | this.inFile.readUnsignedByte() << 16;
-            this.pecStart = this.pecStart | this.inFile.readUnsignedByte() << 24;
+            this.fileStream.seek(PEC_OFFSET);
+            this.pecStart = this.fileStream.readUnsignedByte();
+            this.pecStart = this.pecStart | this.fileStream.readUnsignedByte() << 8;
+            this.pecStart = this.pecStart | this.fileStream.readUnsignedByte() << 16;
+            this.pecStart = this.pecStart | this.fileStream.readUnsignedByte() << 24;
             System.err.println(" Start Location:" + this.pecStart);
         }
         catch(IOException e)
@@ -115,12 +116,12 @@ public class FormatPES
     {
         try
         {
-            this.inFile.seek(this.pecStart + 48);
-            this.threadCount = this.inFile.readByte() + 1;
+            this.fileStream.seek(this.pecStart + 48);
+            this.threadCount = this.fileStream.readByte() + 1;
             
             for(int i = 0; i < this.threadCount; i++)
             {
-                this.pattern.addThread(this.inFile.readUnsignedByte());
+                this.pattern.addThread(this.fileStream.readUnsignedByte());
                 System.err.println("DEBUG: Thread Added.");
             }
         }
@@ -137,8 +138,8 @@ public class FormatPES
     {
         try
         {
-            this.inFile.seek(this.pecStart + 532);
-            PECDecoder.getInstance().readStitches(this.pattern, this.inFile);
+            this.fileStream.seek(this.pecStart + 532);
+            PECDecoder.getInstance().readStitches(this.pattern, this.fileStream);
         }
         catch(IOException e)
         { System.err.println("FormatPES: Error in readPEC():" + e); }
@@ -146,57 +147,60 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
-    /* pesWrite(pattern, pointer to file name
-    
-    make sure pattern and filename pointer exist
-    open file for writing
-    
-    if pattern does not exist or contains no stitches, error
-    
-    check for end stitch, add if not present. // This is ensure in our design and likely unecessary.
-    
-    flip the pattern vertically
-    
-    scale pattern by 10
-    
-    //add scale method to math package
-    //it will look like this
-    //for each stitch in the pattern
-    //{
-    //    stitchx = stitchx * scale factor
-    //    stitchy = stitchy * scale factor
-    //}
-    
-    write #PES0001 as string literal to file
-    
-    //Write PECPointer
-    write 0x00 to file as int
-    
-    write 0x01 to file as short
-    write 0x01 to file as short
-    
-    //Write Object count
-    write 0x01 to file as short
-    write 0xffff to file as short //Labeled as command?
-    write 0x00 to file as short //Labeled as unknown?
-    
-    call PesWriteEmbOneSection(pattern, file)
-    call pesWriteSewSegSection(pattern, file)
-    
-    pecLocation = current file position
-    move from beginning of file to 0x08 in the file (position where pec location is recorded)
-    
-    write (pecLocation & 0xFF) to file as unsigned char
-    write (pecLocation >> 8) & 0xFF to file as unsigned char
-    write (pecLocation >> 16) & 0xFF to file as unsigned char
-    
-    move from end of file to 0x00 in the file
-    
-    call writePecStitches(pattern, file, filename)
-    
-    close the file
-    
-    */
+    /**
+     * Writes pattern stitch information to a .PES file.
+     * @param pattern
+     * @param file 
+     */
+    public void writePES(EmbPattern pattern, File file)
+    {
+        int pecLocation;
+        
+        this.validateObject(file);
+        this.validateObject(pattern);
+        if(pattern.getStitchList().isEmpty())
+            return;
+        
+        try
+        {
+            this.openFile(file, "w");        
+
+            //Flip Pattern Vertically (METHOD)
+
+            EmbMathScale.scaleStitches(pattern, 10.0); //Need copy of pattern for this
+                                                       //in order to preserve original.
+            this.fileStream.writeBytes("#PES0001");
+
+            //Write PECPointer
+            this.fileStream.writeInt(0x00);
+
+            this.fileStream.writeShort(0x01);
+            this.fileStream.writeShort(0x01);
+
+            //Write Object count
+            this.fileStream.writeShort(0x01);
+            this.fileStream.writeShort(0xFFFF);
+            this.fileStream.writeShort(0x00);
+            
+            //call pesWriteEmbOneSection(pattern, file) (METHOD)
+            //call pesWriteSewSegSection(pattern, file) (METHOD)
+
+            pecLocation = (int) this.fileStream.getFilePointer();
+            
+            this.fileStream.seek(0x08);
+            this.fileStream.writeChar(pecLocation & 0x0FF);
+            this.fileStream.writeChar((pecLocation >>> 8) & 0xFF);
+            this.fileStream.writeChar((pecLocation >>> 16) & 0xFF);
+
+            this.fileStream.seek(this.fileStream.length());
+            
+            //call writePecStitches(pattern, file, filename) (METHOD)
+
+            this.closeFile();
+        }
+        catch(Exception e)
+        { System.err.println("Error: FormatPES - writePES"); }
+    }
     
     /*-----------------------------------------------------------------------*/
     

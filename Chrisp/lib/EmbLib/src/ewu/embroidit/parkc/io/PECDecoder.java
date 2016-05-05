@@ -165,7 +165,6 @@ public class PECDecoder
                 if(stitchType == StitchCode.END) //End of stitch data
                 {
                    pattern.addStitchRel(0.0, 0.0, stitchType, 1);
-                   System.err.println("DEBUG: ##END STITCH ADDED##");
                    break; 
                 }
                 
@@ -174,7 +173,6 @@ public class PECDecoder
                     discardedColor = inFile.readByte();
                     pattern.addStitchRel(0.0, 0.0, stitchType, 1);
                     stitchNumber++;
-                    System.err.println("DEBUG: ##STOP STITCH##");
                     continue;
                 }
                 
