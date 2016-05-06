@@ -2,6 +2,7 @@ package ewu.embroidit.parkc.pattern;
 
 import ewu.embroidit.parkc.io.StitchCode;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 
 
 /*-----------------------------------------------------------------------*/
@@ -15,6 +16,7 @@ public class EmbStitch
     
     private int flag;                //Machine code stitch flag
     private int colorIndex;          //Color number
+    private Color stitchColor;
     private Point2D absPosition;     //Absolute (x,y) position
     
     /*-----------------------------------------------------------------------*/
@@ -29,7 +31,7 @@ public class EmbStitch
         this.validateObject(absPosition);
         this.absPosition = absPosition;
         this.flag = StitchCode.NORMAL;
-        //color index uncessesary here? Shape wrapper contains color for fills.
+        this.stitchColor = Color.BLACK;
     }
     
     /*-----------------------------------------------------------------------*/
@@ -45,6 +47,7 @@ public class EmbStitch
         this.validateObject(absPosition);
         this.absPosition = absPosition;
         this.flag = flag;
+        this.stitchColor = Color.BLACK;
     }
     /*-----------------------------------------------------------------------*/
     
@@ -61,6 +64,7 @@ public class EmbStitch
         this.absPosition = absPosition;
         this.colorIndex = color;
         this.flag = flag;
+        this.stitchColor = Color.BLACK;
     }
     
     /*-----------------------------------------------------------------------*/
@@ -96,7 +100,7 @@ public class EmbStitch
      * Sets this stitches color index.
      * @param color int
      */
-    public void setColor(int color)
+    public void setColorIndex(int color)
     { this.colorIndex = color; }
     
     /*-----------------------------------------------------------------------*/
@@ -119,6 +123,24 @@ public class EmbStitch
         this.validateObject(point);
         this.absPosition = point;
     }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     *Gets the color of this stitch.
+     * @return Color
+     */
+    public Color getColor()
+    { return this.stitchColor; }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Sets the color of this stitch.
+     * @param color Color
+     */
+    public void setColor(Color color)
+    { this.stitchColor = color; }
     
     /*-----------------------------------------------------------------------*/
     

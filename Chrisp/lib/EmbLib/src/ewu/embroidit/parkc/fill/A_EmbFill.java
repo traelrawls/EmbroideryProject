@@ -1,7 +1,7 @@
 package ewu.embroidit.parkc.fill;
 
 import ewu.embroidit.parkc.shape.*;
-import ewu.embroidit.parkc.util.math.EmbMathPoint;
+import ewu.embroidit.parkc.util.math.EmbMath;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -98,8 +98,8 @@ public abstract class A_EmbFill
             endPoint = startPoint.add(unitVec);
             
             //if the new line segment extends beyond the old one exit the loop.
-            if(EmbMathPoint.calculateDistance(startPoint, endPoint) >= 
-                    EmbMathPoint.calculateDistance(startPoint, maxEndPoint))
+            if(EmbMath.calculateDistance(startPoint, endPoint) >= 
+                    EmbMath.calculateDistance(startPoint, maxEndPoint))
                 break;
             
             dividedList.add(new Line(startPoint.getX(), startPoint.getY(),

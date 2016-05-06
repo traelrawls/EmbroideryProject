@@ -134,6 +134,17 @@ public abstract class A_EmbShapeWrapper
     /*-----------------------------------------------------------------------*/
     
     /**
+     * Takes the current color for this shape wrapper and sets all fill
+     * stitches contained to that color.
+     */
+    public void colorStitchList()
+    {
+        for(EmbStitch stitch : this.stitchList)
+            stitch.setColor(this.threadColor);
+    }
+    /*-----------------------------------------------------------------------*/
+    
+    /**
      * Returns the fill line list for the wrappers corresponding shape.
      * @return List&lt;Line&gt;
      */

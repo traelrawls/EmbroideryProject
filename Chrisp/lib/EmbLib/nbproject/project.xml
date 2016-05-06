@@ -12,6 +12,7 @@
             </test-roots>
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>Embroid</word>
             <word>int</word>
             <word>javafx</word>
             <word>Refactor</word>

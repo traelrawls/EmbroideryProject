@@ -4,7 +4,7 @@ import ewu.embroidit.parkc.fill.A_EmbFill;
 import ewu.embroidit.parkc.pattern.EmbPattern;
 import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
-import ewu.embroidit.parkc.util.math.EmbMathPoint;
+import ewu.embroidit.parkc.util.math.EmbMath;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -113,18 +113,16 @@ public class FileManager
      * unnecessary thread changes. (thrashing)
      * @param pattern EmbPattern
      */
-    public void patternToPes(EmbPattern pattern)
+    public void patternToPes(File file, EmbPattern pattern)
     {
         List<A_EmbShapeWrapper> wrapperList;
         List<A_EmbShapeWrapper> sortedWrapperList;
+        FormatPES pesFormatter;
         
         wrapperList = this.getWrapperList(pattern);
         sortedWrapperList = this.sortWrappersByColor(wrapperList);
-        
-        this.assignStitchCodes(wrapperList);
-        
-        //Set up bitmasked output encoding with PES and PEC.
-        //run PEC and PES Encoding for export (PECDecoder, PESFormat)
+        this.assignStitchCodes(sortedWrapperList);
+        pesFormatter = new FormatPES(file, sortedWrapperList);
     }
     
     /*-----------------------------------------------------------------------*/
@@ -160,7 +158,7 @@ public class FileManager
             if(!isFirstShape)
             {
                 startStitch = wrapper.getStitchList().get(0);
-                dist = EmbMathPoint.calculateDistance(prevStitch.getStitchPosition(),
+                dist = EmbMath.calculateDistance(prevStitch.getStitchPosition(),
                         startStitch.getStitchPosition());
                 tempPoint = new Point2D(startStitch.getStitchPosition().getX(),
                     startStitch.getStitchPosition().getX());

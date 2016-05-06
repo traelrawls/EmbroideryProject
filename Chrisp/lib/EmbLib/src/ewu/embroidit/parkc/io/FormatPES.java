@@ -2,11 +2,17 @@ package ewu.embroidit.parkc.io;
 
 import ewu.embroidit.parkc.pattern.EmbPattern;
 import ewu.embroidit.parkc.pattern.EmbStitch;
-import ewu.embroidit.parkc.util.math.EmbMathScale;
+import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
+import ewu.embroidit.parkc.util.math.EmbMath;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 
 /*-----------------------------------------------------------------------*/
 /**
@@ -40,7 +46,7 @@ public class FormatPES
     
     /**
      * Constructs a pattern from the imported file.
-     * @param file 
+     * @param file File
      */
     public FormatPES(File file)
     {
@@ -57,9 +63,11 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
-    public FormatPES(File file, EmbPattern pattern)
+    public FormatPES(File file, List<A_EmbShapeWrapper> wrapperList)
     {
-        
+        this.validateObject(file);
+        this.validateObject(wrapperList);
+        this.writePES(wrapperList, file);
     }
     
     /**
@@ -148,27 +156,36 @@ public class FormatPES
     /*-----------------------------------------------------------------------*/
     
     /**
-     * Writes pattern stitch information to a .PES file.
-     * @param pattern
-     * @param file 
+     * Writes pattern stitch information to a .PES file using a list of
+     * pre-sorted and encoded shape wrappers.
+     * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
+     * @param file File
      */
-    public void writePES(EmbPattern pattern, File file)
+    private void writePES(List<A_EmbShapeWrapper> wrapperList, File file)
     {
+        List<EmbStitch> masterStitchList;
         int pecLocation;
         
+        masterStitchList = new ArrayList<>();
         this.validateObject(file);
-        this.validateObject(pattern);
-        if(pattern.getStitchList().isEmpty())
-            return;
+        this.validateObject(wrapperList);
+        
+        //Transfer wrapper color to all stitches.
+        for(A_EmbShapeWrapper wrapper : wrapperList)
+            wrapper.colorStitchList();
+
+        for(A_EmbShapeWrapper wrapper : wrapperList)
+            masterStitchList.addAll(wrapper.getStitchList());
         
         try
         {
             this.openFile(file, "w");        
-
+            
+            //TO CODE
             //Flip Pattern Vertically (METHOD)
 
-            EmbMathScale.scaleStitches(pattern, 10.0); //Need copy of pattern for this
-                                                       //in order to preserve original.
+            EmbMath.scaleStitches(wrapperList, 10.0); 
+                                                      
             this.fileStream.writeBytes("#PES0001");
 
             //Write PECPointer
@@ -177,13 +194,13 @@ public class FormatPES
             this.fileStream.writeShort(0x01);
             this.fileStream.writeShort(0x01);
 
-            //Write Object count
+            //Write Object Count
             this.fileStream.writeShort(0x01);
             this.fileStream.writeShort(0xFFFF);
             this.fileStream.writeShort(0x00);
             
-            //call pesWriteEmbOneSection(pattern, file) (METHOD)
-            //call pesWriteSewSegSection(pattern, file) (METHOD)
+            this.writeEmbOneSection(masterStitchList);
+            this.writeSegmentSection(masterStitchList);
 
             pecLocation = (int) this.fileStream.getFilePointer();
             
@@ -194,6 +211,7 @@ public class FormatPES
 
             this.fileStream.seek(this.fileStream.length());
             
+            //TO CODE
             //call writePecStitches(pattern, file, filename) (METHOD)
 
             this.closeFile();
@@ -204,137 +222,162 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
-    /*
-    pesWriteSewSegSection
-
-    -calc bounding box
-
-
-    /*Stitch Blocks as far as I can tell are sections of stitches that share the same color 
-    (Count stitches and stitch blocks) (takes pattern and file pointer)
-    */
-
-    /*
-    while there is a stitch
+    private void writeSegmentSection(List<EmbStitch> masterStitchList) throws IOException
     {
-
-        get its flag
-        get its color and count if not counted yet (if new)
-        for(there is a stitch && it has the same flag)
+        
+        Point2D tempCoords;
+        BoundingBox bounds;
+        Color stitchColor;
+        
+        int stitchCount, blockCount, colorCount;
+        int flag, stitchType, offset; 
+        int currentColorCode, approximateColorCode, colorInfoIndex;
+        short[] colorInfo;
+        
+        currentColorCode = -1;
+        stitchCount = blockCount = colorCount = offset = colorInfoIndex = 0;
+        bounds = EmbMath.calcBoundingRect(masterStitchList);
+        
+        for(int i = 0; i < masterStitchList.size(); i++)
         {
-            count the stitches.
-            get next stitch
+            flag = masterStitchList.get(i).getFlag();
+            stitchColor = masterStitchList.get(i).getColor();
+            approximateColorCode = EmbMath.approximateColorIndex(stitchColor);
+            
+            if(currentColorCode != approximateColorCode)
+            {
+                colorCount++;
+                currentColorCode = approximateColorCode;
+            }
+             
+            while(i < masterStitchList.size() &&
+                  flag == masterStitchList.get(i).getFlag())
+            {
+                stitchCount++;
+                i++;
+            }
+            
+            blockCount++;
         }
-
-        count a stitch block
+        
+        fileStream.writeShort(blockCount);
+        fileStream.writeShort(0xFFFF);          //Unsigned?
+        fileStream.writeShort(0x00);
+        fileStream.writeShort(0x07);            //Strlen
+        fileStream.writeBytes("CSewSeg");
+        
+        colorInfo = new short[colorCount];
+        blockCount = 0;
+        currentColorCode = -1;
+        for(int i = 0; i < masterStitchList.size(); i++)
+        {
+            i = offset;
+            flag = masterStitchList.get(i).getFlag();
+            stitchColor = masterStitchList.get(i).getColor();
+            approximateColorCode = EmbMath.approximateColorIndex(stitchColor);
+            
+            if(currentColorCode != approximateColorCode)
+            {
+                colorInfo[colorInfoIndex++] = (short) blockCount;
+                colorInfo[colorInfoIndex++] = (short) approximateColorCode;
+                currentColorCode = approximateColorCode;
+            }
+            
+            stitchCount = 0;
+            while(i < masterStitchList.size() &&
+                  flag == masterStitchList.get(i).getFlag())
+            {
+                stitchCount++;
+                i++;
+            }
+            
+            if((flag & StitchCode.JUMP) != 0)   
+                stitchType = 1;
+            else
+                stitchType = 0;
+            
+            this.fileStream.writeShort(stitchType);         
+            this.fileStream.writeShort(currentColorCode);
+            this.fileStream.writeShort(stitchCount);        //Stitches in Block
+            
+            i = offset;
+            while(i < masterStitchList.size() &&
+                  flag == masterStitchList.get(i).getFlag())
+            {
+                tempCoords = masterStitchList.get(i).getStitchPosition();
+                this.fileStream.writeShort((short) (tempCoords.getX() - bounds.getMinX()) );
+                this.fileStream.writeShort((short) (tempCoords.getY() - bounds.getMinY()) );
+                i++;
+            }
+            
+            if(masterStitchList.get(i) != null)
+                this.fileStream.writeShort(0x8003);
+            
+            blockCount++;
+            offset = i;
+        }
+        
+        this.fileStream.writeShort(colorCount);
+        
+        //NOTE: LEFT OFF HERE
+        for(int i = 0; i < colorCount; i++)
+        {
+            
+        }
+        
+        //for i < color count
+            //binaryWriteShort(file, colorInfo[i * 2]);
+            //binaryWriteShort(file, colorInfo[i * 2 + 1]);
+            
+        //write int 0 to file
+        
+        //if colorInfo
+            //reset color info to 0
     }
-
-    write blockcount to file as Short
-    write 0xFFFF to file as UShort
-    write 0x00 to file as Short
-    write 0x07 to file as Short
-    write string literal as it is
-
-    color count  =-1
-    block count = 0;
-
-    while (there is a stitch)
-    {
-        get its flag
-        get its thread color
-        if a new color
-        {
-            add a increase colorinfoindex and write 
-            blockcount to that position 
-            repeat iwth new color code
-        }
-
-        count = 0;
-
-        while(there is a stitch and the flag is the same)
-        {
-            count stitches
-        }
-
-        if (flag is jump)
-        {stitchtype = 1}
-        else {stitchtype = 0}
-
-        write stitchtype as short to file
-        write colorcode as typecast (short) to file
-        write count as short to file
-
-        while there is a stitch && the flags match
-        {
-            write absX - left bounds as typecast short to file
-            write absY - top bounds as typecast short to file
-            //top left justify??
-        }
-        if(current stitch after while is not null)
-        {
-            write 0x8003 as short to file	
-        }
-        blockcount++
-        reset stitch list to beginning
-    }
-
-    write colorCount to file as short
-    for each color in the color count
-    {
-        binaryWriteShort(file, colorInfo[i * 2]);
-        binaryWriteShort(file, colorInfo[i * 2 + 1])
-    }
-    write 0 int to file
-    if(colorInfo)
-    {
-            set to 0;
-    }
-
-    //here is their code for both Short and UShort methods //(overloaded method) (file, short)(file, Ushort)
-    //embFile_putc(data & 0xFF, file);
-    //embFile_putc((data >> 8) & 0xFF, file); 
-    */
     
     /*-----------------------------------------------------------------------*/
-  
-    /*  pesWriteEmbOneSection(pattern, file pointer)
     
-    write 0x07 to file as short
-    write "CEmbOne" to file as literal
-    
-    calculate the bounding box of the pattern
-    
-    write 0 to file as short
-    write 0 to file as short
-    write 0 to file as short
-    write 0 to file as short
-    
-    write 0 to file as short
-    write 0 to file as short
-    write 0 to file as short
-    write 0 to file as short
-    
-    //Write AffineTransform (not sure how this is used yet) From research
-    //an affine transform is used to preserve line symetry when scaling. Perhaps
-    //this will be used for displaying the image to a screen on the machine.
-    
-    write 1.0 as float to file
-    write 0.0 as float to file
-    write 0.0 as float to file
-    write 1.0 as float to file
-    write (bounding box width - hoopWidth) / 2 to file
-    write (bounding box height + hoopHeight) / 2 to file //Notice addition here not subtraction
-    
-    write 1 as short to file
-    write 0 as short to file //Translate X
-    write 0 as short to file //Translate Y
-    write bounding rect width as short to file
-    write bounding rect height as short to file
-    
-    for(i from = to 8)
-    {write 0 as byte to file}
-    
-    */
+    private void writeEmbOneSection(List<EmbStitch> wrapperList) throws IOException
+    {
+        int i, hoopWidth, hoopHeight;
+        BoundingBox bounds;
+        
+        hoopHeight = 1800;
+        hoopWidth = 1300;
+        bounds = EmbMath.calcBoundingRect(wrapperList);
+        
+        this.fileStream.writeShort(0x07);
+        this.fileStream.writeBytes("CEmbOne");
+        this.fileStream.writeShort(0);
+        this.fileStream.writeShort(0);
+        this.fileStream.writeShort(0);
+        this.fileStream.writeShort(0);
+        this.fileStream.writeShort(0);
+        this.fileStream.writeShort(0);
+        this.fileStream.writeShort(0);
+        this.fileStream.writeShort(0);
+        
+        //Affine Transform
+        this.fileStream.writeFloat(1.0f);
+        this.fileStream.writeFloat(0.0f);
+        this.fileStream.writeFloat(0.0f);
+        this.fileStream.writeFloat(1.0f);
+       
+        //TO CODE
+        //write (bounding box width - hoopWidth) / 2 to file
+        //write (bounding box height + hoopHeight) / 2 to file //Notice addition here not subtraction
+        
+        this.fileStream.writeShort(1);
+        this.fileStream.writeShort(0); //Translate X
+        this.fileStream.writeShort(0); //Translate Y
+        
+        //TO CODE
+        //write bounding rect width as short to file
+        //write bounding rect height as short to file
+        
+        for(i = 0; i < 8; i++)
+            this.fileStream.writeByte(0);
+    }
     
     /*-----------------------------------------------------------------------*/
     /**

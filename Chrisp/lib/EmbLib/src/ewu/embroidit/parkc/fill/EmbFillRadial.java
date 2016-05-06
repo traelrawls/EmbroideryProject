@@ -1,7 +1,7 @@
 package ewu.embroidit.parkc.fill;
 
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
-import ewu.embroidit.parkc.util.math.EmbMathEllipse;
+import ewu.embroidit.parkc.util.math.EmbMath;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.shape.Ellipse;
@@ -62,7 +62,7 @@ public class EmbFillRadial extends A_EmbFill
         degree = 0;
         for(int i = 0; i < NUM_STITCHES; i++)
         {
-            radius = EmbMathEllipse.getEllipseRadiusDeg(ellipse, degree);
+            radius = EmbMath.getEllipseRadiusDeg(ellipse, degree);
             
             endX = ellipse.getCenterX() + 
                     ( radius * Math.cos(Math.toRadians(degree)) );

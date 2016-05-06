@@ -16,6 +16,10 @@ public class PECDecoder
 {
     /*-----------------------------------------------------------------------*/
     
+    public static final int NUM_COLORS = 65;
+    
+    /*-----------------------------------------------------------------------*/
+    
     private List<Color> COLOR_LIST;             //List of stitch colors
     
     /*-----------------------------------------------------------------------*/
@@ -127,11 +131,14 @@ public class PECDecoder
      */
     public Color getColorByIndex(int index)
     {
+        if(index < 0)
+            throw new IndexOutOfBoundsException("PECDecoder - getColorByIndex "
+                    + "Negative index: Color approximation (EmbMAth) failure "
+                    + "likely");
+        
         if(index >= COLOR_LIST.size())
-        {
             throw new IndexOutOfBoundsException("PECDecoder - getColorByIndex: " 
             + "Index (" + index + ") does not reference a color.");
-        }
         
         return COLOR_LIST.get(index);
     }
