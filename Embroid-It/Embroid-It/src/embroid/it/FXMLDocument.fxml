@@ -61,6 +61,17 @@
                            </accelerator></MenuItem>
                     </items>
                   </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Getting Started">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="F1" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                      <MenuItem mnemonicParsing="false" text="About Embroid-It" />
+                        <MenuItem mnemonicParsing="false" text="Developer Documentation" />
+                    </items>
+                  </Menu>
               </menus>
             </MenuBar>
             <FlowPane id="layerOptions" alignment="CENTER" columnHalignment="CENTER" prefHeight="49.0" prefWidth="1000.0" style="-fx-background-color: C8C8C8;">
