@@ -74,10 +74,9 @@
                   </Menu>
               </menus>
             </MenuBar>
-            <FlowPane id="layerOptions" alignment="CENTER" columnHalignment="CENTER" prefHeight="49.0" prefWidth="1000.0" style="-fx-background-color: C8C8C8;">
+            <FlowPane id="layerOptions" alignment="CENTER" columnHalignment="CENTER" prefHeight="49.0" prefWidth="778.0" style="-fx-background-color: C8C8C8;">
                <children>
-                  <Label fx:id="endXLabel1" text="Shape" />
-                  <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" prefHeight="40.0" prefWidth="40.0" text="SHAPE" textAlignment="CENTER">
+                  <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="RIGHT" graphicTextGap="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonShapeLayerPressed" prefHeight="44.0" prefWidth="96.0" text="SHAPE" textAlignment="CENTER">
                      <graphic>
                         <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -88,7 +87,7 @@
                      <tooltip>
                         <Tooltip text="Shape Layer" />
                      </tooltip></Button>
-                  <Button id="stitchLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" prefHeight="40.0" prefWidth="40.0" text="STITCH">
+                  <Button id="stitchLayerButton" alignment="CENTER" graphicTextGap="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" prefHeight="44.0" prefWidth="96.0" text="STITCH">
                      <graphic>
                         <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -99,7 +98,6 @@
                      <tooltip>
                         <Tooltip text="Stitch Layer" />
                      </tooltip></Button>
-                  <Label fx:id="endXLabel11" text="Stitch" />
                </children>
                <VBox.margin>
                   <Insets />
