@@ -228,14 +228,23 @@
                   <Image url="@res/horizontalScale.gif" />
                </image>
             </ImageView>
-            <StackPane id="canvasContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: ffffff;">
+            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="497.0" prefWidth="510.0">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="500.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" width="500.0" />
-                  <Canvas fx:id="previewLayer" height="500.0" width="500.0" />
-                  <Canvas fx:id="shapeLayer" height="500.0" width="500.0" />
-                  <Canvas fx:id="stitchLayer" height="500.0" visible="false" width="500.0" />
+                  <ImageView fitHeight="497.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@res/vertScale.gif" />
+                     </image>
+                  </ImageView>
+                  <StackPane id="canvasContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: ffffff;">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="500.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" width="500.0" />
+                        <Canvas fx:id="previewLayer" height="500.0" width="500.0" />
+                        <Canvas fx:id="shapeLayer" height="500.0" width="500.0" />
+                        <Canvas fx:id="stitchLayer" height="500.0" visible="false" width="500.0" />
+                     </children>
+                  </StackPane>
                </children>
-            </StackPane>
+            </HBox>
          </children>
       </VBox>
    </center>
