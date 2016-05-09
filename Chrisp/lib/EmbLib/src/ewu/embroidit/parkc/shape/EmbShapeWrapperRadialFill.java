@@ -60,8 +60,10 @@ public class EmbShapeWrapperRadialFill extends A_EmbShapeWrapper
     {
         Ellipse ellipse = (Ellipse) this.getWrappedShape();
         EmbShapeDimension dims = new EmbShapeDimension("ellipse",
-                new Point2D(ellipse.getCenterX(),ellipse.getCenterY()),
-        ellipse.getRadiusX(), ellipse.getRadiusY());
+                new Point2D(ellipse.getCenterX() - ellipse.getRadiusX(),
+                            ellipse.getCenterY() - ellipse.getRadiusY()),
+                            ellipse.getRadiusX() * 2,
+                            ellipse.getRadiusY() * 2);
         return dims;
     }
     
