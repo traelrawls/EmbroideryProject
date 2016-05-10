@@ -122,7 +122,7 @@ public class FileManager
         wrapperList = this.getWrapperList(pattern);
         sortedWrapperList = this.sortWrappersByColor(wrapperList);
         this.assignStitchCodes(sortedWrapperList);
-        pesFormatter = new FormatPES(file, sortedWrapperList);
+        pesFormatter = new FormatPES(pattern, file, sortedWrapperList);
     }
     
     /*-----------------------------------------------------------------------*/

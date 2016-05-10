@@ -63,8 +63,11 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
-    public FormatPES(File file, List<A_EmbShapeWrapper> wrapperList)
+    public FormatPES(EmbPattern pattern, File file, List<A_EmbShapeWrapper> wrapperList)
     {
+        
+        this.validateObject(pattern);
+        this.pattern = pattern;
         this.validateObject(file);
         this.validateObject(wrapperList);
         this.writePES(wrapperList, file);
@@ -180,11 +183,9 @@ public class FormatPES
         try
         {
             this.openFile(file, "w");        
-            
-            //TO CODE
-            //Flip Pattern Vertically (METHOD)
 
-            EmbMath.scaleStitches(wrapperList, 10.0); 
+            EmbMath.flipStitchList("vertical", masterStitchList);
+            EmbMath.scaleStitches(masterStitchList, 10.0); 
                                                       
             this.fileStream.writeBytes("#PES0001");
 
@@ -212,8 +213,8 @@ public class FormatPES
             this.fileStream.seek(this.fileStream.length());
             
             //TO CODE
-            //call writePecStitches(pattern, file, filename) (METHOD)
-
+            //call writePecStitches(filestream, filename, wrapperlist, stitchList) (METHOD)
+               
             this.closeFile();
         }
         catch(Exception e)
@@ -224,7 +225,6 @@ public class FormatPES
     
     private void writeSegmentSection(List<EmbStitch> masterStitchList) throws IOException
     {
-        
         Point2D tempCoords;
         BoundingBox bounds;
         Color stitchColor;
@@ -319,20 +319,14 @@ public class FormatPES
         
         this.fileStream.writeShort(colorCount);
         
-        //NOTE: LEFT OFF HERE
+        //How does this not walk off the array?
         for(int i = 0; i < colorCount; i++)
         {
-            
+            fileStream.writeShort(colorInfo[i * 2]);
+            fileStream.writeShort(colorInfo[i * 2 + 1]);
         }
-        
-        //for i < color count
-            //binaryWriteShort(file, colorInfo[i * 2]);
-            //binaryWriteShort(file, colorInfo[i * 2 + 1]);
             
-        //write int 0 to file
-        
-        //if colorInfo
-            //reset color info to 0
+        fileStream.writeInt(0);
     }
     
     /*-----------------------------------------------------------------------*/
@@ -363,17 +357,15 @@ public class FormatPES
         this.fileStream.writeFloat(0.0f);
         this.fileStream.writeFloat(1.0f);
        
-        //TO CODE
-        //write (bounding box width - hoopWidth) / 2 to file
-        //write (bounding box height + hoopHeight) / 2 to file //Notice addition here not subtraction
+        this.fileStream.writeFloat( (float) (bounds.getWidth() - hoopWidth) / 2);
+        this.fileStream.writeFloat( (float) (bounds.getHeight() - hoopHeight) / 2);
         
         this.fileStream.writeShort(1);
         this.fileStream.writeShort(0); //Translate X
         this.fileStream.writeShort(0); //Translate Y
         
-        //TO CODE
-        //write bounding rect width as short to file
-        //write bounding rect height as short to file
+        this.fileStream.writeShort( (short) bounds.getWidth());
+        this.fileStream.writeShort( (short) bounds.getHeight());
         
         for(i = 0; i < 8; i++)
             this.fileStream.writeByte(0);
