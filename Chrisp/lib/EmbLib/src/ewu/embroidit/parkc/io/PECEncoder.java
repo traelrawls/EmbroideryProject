@@ -1,5 +1,15 @@
 package ewu.embroidit.parkc.io;
 
+import ewu.embroidit.parkc.pattern.EmbStitch;
+import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
+import ewu.embroidit.parkc.util.EmbUtil;
+import ewu.embroidit.parkc.util.math.EmbMath;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.List;
+import javafx.geometry.BoundingBox;
+import javafx.scene.paint.Color;
+
 /**
  * Singleton class used to write stitch information to the PEC section
  * of a .PES file.
@@ -16,7 +26,7 @@ public class PECEncoder
     
     /*-----------------------------------------------------------------------*/
     
-    private static PECEncoder getInstance()
+    public static PECEncoder getInstance()
     { return PECEncoderHolder.INSTANCE; }
     
     /*-----------------------------------------------------------------------*/
@@ -25,75 +35,91 @@ public class PECEncoder
     { private static final PECEncoder INSTANCE = new PECEncoder(); }
     
     /*-----------------------------------------------------------------------*/
-    
-    /* writePecStitches
-    
-    //Embroidermodder spends the first several lines of this method
-    //stripping the file name out of a file path.
-    
-    write "LA:" as literal to file
-    write filename as literal to file (excluding extension)
-    
-    if file length is less than 16 pad up to 16 with binary writes of 0x20
-    write 0x0D as byte to file
-    pad write 12 more 0x20 as byte
-    4 more byte writes to file as follows:
-    0xFF
-    0x00
-    0x06
-    0x26
-    pat write 12 more 0x20 as byte
-    
-    get the current thread count
-    write threadcount-1 to file as binary
-    
-    for each thread in the thread count
+    public void writeStitches(RandomAccessFile fileStream, String fileName,
+            List<A_EmbShapeWrapper> wrapperListList, 
+            List<EmbStitch> stitchList) throws IOException
     {
-        write that thread color as byte to file
+        int trimPoint, padSize, numColors, colorIndex;
+        int height, width;
+        long graphicsOffsetLocation;
+        List<Color> colorList;
+        BoundingBox bounds;
+        
+        bounds = EmbMath.calcBoundingRect(stitchList);
+        
+        //Trim off file extension
+        trimPoint = fileName.lastIndexOf(".");
+        if(trimPoint > 0)
+            fileName = fileName.substring(0, trimPoint);
+        
+    
+        fileStream.writeBytes("LA:");
+        fileStream.writeBytes(fileName);
+        
+        padSize = 16 - fileName.length();
+        if(padSize > 0)
+            this.padBytes(fileStream, 0x20, padSize);
+            
+        fileStream.writeByte(0x0D);
+        this.padBytes(fileStream, 0x20, 12);
+        fileStream.writeByte(0xFF);
+        fileStream.writeByte(0x00);
+        fileStream.writeByte(0x06);
+        fileStream.writeByte(0x26);
+        this.padBytes(fileStream, 0x20, 12);
+        
+        numColors = EmbMath.colorCount(wrapperListList);
+        fileStream.writeByte(numColors - 1);
+        colorList = EmbUtil.getExportColorList(wrapperListList);
+        
+        for(int i = 0; i < numColors; i++)
+        {
+            colorIndex = EmbMath.approximateColorIndex(colorList.get(i));
+            fileStream.writeByte(colorIndex);
+        }
+        
+        this.padBytes(fileStream, 0x20, (0x1CF - numColors));
+        fileStream.writeShort(0x0000);
+        
+        graphicsOffsetLocation = fileStream.getFilePointer();
+        fileStream.writeByte(0x00);
+        fileStream.writeByte(0x00);
+        fileStream.writeByte(0x00);
+        fileStream.write(0x31);
+        fileStream.write(0xFF);
+        fileStream.write(0xF0);
+        
+        height = EmbMath.roundDouble(bounds.getHeight());
+        width = EmbMath.roundDouble(bounds.getWidth());
+        fileStream.writeShort(width);
+        fileStream.writeShort(height);
+        fileStream.writeShort(0x1E0);
+        fileStream.writeShort(0x1B0);
+        fileStream.writeShort(0x9000 | -EmbMath.roundDouble(bounds.getMinX()));
+        fileStream.writeShort(0x9000 | -EmbMath.roundDouble(bounds.getMinY()));
+        
+        //pec encode (Method)
     }
     
-    for (i < 0x1CF - thread count)
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Writes the value to the file stream the given number of times.
+     * @param fileStream RandomAccessFile
+     * @param value int
+     * @param amount int
+     * @throws IOException 
+     */
+    private void padBytes(RandomAccessFile fileStream, int value, 
+            int amount) throws IOException
     {
-        write 0x20 as byte (more padding)
+        for(int i = 0; i < value; i++)
+            fileStream.writeByte(value);
     }
     
-    write 0x0000 as short
+    /*-----------------------------------------------------------------------*/
     
-    get current file pointer position (graphics offset location)
-    
-    //Placeholder bytes
-    write bytes:
-    0x00
-    0x00
-    0x00
-    
-    write bytes:
-    0x31
-    0xFF
-    0xF0
-    
-    bounds = calculate bounding rect
-    
-    get height and width of bounds
-    
-    write width as short //X size
-    write height as short //Y size
-    
-    write 0x1E0 as short
-    write 0x1B0 as short
-    
-    write 0x9000 | -left bounds as unsigned short eitshifted eight //Rounded
-    write 0x9000 | -top bounds as unsigned short bitshifted eight //Rounded
-    
-    
-    ////////////////////////////////////////
-    //USHORTBE example code  
-    void binaryWriteUShortBE(EmbFile* file, unsigned short data)
-    {
-        embFile_putc((data >> 8) & 0xFF, file);
-        embFile_putc(data & 0xFF, file);
-    }
-    ///////////////////////////////////////
+    /*    
     
     call pecEncode(file, Pattern)
     

@@ -103,27 +103,26 @@ public class EmbMath
      * @param pattern EmbPattern
      * @param scaleFactor double
      */
-    public static void scaleStitches(List<A_EmbShapeWrapper> wrapperList,
+    public static void scaleStitches(List<EmbStitch> stitchList,
             double scaleFactor)
     {
-        List<EmbStitch> stitchList;
         double x, y;
         
-        for(A_EmbShapeWrapper wrapper : wrapperList)
+        for(EmbStitch stitch : stitchList)
         {
-            stitchList = wrapper.getStitchList();
-            
-            for(EmbStitch stitch : stitchList)
-            {
-                x = stitch.getStitchPosition().getX() * scaleFactor;
-                y = stitch.getStitchPosition().getY() * scaleFactor;
-                stitch.setStitchPosition(new Point2D(x, y));
-            }
+            x = stitch.getStitchPosition().getX() * scaleFactor;
+            y = stitch.getStitchPosition().getY() * scaleFactor;
+            stitch.setStitchPosition(new Point2D(x, y));
         }
     }
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Calculates a bounding rectangle around the list of stitches.
+     * @param stitchList List&lt;EmbStitch&gt;
+     * @return BoundingBox
+     */
     public static BoundingBox calcBoundingRect(List<EmbStitch> stitchList)
     {
         double xMin, yMin, xMax, yMax;
@@ -190,5 +189,77 @@ public class EmbMath
         return closestIndex;
     }
     
+    /*-----------------------------------------------------------------------*/
+    /**
+     * Flips the stitchList along the given axis.
+     * @param stitchList List&lt;EmbStitch&gt;
+     * @param axis String
+     */
+    public static void flipStitchList(String axis, List<EmbStitch> stitchList)
+    {
+        double posX, posY;
+        
+        for(EmbStitch stitch : stitchList)
+        {
+            posX = stitch.getStitchPosition().getX();
+            posY = stitch.getStitchPosition().getY();
+            
+            if(axis.equals("horizontal"))
+                posX = posX * -1;
+            else
+                posY = posY * -1;
+            
+            stitch.setStitchPosition(new Point2D(posX, posY));
+        }
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Returns the number of colors present in the wrapper list
+     * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
+     * @return int
+     */
+    public static int colorCount(List<A_EmbShapeWrapper> wrapperList)
+    {
+        int count = 0;
+        boolean isFirstPass = true;
+        Color currentColor = Color.PINK;
+        
+        for(A_EmbShapeWrapper wrapper : wrapperList)
+        {
+            if(isFirstPass)
+            {
+                currentColor = wrapper.getThreadColor();
+                count++;
+                isFirstPass = false;
+            }
+            else
+            {
+                if(currentColor.getBlue() != wrapper.getThreadColor().getBlue()
+                || currentColor.getGreen() != wrapper.getThreadColor().getGreen()
+                || currentColor.getRed() != wrapper.getThreadColor().getRed())
+                    count++;
+                
+                currentColor = wrapper.getThreadColor();
+            }
+        }
+        
+        return count;
+    }
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Rounds a double and returns it as an int
+     * @param d double
+     * @return int
+     */
+    public static int roundDouble(double d)
+    {
+        if(d < 0.0)
+            return (int) Math.ceil(d - 0.5);
+        
+        return (int) Math.floor(d + 0.5);
+    }
     /*-----------------------------------------------------------------------*/
 }
