@@ -196,8 +196,8 @@
                         <Label fx:id="heightLabel" layoutX="11.0" layoutY="84.0" text="Height:" />
                         <Label fx:id="widthLabel" layoutX="13.0" layoutY="113.0" text="Width:" />
                         <TextField fx:id="widthField" layoutX="63.0" layoutY="109.0" prefHeight="25.0" prefWidth="95.0" />
-                        <Button fx:id="changeButton" layoutX="117.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Change" />
-                        <Button fx:id="deleteButton" layoutX="45.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Delete" />
+                        <Button fx:id="changeButton" layoutX="117.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Change" onAction="#editShape"/>
+                        <Button fx:id="deleteButton" layoutX="45.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Delete" onAction="#deleteShape"/>
                         <Label fx:id="endXLabel" layoutX="7.0" layoutY="43.0" text="end X:" />
                         <TextField fx:id="endXField" layoutX="49.0" layoutY="39.0" prefHeight="25.0" prefWidth="52.0" />
                         <Label fx:id="endYLabel" layoutX="109.0" layoutY="43.0" text="end Y:" />
