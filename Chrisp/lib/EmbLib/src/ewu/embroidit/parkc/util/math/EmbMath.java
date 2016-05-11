@@ -100,7 +100,7 @@ public class EmbMath
     
     /**
      * Scales all shape stitches in a pattern by the given scaleFactor.
-     * @param pattern EmbPattern
+     * @param stitchList List&lt;EmbStitch&gt;
      * @param scaleFactor double
      */
     public static void scaleStitches(List<EmbStitch> stitchList,

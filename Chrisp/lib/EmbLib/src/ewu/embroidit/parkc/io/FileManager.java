@@ -111,6 +111,7 @@ public class FileManager
     /**
      * Exports a pattern to PES file. Shapes are pre-sorted by color to reduce
      * unnecessary thread changes. (thrashing)
+     * @param file File
      * @param pattern EmbPattern
      */
     public void patternToPes(File file, EmbPattern pattern)
@@ -236,7 +237,7 @@ public class FileManager
     /**
      * Returns a color sorted (with color group ordering arbitrary) version
      * of the given list.
-     * @param wrapperList
+     * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
      * @return List&lt;A_EmbShapeWrapper&gt;
      */
     public List<A_EmbShapeWrapper> sortWrappersByColor(List<A_EmbShapeWrapper> wrapperList)

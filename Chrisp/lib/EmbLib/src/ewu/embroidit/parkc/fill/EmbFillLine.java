@@ -27,7 +27,7 @@ public class EmbFillLine extends A_EmbFill
     
     /**
      * Implements a shape filling strategy for line segments.
-     * @param shapeWrapper 
+     * @param shapeWrapper A_EmbShapeWrapper
      */
     @Override
     public void fillShape(A_EmbShapeWrapper shapeWrapper)

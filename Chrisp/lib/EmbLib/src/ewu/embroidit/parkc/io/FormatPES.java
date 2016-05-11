@@ -63,6 +63,12 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Writes a PES output file with the given pattern information.
+     * @param pattern EmbPattern
+     * @param file File
+     * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
+     */
     public FormatPES(EmbPattern pattern, File file, List<A_EmbShapeWrapper> wrapperList)
     {
         
@@ -213,7 +219,8 @@ public class FormatPES
             this.fileStream.seek(this.fileStream.length());
             
             //TO CODE
-            //call writePecStitches(filestream, filename, wrapperlist, stitchList) (METHOD)
+            PECEncoder.getInstance().writeStitches(fileStream,
+                    file.getName(), wrapperList, masterStitchList);
                
             this.closeFile();
         }
@@ -223,6 +230,13 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Writes stitch block segment information to the output file. Information
+     * includes number of thread colors, number of stitch blocks and stitches per
+     * color.
+     * @param masterStitchList List&lt;EmbStitch&gt;
+     * @throws IOException 
+     */
     private void writeSegmentSection(List<EmbStitch> masterStitchList) throws IOException
     {
         Point2D tempCoords;
@@ -331,6 +345,13 @@ public class FormatPES
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Writes the first section of the PES format file to output. This section
+     * includes the hoop dimension pattern offset, and an affine transform for
+     * scaling.
+     * @param wrapperList List&lt;A_EmbShapeWrapper&gt;
+     * @throws IOException 
+     */
     private void writeEmbOneSection(List<EmbStitch> wrapperList) throws IOException
     {
         int i, hoopWidth, hoopHeight;

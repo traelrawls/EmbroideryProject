@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.List;
 import javafx.geometry.BoundingBox;
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 
 /**
@@ -19,6 +20,47 @@ public class PECEncoder
 {
     /*-----------------------------------------------------------------------*/
     
+    private final byte[][] EMPTY_BORDER_IMAGE = {
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0},
+    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0},
+    {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
+    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0},
+    {0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+    };
+            
     /*-----------------------------------------------------------------------*/
     
     private PECEncoder()
@@ -35,15 +77,28 @@ public class PECEncoder
     { private static final PECEncoder INSTANCE = new PECEncoder(); }
     
     /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Writes all stitch coordinate, type, and image preview information to the
+     * given output file.
+     * @param fileStream RandomAccessFile
+     * @param fileName String
+     * @param wrapperListList List&lt;A_EmbShapeWrapper&gt;
+     * @param stitchList List&lt;EmbStitch&gt;
+     * @throws IOException 
+     */
     public void writeStitches(RandomAccessFile fileStream, String fileName,
             List<A_EmbShapeWrapper> wrapperListList, 
             List<EmbStitch> stitchList) throws IOException
     {
+        long graphicsOffsetLocation, graphicsOffsetValue;
         int trimPoint, padSize, numColors, colorIndex;
-        int height, width;
-        long graphicsOffsetLocation;
+        int height, width,i, j, x, y;
+        double xFactor, yFactor;
+        byte[][] imageArray;
         List<Color> colorList;
         BoundingBox bounds;
+        Point2D tempCoord;
         
         bounds = EmbMath.calcBoundingRect(stitchList);
         
@@ -72,7 +127,7 @@ public class PECEncoder
         fileStream.writeByte(numColors - 1);
         colorList = EmbUtil.getExportColorList(wrapperListList);
         
-        for(int i = 0; i < numColors; i++)
+        for(i = 0; i < numColors; i++)
         {
             colorIndex = EmbMath.approximateColorIndex(colorList.get(i));
             fileStream.writeByte(colorIndex);
@@ -97,8 +152,158 @@ public class PECEncoder
         fileStream.writeShort(0x1B0);
         fileStream.writeShort(0x9000 | -EmbMath.roundDouble(bounds.getMinX()));
         fileStream.writeShort(0x9000 | -EmbMath.roundDouble(bounds.getMinY()));
+        this.encode(fileStream, stitchList); //Encode Stitch Coordinates
         
-        //pec encode (Method)
+        graphicsOffsetValue = 
+                fileStream.getFilePointer() - graphicsOffsetLocation + 2;
+        fileStream.seek(graphicsOffsetLocation);
+        
+        fileStream.writeByte((int)graphicsOffsetValue & 0xFF);
+        fileStream.writeByte((int)((graphicsOffsetValue >>> 8) & 0xFF));
+        fileStream.writeByte((int)((graphicsOffsetValue >>> 16) & 0xFF));
+        
+        fileStream.seek(fileStream.length());
+        
+        //Writing all colors
+        imageArray = this.EMPTY_BORDER_IMAGE.clone();
+        yFactor = 32.0/height;
+        xFactor = 42.0/ width;
+        for(EmbStitch stitch : stitchList)
+        {
+            tempCoord = stitch.getStitchPosition();
+            x = EmbMath.roundDouble(((tempCoord.getX() - bounds.getMinX()) * xFactor)) + 3;
+            y = EmbMath.roundDouble(((tempCoord.getY() - bounds.getMinY()) * yFactor)) + 3;
+            imageArray[y][x] = 1;
+        }
+        this.writeImage(fileStream, imageArray);
+        
+        //Writing each individual color
+        j = 0;
+        for(i = 0; i < numColors; i++)
+        {
+            imageArray = this.EMPTY_BORDER_IMAGE.clone();
+            while(j < stitchList.size())
+            {
+                tempCoord = stitchList.get(j).getStitchPosition();
+                x = EmbMath.roundDouble(((tempCoord.getX() - bounds.getMinX()) * xFactor)) + 3;
+                y = EmbMath.roundDouble(((tempCoord.getY() - bounds.getMinY()) * yFactor)) + 3;
+                
+                if((stitchList.get(j).getFlag() & StitchCode.STOP) != 0)
+                {
+                    j++;
+                    break;
+                }
+                
+                imageArray[y][x] = 1;
+                j++;
+            }
+            this.writeImage(fileStream, imageArray);
+        }
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Encodes stitch coordinates to the output file, modified by stitch code
+     * if necessary.
+     * @param fileStream RandomAccessFile
+     * @param stitchList List&lt;EmbStitch&gt;
+     * @throws IOException 
+     */
+    private void encode(RandomAccessFile fileStream,
+            List<EmbStitch> stitchList) throws IOException
+    {
+        int deltaX, deltaY;
+        double currentX, currentY;
+        byte stopCode = 2;
+        Point2D tempCoords;
+        
+        currentX = currentY = 0.0;
+        
+        for(EmbStitch stitch : stitchList)
+        {
+            tempCoords = stitch.getStitchPosition();
+            deltaX = EmbMath.roundDouble(tempCoords.getX() - currentX);
+            deltaY = EmbMath.roundDouble(tempCoords.getY() - currentY);
+            
+            currentX += (double) deltaX;
+            currentY += (double) deltaY;
+            
+            if((stitch.getFlag() & StitchCode.STOP) != 0)
+            {
+                this.encodeStop(fileStream, stopCode );
+                
+                if(stopCode == 2)
+                    stopCode = 1;
+                else
+                    stopCode = 2;
+            }
+            else if((stitch.getFlag() & StitchCode.END) != 0)
+            {
+                fileStream.writeByte(0xFF);
+                break;
+            }
+            else if(deltaX < 63 && deltaX > -64
+                 && deltaY < 63 && deltaY > -64
+                 && !((stitch.getFlag() 
+                  &  (StitchCode.JUMP | StitchCode.TRIM) ) != 0))
+            {
+                fileStream.writeByte((deltaX < 0) ? deltaX + 0x80 : deltaX);
+                fileStream.writeByte((deltaY < 0) ? deltaY + 0x80 : deltaY);
+            }
+            else
+            {
+                this.encodeJump(fileStream, deltaX, stitch.getFlag());
+                this.encodeJump(fileStream, deltaY, stitch.getFlag());
+            }
+        }    
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Encodes a STOP stitch to the output file.
+     * @param fileStream
+     * @param stopCode
+     * @throws IOException 
+     */
+    private void encodeStop(RandomAccessFile fileStream, 
+            byte stopCode) throws IOException
+    {
+        fileStream.writeByte(0xFE);
+        fileStream.writeByte(0xB0);
+        fileStream.writeByte(stopCode);
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Encodes a JUMP stitch to the output file.
+     * @param fileStream RandomAccessFile
+     * @param delta int
+     * @param flag int
+     * @throws IOException 
+     */
+    private void encodeJump(RandomAccessFile fileStream,
+            int delta, int flag) throws IOException
+    {
+        int outputVal = Math.abs(delta) & 0x7FF;
+        int orVal = 0x80;
+        
+        if((flag & StitchCode.TRIM) != 0)
+            orVal |= 0x20;
+        else if((flag & StitchCode.JUMP) != 0)
+            orVal |= 0x10;
+        
+        if(delta < 0)
+        {
+            outputVal = delta + 0x1000 & 0x7FF;
+            outputVal |= 0x800;
+        }
+        
+        fileStream.writeByte( ((outputVal >>> 8) & 0x0F) | orVal);
+        fileStream.writeByte(outputVal & 0xFF);
+        
     }
     
     /*-----------------------------------------------------------------------*/
@@ -119,143 +324,37 @@ public class PECEncoder
     
     /*-----------------------------------------------------------------------*/
     
-    /*    
-    
-    call pecEncode(file, Pattern)
-    
-    graphics offset value = current file position - graphics offsetlocation + 2
-    
-    move to graphics offset location from the beginning of the file
-    
-    write graphics offset value & 0xFF to file as byte
-    write (graphics offset value >> 8) & 0xFF to file as byte
-    write (graphics offset value >> 16 ) & 0xFF to file as byte
-    
-    move to position 0x00 from the end of the file
-    
-    
-    //Writing all colors
-    
-    clear image (38 x 48 array of unsigned chars) //TO PORT
-    
-    yFactor = 32.0 / height;
-    xFactor = 42.0 / width
-    
-    while(there is a stitch)
-    {
-        x = ((stitch x - left bounds) * xFactor) + 3 //Rounded
-        y = ((stitch y - top bounds) * yFactor) + 3 //Rounded
-        image[y][x] = 1;
-    }
-    
-    write image(file pointer, image array) //TO PORT
-    
-    
-    //Writing each individual color
-    
-    for(each thread in thread count)
-    {
-        clear image(image array) //TO PORT
-    
-        while(there is a stitch)
+    /**
+     * Writes a byte array of image information to the output.
+     * @param fileStream RandomAccessFile
+     * @param imageArray byte[][]
+     * @throws IOException 
+     */
+    private void writeImage(RandomAccessFile fileStream,
+            byte[][] imageArray) throws IOException
+    {   
+        int offset;
+        byte output;
+                
+        for(int i = 0; i < 38; i++)
         {
-            x = ((stitch x - left bounds) * xFactor) + 3 //Rounded
-            y = ((stitch y - top bounds) * yFactor) + 3 //Rounded
-            if(current stitches flag & STOP
+            for(int j = 0; j < 6; j++)
             {
-                move to next stitch
-                break;
+                offset = j * 8;
+                output = 0;
+                
+                output |= ( imageArray[i][offset] != 0) ? 1 : 0;
+                output |= ( imageArray[i][offset + 1] != 0 << 1) ? 1 : 0;
+                output |= ( imageArray[i][offset + 2] != 0 << 2) ? 1 : 0;
+                output |= ( imageArray[i][offset + 3] != 0 << 3) ? 1 : 0;
+                output |= ( imageArray[i][offset + 4] != 0 << 4) ? 1 : 0;
+                output |= ( imageArray[i][offset + 5] != 0 << 5) ? 1 : 0;
+                output |= ( imageArray[i][offset + 6] != 0 << 6) ? 1 : 0;
+                output |= ( imageArray[i][offset + 7] != 0 << 7) ? 1 : 0;
+                fileStream.writeByte(output);
             }
-            image[y][x] = 1
-        }
-    
-    writeImage(file pointer, image array) //TO PORT
-    
-    }
-    
-    */
-    
-    /*-----------------------------------------------------------------------*/
-    
-    /* pecEncode
-    
-    while(there is a stitch)
-    {
-        stopCode = 2
-        thisX = thisY = 0.0;
-    
-        deltaX = stitchX - thisX
-        deltaY = stitchY - thisY
-        thisX += (double)deltaX;
-        thisY += (double)deltaY;
-    
-        if(stitch flag & STOP)
-        {
-            pecEncodeStop(file pointer, stopCode) //ACCOUNT FOR THIS
-            if stop code is 2 make it 1
-            else make it 2
-        }
-        else if(stitch & END)
-        {
-            write 0xFF to file as byte
-            break;
-        }
-    else if(deltaX < 63 && deltaX > -64 &&
-            deltaY < 63 && deltaY > -64 &&
-            (!(s.flags & (JUMP | TRIM))))
-        { 
-    
-            //NOTE: Ternary Operators inside these file writes
-            binaryWriteByte(file, (deltaX < 0) ?
-                (unsigned char)(deltaX + 0x80) : (unsigned char)deltaX);
-            binaryWriteByte(file, (deltaY < 0) ?
-                (unsigned char)(deltaY + 0x80) : (unsigned char)deltaY);
-        }
-        else
-        {
-        pecEncodeJump(file pointer, deltaX, stitch flag);
-        pecEncodeJump(file pointer, deltay, stitch flag);
         }
     }
-    
-    */
-    
-    /*-----------------------------------------------------------------------*/
-    
-    /* encode stop(file pointer, unsigned char stopCode)
-    
-    check to make sure file pointer is valid
-    write bytes to file:
-    0xFE
-    0xB0
-    stopCode
-    
-    */
-    
-    /*-----------------------------------------------------------------------*/
-    
-    /* encode jump(file pointer, int delta, int stitchCode
-    
-    outputval = abs(delta) & 0x7FF
-    UInt orpart = 0x80
-    
-    validate file pointer
-    if(stitchCode & TRIM)
-    {
-        orpart |= 0x20
-    }
-    else if(stitchCode & Jump)
-    {
-        orPart |= 0x10
-    }
-    
-    
-    if(delta < 0)
-    {
-        outputval = delta + 0x1000 & 0x7FF
-        outputval |= 0x800
-    }
-    */
     
     /*-----------------------------------------------------------------------*/
 }

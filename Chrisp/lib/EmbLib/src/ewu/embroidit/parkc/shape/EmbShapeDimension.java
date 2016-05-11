@@ -17,6 +17,7 @@ public class EmbShapeDimension
     
     /**
      * Constructor for Rectangle and Ellipse dimensions.
+     * @param type String
      * @param startCoord Point2D
      * @param width double
      * @param height double
@@ -36,6 +37,7 @@ public class EmbShapeDimension
     
     /**
      * Constructor for Line dimensions.
+     * @param type String
      * @param startCoord Point2D
      * @param endCoord  Point2D
      */
@@ -60,14 +62,14 @@ public class EmbShapeDimension
     
     /**
      * Return the starting coordinate of this dimension.
-     * @return 
+     * @return Point2D
      */
     public Point2D getStartCoord()
     { return this.startCoord; }
     
     /**
      * return the ending coordinate of this dimension.
-     * @return 
+     * @return Point2D
      */
     public Point2D getEndCoord()
     { return this.endCoord; }
