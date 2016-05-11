@@ -3,7 +3,6 @@ package ewu.embroidit.parkc.util;
 /*-----------------------------------------------------------------------*/
 
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
-import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
 
@@ -17,7 +16,6 @@ public class EmbCommand
     /*-----------------------------------------------------------------------*/
     
     private int listIndex;
-    private Shape shape;
     private A_EmbShapeWrapper wrapper;
     
     /*-----------------------------------------------------------------------*/
