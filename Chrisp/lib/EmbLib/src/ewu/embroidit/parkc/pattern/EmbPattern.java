@@ -287,7 +287,6 @@ public class EmbPattern implements Serializable
         for(EmbStitch stitch: this.importStitchList)
             maxIndex = Math.max(maxIndex, stitch.getColorIndex());
         
-        System.err.println("Max Color Index: " + maxIndex);
         return maxIndex;
     }
     

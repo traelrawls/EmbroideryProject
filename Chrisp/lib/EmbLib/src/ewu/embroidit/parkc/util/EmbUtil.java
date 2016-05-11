@@ -2,7 +2,6 @@ package ewu.embroidit.parkc.util;
 
 /*-----------------------------------------------------------------------*/
 
-import ewu.embroidit.parkc.pattern.EmbThread;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
 import java.util.ArrayList;
 import java.util.List;

@@ -118,7 +118,6 @@ public class FormatPES
             this.pecStart = this.pecStart | this.fileStream.readUnsignedByte() << 8;
             this.pecStart = this.pecStart | this.fileStream.readUnsignedByte() << 16;
             this.pecStart = this.pecStart | this.fileStream.readUnsignedByte() << 24;
-            System.err.println(" Start Location:" + this.pecStart);
         }
         catch(IOException e)
         { System.err.println("FormatPES: getPECStart: " + e); }
@@ -137,10 +136,7 @@ public class FormatPES
             this.threadCount = this.fileStream.readByte() + 1;
             
             for(int i = 0; i < this.threadCount; i++)
-            {
                 this.pattern.addThread(this.fileStream.readUnsignedByte());
-                System.err.println("DEBUG: Thread Added.");
-            }
         }
         catch(IOException e)
         { System.err.println("FormatPES: createThreads:" + e); }
@@ -427,10 +423,7 @@ public class FormatPES
         EmbStitch lastStitch = this.pattern.getStitchList().get(listSize - 1);
         
         if(lastStitch.getFlag() != StitchCode.END)
-        {
             this.pattern.addStitchRel(0.0, 0.0, StitchCode.END, 1);
-            System.err.println("End Stitch not present in data, Added manually.");
-        }
     }
     
     /*-----------------------------------------------------------------------*/
