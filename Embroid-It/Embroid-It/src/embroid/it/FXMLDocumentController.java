@@ -8,11 +8,13 @@ package embroid.it;
 import ewu.embroidit.parkc.fill.A_EmbFill;
 import ewu.embroidit.parkc.fill.EmbFillRadial;
 import ewu.embroidit.parkc.fill.EmbFillTatamiRect;
+import ewu.embroidit.parkc.fill.EmbFillLine;
 import ewu.embroidit.parkc.io.FormatPES;
 import ewu.embroidit.parkc.io.PECDecoder;
 import ewu.embroidit.parkc.pattern.EmbPattern;
 import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.*;
+import ewu.embroidit.parkc.util.EmbCommand;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -55,12 +57,13 @@ public class FXMLDocumentController implements Initializable {
     private final ObservableList listViewShapes = FXCollections.observableArrayList();
     private EmbPattern pattern = new EmbPattern();
     private List<A_EmbShapeWrapper> shapeList = new ArrayList();
+    private List<EmbCommand> changesList = new ArrayList();
     private Stage primaryStage;
     private BorderPane root;
     private VBox centerContainer = new VBox();
     private StackPane canvasContainer = new StackPane();
     private double startCoordX, startCoordY, endCoordX, endCoordY;
-    private int rectNameNum, ellipseNameNum, lineNameNum;
+    private int rectNameNum, ellipseNameNum, lineNameNum, changesIndex = -1;
     
     @FXML
     private Canvas stitchLayer;
@@ -76,6 +79,8 @@ public class FXMLDocumentController implements Initializable {
     private ColorPicker colorPicker;
     @FXML
     private TextField xField, yField, heightField, widthField, rotationField, endXField, endYField;
+    @FXML
+    private Button undoButton, redoButton;
     
     /*-----------------------------------------------------------------------*/
     //Buttons
@@ -125,9 +130,6 @@ public class FXMLDocumentController implements Initializable {
     {
         this.stitchLayer.setVisible(true);
         this.shapeLayer.setVisible(false);
-        
-        //DEBUG: REMOVE AFTER TESTING
-        System.err.println("Stitch Layer Pressed");
     }
     
     /*-----------------------------------------------------------------------*/
@@ -140,9 +142,6 @@ public class FXMLDocumentController implements Initializable {
     {
         this.stitchLayer.setVisible(false);
         this.shapeLayer.setVisible(true);
-        
-        //DEBUG: REMOVE AFTER TESTING
-        System.err.println("Shape Layer");
     }
     
     /*-----------------------------------------------------------------------*/
@@ -246,7 +245,10 @@ public class FXMLDocumentController implements Initializable {
                 pattern.addShapeWrapper(lineWrapper);
                 shapeList.add(lineWrapper);
                 listViewShapes.add(lineWrapper.getName());
-                stitchLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX,endCoordY);
+                A_EmbFill fillStrat = new EmbFillLine();
+                fillStrat.fillShape(lineWrapper);
+                addChange(shapeList.size()-1, false, null);
+                drawLinesFromList(stitchLayer, lineWrapper.getLineList());
                 shapeLayer.getGraphicsContext2D().strokeLine(startCoordX,startCoordY,endCoordX, endCoordY);
                 previewLayer.getGraphicsContext2D().clearRect(0,0,previewLayer.getWidth(),previewLayer.getHeight());
             }
@@ -459,6 +461,7 @@ public class FXMLDocumentController implements Initializable {
         listViewShapes.add(rectWrapper.getName());
         A_EmbFill fillStrat = new EmbFillTatamiRect();
         fillStrat.fillShape(rectWrapper);
+        addChange(this.shapeList.size()-1, false, null);
         drawLinesFromList(stitchLayer, rectWrapper.getLineList());
         shapeLayer.getGraphicsContext2D().fillRect(xCoor,yCoor,width,height);
     }
@@ -507,6 +510,7 @@ public class FXMLDocumentController implements Initializable {
         this.shapeList.add(ellipseWrapper);
         listViewShapes.add(ellipseWrapper.getName());
         fillStrat.fillShape(ellipseWrapper);
+        addChange(this.shapeList.size()-1, false, null);
         drawLinesFromList(stitchLayer, ellipseWrapper.getLineList());
         shapeLayer.getGraphicsContext2D().fillOval(centerX-radiusX,centerY-radiusY,radiusX*2,radiusY*2);    
     }
@@ -555,6 +559,33 @@ public class FXMLDocumentController implements Initializable {
         }
     }
     
+    private void addChange(int index, boolean isAdding, A_EmbShapeWrapper wrapper)
+    {
+        if (changesIndex != 4)
+        {
+            if (changesIndex != -1)
+            {
+                int loops = changesList.size()-1;
+                for (int i = changesIndex; i < loops; i++)
+                {
+                    this.changesList.remove(changesList.size()-1);
+                }
+            }
+            else
+            {
+                this.changesList.clear();
+            }
+            this.changesIndex++;
+        }
+        else
+        {
+            this.changesList.remove(0);
+        }
+        this.undoButton.setDisable(false);
+        this.redoButton.setDisable(true);
+        this.changesList.add(new EmbCommand(index, isAdding, wrapper));
+    }
+    
     @FXML
     private void resetGUI()
     {
@@ -588,6 +619,7 @@ public class FXMLDocumentController implements Initializable {
             A_EmbShapeWrapper lineWrapper = new EmbShapeWrapperLine(newLine);
             lineWrapper.setName(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getName());
             lineWrapper.setThreadColor(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getThreadColor());
+            addChange(shapeListView.getSelectionModel().getSelectedIndex(), false, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
             this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(), newLine);
             this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), lineWrapper);
         }
@@ -605,6 +637,7 @@ public class FXMLDocumentController implements Initializable {
                 A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(newRect);
                 rectWrapper.setName(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getName());
                 rectWrapper.setThreadColor(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getThreadColor());
+                addChange(shapeListView.getSelectionModel().getSelectedIndex(), false, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
                 this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(), newRect);
                 this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), rectWrapper);
             }
@@ -618,6 +651,7 @@ public class FXMLDocumentController implements Initializable {
                 A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(newEllipse);
                 ellipseWrapper.setName(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getName());
                 ellipseWrapper.setThreadColor(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getThreadColor());
+                addChange(shapeListView.getSelectionModel().getSelectedIndex(), false, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
                 this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(), newEllipse);
                 this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), ellipseWrapper);           
             }        
@@ -628,9 +662,44 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     public void deleteShape()
     {
+        addChange(this.shapeListView.getSelectionModel().getSelectedIndex(), true, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
         this.pattern.getShapeList().remove(this.shapeListView.getSelectionModel().getSelectedIndex());
         this.shapeList.remove(this.shapeListView.getSelectionModel().getSelectedIndex());
         this.listViewShapes.remove(this.shapeListView.getSelectionModel().getSelectedIndex());
+        redrawCanvas();
+    }
+    
+    @FXML
+    public void undoChange()
+    {
+        EmbCommand change = this.changesList.get(changesIndex);
+        if (change.getAddingFlag())
+        {
+            this.shapeList.add(change.getListIndex(), change.getWrapper());
+            this.pattern.getShapeList().add(change.getListIndex(), change.getWrapper().getWrappedShape());
+            this.listViewShapes.add(change.getListIndex(), change.getWrapper().getName());
+        }
+        else
+        {
+            if (change.getWrapper() == null)
+            {
+                this.shapeList.remove(change.getListIndex());
+                this.pattern.getShapeList().remove(change.getListIndex());
+                this.listViewShapes.remove(change.getListIndex());
+            }
+            else
+            {
+                this.shapeList.set(change.getListIndex(), change.getWrapper());
+                this.pattern.getShapeList().set(change.getListIndex(), change.getWrapper().getWrappedShape());
+                this.listViewShapes.set(change.getListIndex(), change.getWrapper().getName());
+            }
+        }
+        this.changesIndex--;
+        this.redoButton.setDisable(false);
+        if (this.changesIndex < 0)
+        {
+            this.undoButton.setDisable(true);
+        }
         redrawCanvas();
     }
     
@@ -651,6 +720,8 @@ public class FXMLDocumentController implements Initializable {
         this.stitchLayer.setVisible(false);
         this.shapeListView.setItems(listViewShapes);
         this.colorPicker.setValue(Color.BLACK);
+        this.undoButton.setDisable(true);
+        this.redoButton.setDisable(true);
         setColor(this.colorPicker.getValue());
         this.stitchLayer.getGraphicsContext2D().setLineWidth(2);
         this.stitchLayer.getGraphicsContext2D().setLineCap(StrokeLineCap.BUTT);

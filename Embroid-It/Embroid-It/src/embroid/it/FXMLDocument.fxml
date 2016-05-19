@@ -81,7 +81,7 @@
    <left>
       <VBox id="leftContainer" alignment="TOP_CENTER" prefHeight="579.0" prefWidth="57.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
          <children>
-            <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Undo" textAlignment="CENTER">
+            <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" fx:id="undoButton" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Undo" textAlignment="CENTER" onAction="#undoChange">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -93,7 +93,7 @@
                   <Tooltip text="Undo" />
                </tooltip>
             </Button>
-            <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
+            <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" fx:id="redoButton" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
