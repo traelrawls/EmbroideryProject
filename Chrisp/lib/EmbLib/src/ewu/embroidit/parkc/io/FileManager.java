@@ -102,6 +102,7 @@ public class FileManager
     {
         FormatPES pesFormatter;
         
+        this.validateObject(file);
         pesFormatter = new FormatPES(file);
         return pesFormatter.getPattern();
     }
@@ -152,12 +153,13 @@ public class FileManager
                 stitch.setFlag(StitchCode.NORMAL);
         }
         
+        System.err.println("Wrapper list size: " + wrapperList.size() );
         prevWrapper = wrapperList.get(0);
         prevStitch = new EmbStitch(new Point2D(0, 0));
         for(A_EmbShapeWrapper wrapper : wrapperList)
         {
             if(!isFirstShape)
-            {
+            {   
                 startStitch = wrapper.getStitchList().get(0);
                 dist = EmbMath.calculateDistance(prevStitch.getStitchPosition(),
                         startStitch.getStitchPosition());
@@ -218,7 +220,7 @@ public class FileManager
      * @param pattern EmbPattern
      * @return List&lt;EmbPattern&gt;
      */
-    private List<A_EmbShapeWrapper> getWrapperList(EmbPattern pattern)
+    public List<A_EmbShapeWrapper> getWrapperList(EmbPattern pattern)
     {
         List<Shape> shapeList;
         List<A_EmbShapeWrapper> wrapperList;
@@ -264,6 +266,18 @@ public class FileManager
         }
         
         return sortedWrapperList;
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Ensures that the object sent as a parameter exists.
+     * @param obj Object
+     */
+    private void validateObject(Object obj)
+    {
+        if (obj == null)
+            throw new RuntimeException("PECDecoder: Null reference error");
     }
     
     /*-----------------------------------------------------------------------*/

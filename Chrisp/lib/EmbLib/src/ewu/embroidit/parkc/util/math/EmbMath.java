@@ -262,4 +262,20 @@ public class EmbMath
         return (int) Math.floor(d + 0.5);
     }
     /*-----------------------------------------------------------------------*/
+    
+    public static void offsetStitchList(List<EmbStitch> stitchList)
+    {
+        BoundingBox bounds;
+        double x, y;
+        
+        bounds = EmbMath.calcBoundingRect(stitchList);
+        
+        for(EmbStitch stitch : stitchList)
+        {
+            x = (stitch.getStitchPosition().getX() - bounds.getMinX()) + 4;
+            y = (stitch.getStitchPosition().getY() - bounds.getMinY()) + 4;
+            stitch.setStitchPosition(new Point2D(x, y));
+        }
+    }
+    /*-----------------------------------------------------------------------*/
 }

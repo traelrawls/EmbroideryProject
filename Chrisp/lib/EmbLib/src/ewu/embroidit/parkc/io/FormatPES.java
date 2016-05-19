@@ -59,6 +59,16 @@ public class FormatPES
         this.readPEC();
         this.closeFile();
         this.validateLastStitch();
+        
+        //scale stitch list
+        EmbMath.scaleStitches(this.pattern.getStitchList(), 4.0);
+        
+        //offset using the bounding box
+        EmbMath.offsetStitchList(this.pattern.getStitchList());
+        
+        
+        
+        
     }
     
     /*-----------------------------------------------------------------------*/
@@ -133,9 +143,9 @@ public class FormatPES
         try
         {
             this.fileStream.seek(this.pecStart + 48);
-            this.threadCount = this.fileStream.readByte() + 1;
+            this.threadCount = this.fileStream.readUnsignedByte()+ 1;
             
-            for(int i = 0; i < this.threadCount; i++)
+            for(int i = 0; i < this.threadCount; i++) 
                 this.pattern.addThread(this.fileStream.readUnsignedByte());
         }
         catch(IOException e)
@@ -184,11 +194,13 @@ public class FormatPES
         
         try
         {
-            this.openFile(file, "w");        
-
+            this.openFile(file, "rw");   
+            
             EmbMath.flipStitchList("vertical", masterStitchList);
-            EmbMath.scaleStitches(masterStitchList, 10.0); 
+            EmbMath.scaleStitches(masterStitchList, 10.0);
                                                       
+            System.err.println("DEBUG: The file Opened!");
+            
             this.fileStream.writeBytes("#PES0001");
 
             //Write PECPointer
@@ -202,23 +214,24 @@ public class FormatPES
             this.fileStream.writeShort(0xFFFF);
             this.fileStream.writeShort(0x00);
             
-            this.writeEmbOneSection(masterStitchList);
+            this.writeEmbOneSection(masterStitchList); 
             this.writeSegmentSection(masterStitchList);
-
+            
+            System.err.println("DEBUG: After writeSections in PES!");
+            
             pecLocation = (int) this.fileStream.getFilePointer();
             
             this.fileStream.seek(0x08);
             this.fileStream.writeChar(pecLocation & 0x0FF);
             this.fileStream.writeChar((pecLocation >>> 8) & 0xFF);
             this.fileStream.writeChar((pecLocation >>> 16) & 0xFF);
-
             this.fileStream.seek(this.fileStream.length());
             
-            //TO CODE
             PECEncoder.getInstance().writeStitches(fileStream,
                     file.getName(), wrapperList, masterStitchList);
                
             this.closeFile();
+            System.err.println("DEBUG: The file closed!");
         }
         catch(Exception e)
         { System.err.println("Error: FormatPES - writePES"); }
@@ -231,7 +244,7 @@ public class FormatPES
      * includes number of thread colors, number of stitch blocks and stitches per
      * color.
      * @param masterStitchList List&lt;EmbStitch&gt;
-     * @throws IOException 
+     * @throws IOException
      */
     private void writeSegmentSection(List<EmbStitch> masterStitchList) throws IOException
     {
@@ -276,7 +289,7 @@ public class FormatPES
         fileStream.writeShort(0x07);            //Strlen
         fileStream.writeBytes("CSewSeg");
         
-        colorInfo = new short[colorCount];
+        colorInfo = new short[colorCount * 2];
         blockCount = 0;
         currentColorCode = -1;
         for(int i = 0; i < masterStitchList.size(); i++)
@@ -285,7 +298,7 @@ public class FormatPES
             flag = masterStitchList.get(i).getFlag();
             stitchColor = masterStitchList.get(i).getColor();
             approximateColorCode = EmbMath.approximateColorIndex(stitchColor);
-            
+                
             if(currentColorCode != approximateColorCode)
             {
                 colorInfo[colorInfoIndex++] = (short) blockCount;
@@ -337,6 +350,8 @@ public class FormatPES
         }
             
         fileStream.writeInt(0);
+        
+        
     }
     
     /*-----------------------------------------------------------------------*/
@@ -420,6 +435,7 @@ public class FormatPES
     private void validateLastStitch()
     {
         int listSize = this.pattern.getStitchList().size();
+        
         EmbStitch lastStitch = this.pattern.getStitchList().get(listSize - 1);
         
         if(lastStitch.getFlag() != StitchCode.END)

@@ -133,7 +133,7 @@ public class PECDecoder
     {
         if(index < 0)
             throw new IndexOutOfBoundsException("PECDecoder - getColorByIndex "
-                    + "Negative index: Color approximation (EmbMAth) failure "
+                    + "Negative index: Color approximation (EmbMath) failure "
                     + "likely");
         
         if(index >= COLOR_LIST.size())

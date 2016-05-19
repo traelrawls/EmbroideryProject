@@ -168,14 +168,26 @@ public class PECEncoder
         imageArray = this.EMPTY_BORDER_IMAGE.clone();
         yFactor = 32.0/height;
         xFactor = 42.0/ width;
-        for(EmbStitch stitch : stitchList)
+        
+        try
         {
-            tempCoord = stitch.getStitchPosition();
-            x = EmbMath.roundDouble(((tempCoord.getX() - bounds.getMinX()) * xFactor)) + 3;
-            y = EmbMath.roundDouble(((tempCoord.getY() - bounds.getMinY()) * yFactor)) + 3;
-            imageArray[y][x] = 1;
+            for(EmbStitch stitch : stitchList)
+            {
+                tempCoord = stitch.getStitchPosition();
+                x = EmbMath.roundDouble( (tempCoord.getX() - bounds.getMinX()) * xFactor) + 3;
+                y = EmbMath.roundDouble( (tempCoord.getY() - bounds.getMinY()) * yFactor) + 3;
+                imageArray[y][x] = 1;
+
+                System.err.println("DEBUG - PECENCODER: Wrote a coordinate to the array");
+            }
+            this.writeImage(fileStream, imageArray);
+        
         }
-        this.writeImage(fileStream, imageArray);
+        catch(Exception e)
+        {
+            System.err.println(e);
+            System.exit(1);
+        }
         
         //Writing each individual color
         j = 0;
@@ -199,6 +211,8 @@ public class PECEncoder
             }
             this.writeImage(fileStream, imageArray);
         }
+        
+      
     }
     
     /*-----------------------------------------------------------------------*/

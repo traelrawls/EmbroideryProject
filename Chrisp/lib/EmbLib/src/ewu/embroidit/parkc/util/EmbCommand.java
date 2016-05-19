@@ -3,7 +3,6 @@ package ewu.embroidit.parkc.util;
 /*-----------------------------------------------------------------------*/
 
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
-import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
 
@@ -17,7 +16,6 @@ public class EmbCommand
     /*-----------------------------------------------------------------------*/
     
     private int listIndex;
-    private boolean isAdding;
     private A_EmbShapeWrapper wrapper;
     
     /*-----------------------------------------------------------------------*/
@@ -27,10 +25,9 @@ public class EmbCommand
      * @param listIndex int
      * @param wrapper A_EmbShapeWrapper
      */
-    public EmbCommand(int listIndex, boolean isAdding, A_EmbShapeWrapper wrapper)
+    public EmbCommand(int listIndex, A_EmbShapeWrapper wrapper)
     {
         this.listIndex = listIndex;
-        this.isAdding = isAdding;
         this.wrapper = wrapper;
     }
     
@@ -51,15 +48,6 @@ public class EmbCommand
      */
     public A_EmbShapeWrapper getWrapper()
     { return this.wrapper; }
-    
-    /*-----------------------------------------------------------------------*/
-    
-    /**
-     * Returns the shape wrapper that corresponds to this operation.
-     * @return A_EmbShapeWrapper
-     */
-    public boolean getAddingFlag()
-    { return this.isAdding; }
     
     /*-----------------------------------------------------------------------*/
 }

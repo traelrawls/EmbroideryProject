@@ -68,6 +68,7 @@ public class EmbPattern implements Serializable
         {
             if(this.importStitchList.isEmpty())
                 return;
+            
         }
         
         if((flags & StitchCode.STOP) != 0)
@@ -262,10 +263,12 @@ public class EmbPattern implements Serializable
      * @return Color
      */
     public Color getThread(int index)
-    {
+    {   
         if(index >= this.threadList.size())
         {
-            System.out.print("Error: Attempted to get a thread out of list index");
+            System.err.println("Error: Attempted to get a thread out of list index");
+            System.err.println("Max color index is: " + this.getMaxColorIndex());
+            System.err.println("Passed color index: " + index);
             System.exit(1);
         }
         
@@ -285,8 +288,11 @@ public class EmbPattern implements Serializable
         int maxIndex = 0;
         
         for(EmbStitch stitch: this.importStitchList)
+        {
+            System.err.println("DEBUG EmbPattern getMaxColorIndex: " 
+                    + "Index for stitch is: " + stitch.getColorIndex());
             maxIndex = Math.max(maxIndex, stitch.getColorIndex());
-        
+        }
         return maxIndex;
     }
     
