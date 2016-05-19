@@ -9,8 +9,7 @@ import ewu.embroidit.parkc.fill.A_EmbFill;
 import ewu.embroidit.parkc.fill.EmbFillRadial;
 import ewu.embroidit.parkc.fill.EmbFillTatamiRect;
 import ewu.embroidit.parkc.fill.EmbFillLine;
-import ewu.embroidit.parkc.io.FormatPES;
-import ewu.embroidit.parkc.io.PECDecoder;
+import ewu.embroidit.parkc.io.FileManager;
 import ewu.embroidit.parkc.pattern.EmbPattern;
 import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.*;
@@ -26,22 +25,18 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.collections.ObservableList;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
+import javafx.scene.control.Alert.AlertType;
 
 
 /**
@@ -51,19 +46,22 @@ import javafx.beans.value.ChangeListener;
 @SuppressWarnings("Convert2Lambda")
 public class FXMLDocumentController implements Initializable {
     
-    
     private final FileChooser fileBrowser = new FileChooser();
-    private final DirectoryChooser dirBrowser = new DirectoryChooser();
     private final ObservableList listViewShapes = FXCollections.observableArrayList();
     private EmbPattern pattern = new EmbPattern();
     private List<A_EmbShapeWrapper> shapeList = new ArrayList();
     private List<EmbCommand> changesList = new ArrayList();
     private Stage primaryStage;
-    private BorderPane root;
-    private VBox centerContainer = new VBox();
-    private StackPane canvasContainer = new StackPane();
     private double startCoordX, startCoordY, endCoordX, endCoordY;
     private int rectNameNum, ellipseNameNum, lineNameNum, changesIndex = -1;
+    
+    //File Management variables
+    private FileChooser.ExtensionFilter pesFilter = new FileChooser.ExtensionFilter("PES Format File (*.pes)", "*.pes");
+    private FileChooser.ExtensionFilter xmlFilter = new FileChooser.ExtensionFilter("XML Format File (*.xml)", "*.xml");
+    private FileChooser exportBrowser = new FileChooser();
+    private FileChooser saveBrowser = new FileChooser();
+    private Alert alert = new Alert(AlertType.CONFIRMATION);
+    private boolean isSaved = false;
     
     @FXML
     private Canvas stitchLayer;
@@ -78,9 +76,11 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ColorPicker colorPicker;
     @FXML
-    private TextField xField, yField, heightField, widthField, rotationField, endXField, endYField;
+    private TextField xField, yField, heightField, widthField, endXField, endYField;
     @FXML
     private Button undoButton, redoButton;
+    
+    
     
     /*-----------------------------------------------------------------------*/
     //Buttons
@@ -159,53 +159,122 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void menuImportFile()
     {
-        File file = fileBrowser.showOpenDialog(primaryStage);
+        if(!this.isSaved)
+            this.makeSaveCheck();
         
-        if(file != null)
-        {
-            FormatPES formatter = new FormatPES(file);
-            List<EmbStitch> stitchList = formatter.getPattern().getStitchList();
-            
-            this.stitchFromStitchList(stitchList);
-            this.buttonStitchLayerPressed();
-        }
+        this.fileBrowser.getExtensionFilters().add(this.pesFilter);
+        File file = fileBrowser.showOpenDialog(this.primaryStage);
+        
+        if(file == null)
+            return;
+        
+        this.pattern = FileManager.getInstance().pesToPattern(file);
+        this.stitchFromStitchList(this.pattern.getStitchList());
+        this.buttonStitchLayerPressed();
     }
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Exports the current pattern to PES file format for use by a PES
+     * compatible embroidery machine.
+     */
     @FXML
     private void menuExportFile()
     {
-     //Export call here
+        
+        if(!this.isSaved)
+            this.makeSaveCheck();
+        
+        //Export call here
+        System.err.println("EXPORT!");
     }
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Opens a project file that has been saved in XML format.
+     */
     @FXML
     private void menuOpenFile()
     {
-        //Get pattern file
-        //check for save on existing work
-        //open file
+        if(!this.isSaved)
+            this.makeSaveCheck();
+        
+        //Open file
+        System.err.println("OPEN!");
     }
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Saves a project file to XML format.
+     */
     @FXML
     private void menuSaveFile()
     {
         //create file with file chooser
         //call file manager save
+        System.err.println("SAVE/SAVE AS!");
     }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Resets the pattern, effectively starting the project from scratch.
+     */
+    @FXML
+    private void menuNewFile()
+    {
+        if(!this.isSaved)
+            this.makeSaveCheck();
+        
+        this.resetGUI();
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    @FXML
+    private void menuAbout()
+    {
+        this.alert = new Alert(AlertType.INFORMATION);
+        this.alert.setTitle("About");
+        this.alert.setHeaderText("About the application");
+        this.alert.setContentText("The Embroid-It software package development was started\n" 
+                                + "as an Eastern Washington University Senior Project for the\n"
+                                + "Winter/Spring 2016 quarters.  It is intended to be an\n"
+                                + "ongoing open source project.\n\n"
+                                + "Contributors: Chris Park, Trae Rawls, Nate Owens\n"
+                                + "Sponser: Ken Farr\n\n"
+                                + "Version 1.0");
+        
+        this.alert.showAndWait();
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    /**
+     * Creates a pop up dialog asking the user if they would like to save
+     * recent changes. Clicking okay will open a save dialog for current
+     * pattern to be saved.
+     */
+    private void makeSaveCheck()
+    {
+        this.alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Unsaved Work");
+        alert.setHeaderText("There have been changes since your last save.");
+        alert.setContentText("Save recent changes?");
+        
+        Optional<ButtonType> result = this.alert.showAndWait();
+        if(result.get() == ButtonType.OK)
+            this.menuSaveFile();
+        else
+        {}
+    }
+    
     /*-----------------------------------------------------------------------*/
     //END MENU OPERATIONS
     /*-----------------------------------------------------------------------*/
-    
-    
-    
-    /*-----------------------------------------------------------------------*/
-    
-    
+   
     /*-----------------------------------------------------------------------*/
     //EVENT HANDLERS
     /*-----------------------------------------------------------------------*/
@@ -305,12 +374,6 @@ public class FXMLDocumentController implements Initializable {
     
     /*-----------------------------------------------------------------------*/
     
-    
-    /*-----------------------------------------------------------------------*/
-
-    
-    /*-----------------------------------------------------------------------*/
-    
     EventHandler<MouseEvent> mouseHandlerEllipse = new EventHandler<MouseEvent>()
     {
         @Override
@@ -380,10 +443,6 @@ public class FXMLDocumentController implements Initializable {
     
     /*-----------------------------------------------------------------------*/
     
-    
-    
-    /*-----------------------------------------------------------------------*/
-    
     private void drawLinesFromList(Canvas drawingCanvas, List<Line> lineList)
     {
         for (Line line : lineList)
@@ -402,15 +461,16 @@ public class FXMLDocumentController implements Initializable {
     {
         Point2D prevPoint = null;
         boolean firstStitch = true;
+        
         for (EmbStitch stitch : stitchList)
         {
-            if (!firstStitch)
+            if(!firstStitch)
             {
-                //this.stitchLayer.getGraphicsContext2D().setStroke(pattern.getThread(stitch.getColorIndex()));
-                this.stitchLayer.getGraphicsContext2D().setStroke(PECDecoder.getInstance().getColorByIndex(stitch.getColorIndex()));
-                this.stitchLayer.getGraphicsContext2D().strokeLine(prevPoint.getX()+(stitchLayer.getWidth()/2),prevPoint.getY()+(stitchLayer.getHeight()/2),
-                                                                                stitch.getStitchPosition().getX()+(stitchLayer.getWidth()/2),
-                                                                                stitch.getStitchPosition().getY()+(stitchLayer.getHeight()/2));
+                this.stitchLayer.getGraphicsContext2D().setStroke(pattern.getThread(stitch.getColorIndex()));
+                this.stitchLayer.getGraphicsContext2D().strokeLine(prevPoint.getX(), 
+                                                                   prevPoint.getY(),
+                                                                   stitch.getStitchPosition().getX(),
+                                                                   stitch.getStitchPosition().getY());
             }
             prevPoint = stitch.getStitchPosition();
             firstStitch = false;
@@ -559,6 +619,8 @@ public class FXMLDocumentController implements Initializable {
         }
     }
     
+    /*-----------------------------------------------------------------------*/
+    
     private void addChange(int index, boolean isAdding, A_EmbShapeWrapper wrapper)
     {
         if (changesIndex != 4)
@@ -586,7 +648,8 @@ public class FXMLDocumentController implements Initializable {
         this.changesList.add(new EmbCommand(index, isAdding, wrapper));
     }
     
-    @FXML
+    /*-----------------------------------------------------------------------*/
+    
     private void resetGUI()
     {
         this.stitchLayer.getGraphicsContext2D().clearRect(0,0,previewLayer.getWidth(),previewLayer.getHeight());
@@ -604,6 +667,8 @@ public class FXMLDocumentController implements Initializable {
         this.colorPicker.setValue(Color.BLACK);
         setColor(Color.BLACK);
     }
+    
+    /*-----------------------------------------------------------------------*/
     
     @FXML
     public void editShape()
@@ -659,6 +724,8 @@ public class FXMLDocumentController implements Initializable {
         redrawCanvas();
     }
     
+    /*-----------------------------------------------------------------------*/
+    
     @FXML
     public void deleteShape()
     {
@@ -668,6 +735,8 @@ public class FXMLDocumentController implements Initializable {
         this.listViewShapes.remove(this.shapeListView.getSelectionModel().getSelectedIndex());
         redrawCanvas();
     }
+    
+    /*-----------------------------------------------------------------------*/
     
     @FXML
     public void undoChange()
@@ -703,6 +772,8 @@ public class FXMLDocumentController implements Initializable {
         redrawCanvas();
     }
     
+    /*-----------------------------------------------------------------------*/
+    
     private void setColor(Color color)
     {
         this.stitchLayer.getGraphicsContext2D().setStroke(color);
@@ -735,7 +806,7 @@ public class FXMLDocumentController implements Initializable {
                         endYField.setText("");
                         heightField.setText("");
                         widthField.setText("");
-                        if (shapeList.size() != 0)
+                        if (!shapeList.isEmpty())
                         {
                             A_EmbShapeWrapper selectedShape = shapeList.get(shapeListView.getSelectionModel().getSelectedIndex());
                             EmbShapeDimension dims = selectedShape.getDimensions();

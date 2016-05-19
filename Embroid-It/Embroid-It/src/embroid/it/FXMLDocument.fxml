@@ -20,26 +20,26 @@
               <menus>
                 <Menu id="save" mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#resetGUI" text="New">
+                    <MenuItem mnemonicParsing="false" onAction="#menuNewFile" text="New">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Open">
+                        <MenuItem mnemonicParsing="false" onAction="#menuOpenFile" text="Open">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem disable="true" mnemonicParsing="false" text="Save">
+                        <MenuItem mnemonicParsing="false" onAction="#menuSaveFile" text="Save">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
-                        <MenuItem disable="true" mnemonicParsing="false" text="Save As..." />
+                        <MenuItem mnemonicParsing="false" onAction="#menuSaveFile" text="Save As..." />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="menuItemImport" mnemonicParsing="false" onAction="#menuImportFile" text="Import">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
-                        <MenuItem disable="true" mnemonicParsing="false" text="Export">
+                        <MenuItem mnemonicParsing="false" onAction="#menuExportFile" text="Export">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
@@ -69,7 +69,7 @@
                               <KeyCodeCombination alt="UP" code="F1" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                      <MenuItem mnemonicParsing="false" text="About Embroid-It" />
+                      <MenuItem mnemonicParsing="false" onAction="#menuAbout" text="About Embroid-It" />
                         <MenuItem mnemonicParsing="false" text="Developer Documentation" />
                     </items>
                   </Menu>
@@ -81,7 +81,7 @@
    <left>
       <VBox id="leftContainer" alignment="TOP_CENTER" prefHeight="579.0" prefWidth="57.0" style="-fx-background-color: C8C8C8;" BorderPane.alignment="CENTER">
          <children>
-            <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" fx:id="undoButton" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Undo" textAlignment="CENTER" onAction="#undoChange">
+            <Button id="shapeLayerButton" fx:id="undoButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#undoChange" prefHeight="40.0" prefWidth="40.0" text="Undo" textAlignment="CENTER">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -93,7 +93,7 @@
                   <Tooltip text="Undo" />
                </tooltip>
             </Button>
-            <Button id="shapeLayerButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" fx:id="redoButton" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
+            <Button id="shapeLayerButton" fx:id="redoButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -165,8 +165,8 @@
                         <Label fx:id="heightLabel" layoutX="11.0" layoutY="84.0" text="Height:" />
                         <Label fx:id="widthLabel" layoutX="13.0" layoutY="113.0" text="Width:" />
                         <TextField fx:id="widthField" layoutX="63.0" layoutY="109.0" prefHeight="25.0" prefWidth="95.0" />
-                        <Button fx:id="changeButton" layoutX="117.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Change" onAction="#editShape"/>
-                        <Button fx:id="deleteButton" layoutX="45.0" layoutY="146.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Delete" onAction="#deleteShape"/>
+                        <Button fx:id="changeButton" layoutX="117.0" layoutY="146.0" mnemonicParsing="false" onAction="#editShape" prefHeight="25.0" prefWidth="62.0" text="Change" />
+                        <Button fx:id="deleteButton" layoutX="45.0" layoutY="146.0" mnemonicParsing="false" onAction="#deleteShape" prefHeight="25.0" prefWidth="62.0" text="Delete" />
                         <Label fx:id="endXLabel" layoutX="7.0" layoutY="43.0" text="end X:" />
                         <TextField fx:id="endXField" layoutX="49.0" layoutY="39.0" prefHeight="25.0" prefWidth="52.0" />
                         <Label fx:id="endYLabel" layoutX="109.0" layoutY="43.0" text="end Y:" />
