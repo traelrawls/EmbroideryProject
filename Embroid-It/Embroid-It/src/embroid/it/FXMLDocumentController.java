@@ -214,6 +214,15 @@ public class FXMLDocumentController implements Initializable {
     private void menuSaveFile()
     {
         //create file with file chooser
+        this.saveBrowser.getExtensionFilters().add(this.xmlFilter);
+        File file = saveBrowser.showSaveDialog(this.primaryStage);
+        
+        
+        if(file == null)
+            return;
+        
+        FileManager.getInstance().savePattern(this.pattern, file);
+        
         //call file manager save
         System.err.println("SAVE/SAVE AS!");
     }

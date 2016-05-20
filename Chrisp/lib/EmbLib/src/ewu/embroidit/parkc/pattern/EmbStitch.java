@@ -14,6 +14,7 @@ public class EmbStitch
 {
     /*-----------------------------------------------------------------------*/
     
+    
     private int flag;                //Machine code stitch flag
     private int colorIndex;          //Color index in threadlist for import
     private Color stitchColor;

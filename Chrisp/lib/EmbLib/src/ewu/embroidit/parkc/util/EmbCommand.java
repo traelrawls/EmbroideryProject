@@ -3,7 +3,6 @@ package ewu.embroidit.parkc.util;
 /*-----------------------------------------------------------------------*/
 
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
-import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
 

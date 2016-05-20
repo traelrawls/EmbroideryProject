@@ -1,15 +1,12 @@
 package ewu.embroidit.parkc.io;
 
+import ewu.embroidit.parkc.io.XML.FormatXML;
 import ewu.embroidit.parkc.fill.A_EmbFill;
 import ewu.embroidit.parkc.pattern.EmbPattern;
 import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
 import ewu.embroidit.parkc.util.math.EmbMath;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Point2D;
@@ -50,21 +47,7 @@ public class FileManager
      */
     public EmbPattern openPattern(File file)
     {
-        FileInputStream inFile;
-        ObjectInputStream inObject;
-        EmbPattern pattern = new EmbPattern();
-        
-        try
-        {
-            inFile = new FileInputStream(file);
-            inObject = new ObjectInputStream(inFile);
-            pattern = (EmbPattern) inObject.readObject();
-            inObject.close();
-        }
-        catch(Exception e)
-        { System.err.println("FileManager: openPattern: " + e); }
-        
-        return pattern;
+        return FormatXML.getInstance().loadFile(file);
     }
     
     /*-----------------------------------------------------------------------*/
@@ -76,19 +59,7 @@ public class FileManager
      */
     public void savePattern(EmbPattern pattern, File file)
     {
-        FileOutputStream outFile;
-        ObjectOutputStream outObject;
-        
-        try
-        {
-            outFile = new FileOutputStream(file);
-            outObject = new ObjectOutputStream(outFile);
-            outObject.writeObject(pattern);
-            outObject.close();
-        }
-        catch(Exception e)
-        { System.err.println("FileManager: save Pattern: " + e); }
-        
+        FormatXML.getInstance().saveFile(pattern, file);
     }
     
     /*-----------------------------------------------------------------------*/

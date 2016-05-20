@@ -6,7 +6,6 @@ import ewu.embroidit.parkc.io.PECDecoder;
 import javafx.scene.paint.Color;
 import ewu.embroidit.parkc.io.StitchCode;
 import ewu.embroidit.parkc.shape.A_EmbShapeWrapper;
-import java.io.Serializable;
 import javafx.scene.shape.Shape;
 
 /*-----------------------------------------------------------------------*/
@@ -16,7 +15,7 @@ import javafx.scene.shape.Shape;
  * colored threads inside of an embroidery hoop.
  * @author Chris Park (christopherpark@eagles.ewu.edu)
  */
-public class EmbPattern implements Serializable
+public class EmbPattern
 {
     /*-----------------------------------------------------------------------*/
     
@@ -24,13 +23,12 @@ public class EmbPattern implements Serializable
     private double lastX;                          //Last x position
     private double lastY;                          //Last y position
     private String name;
-    
     private Point2D homePoint;                     //Pattern starting point
     private EmbHoop hoop;                          //Embroidery hoop
     private List<EmbStitch> importStitchList;      //List imported of stitches
     private List<EmbThread> threadList;            //List of threads
-    
     private List<Shape> shapeList;
+    
     private HashMap<Shape, A_EmbShapeWrapper> wrapperHash;
     
     /*-----------------------------------------------------------------------*/
@@ -198,6 +196,27 @@ public class EmbPattern implements Serializable
     /*-----------------------------------------------------------------------*/
     
     /**
+     * Returns the pattern name (New Pattern by default).
+     * @return String
+     */
+    public String getName()
+    { return this.name; }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Sets the patterns name to the given string.
+     * @param name String
+     */
+    public void setName(String name)
+    { 
+        this.validateObject(name);
+        this.name = name; 
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
      * Returns this patterns list of threads
      * @return List&lt;EmbThread&gt;
      */
@@ -240,6 +259,18 @@ public class EmbPattern implements Serializable
     }
     
     /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Sets the List&lt;Shape&gt; passed as the new stitch list for this
+     * pattern.
+     * @param shapes 
+     */
+    public void setShapeList(List<Shape> shapes)
+    {
+        this.validateObject(shapes);
+        this.shapeList = shapes;
+    }
+    /*-----------------------------------------------------------------------*/
     /**
      * Gets the color at the given color index, creates a new thread of this
      * color, and adds it to the patterns thread list.
@@ -279,6 +310,37 @@ public class EmbPattern implements Serializable
     /*-----------------------------------------------------------------------*/
     
     /**
+     * Returns the current color index of this pattern
+     * @return 
+     */
+    public int getColorIndex()
+    { return this.colorIndex; }
+    
+    /*-----------------------------------------------------------------------*/
+    
+    /**
+     * Returns the last x stitch position.
+     * @return double
+     */
+    public double getLastX()
+    { return this.lastX; }
+    
+    /**
+     * Returns the last y stitch position.
+     * @return double
+     */
+    public double getLastY()
+    { return this.lastY; }
+    
+    /**
+     * Returns the home stitch coordinates for this pattern.
+     * @return Point2D
+     */
+    public Point2D getHomePoint()
+    { return this.homePoint; }
+    /*-----------------------------------------------------------------------*/
+    
+    /**
      * [NOT CURRENTLY IN USE] Returns the maximum color 
      * index found in this patterns stitch list.
      * @return maxIndex int
@@ -294,27 +356,6 @@ public class EmbPattern implements Serializable
             maxIndex = Math.max(maxIndex, stitch.getColorIndex());
         }
         return maxIndex;
-    }
-    
-    /*-----------------------------------------------------------------------*/
-    
-    /**
-     * Returns the pattern name (New Pattern by default).
-     * @return String
-     */
-    public String getName()
-    { return this.name; }
-    
-    /*-----------------------------------------------------------------------*/
-    
-    /**
-     * Sets the patterns name to the given string.
-     * @param name String
-     */
-    public void setName(String name)
-    { 
-        this.validateObject(name);
-        this.name = name; 
     }
     
     /*-----------------------------------------------------------------------*/
