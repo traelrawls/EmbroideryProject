@@ -60,7 +60,7 @@ public class EmbFillTatamiRect extends A_EmbFill
      */
     private void divideRectRecursive(Rectangle rect, List<Line> lineList)
     {   
-        if(rect.getWidth() >= MM_TO_PXL * 2)
+        if(rect.getWidth() >= SCALE_VALUE * 2)
         {   
             Rectangle rectLeft, rectRight;
             

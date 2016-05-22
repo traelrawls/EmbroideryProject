@@ -4,9 +4,6 @@ import ewu.embroidit.parkc.pattern.EmbPattern;
 import java.io.File;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -70,21 +67,22 @@ public class FormatXML //implements ValidationEventHandler
     public void saveFile(EmbPattern pattern, File file)
     {
         
+        XMLPatternAdapter patternAdapter = new XMLPatternAdapter(pattern);
+        
+        
+        
         try
         {
-            System.err.println("Here");
-            JAXBContext context = JAXBContext.newInstance(EmbPattern.class,
-                    Rectangle.class, Ellipse.class, Line.class);
+            JAXBContext context = JAXBContext.newInstance(XMLPatternAdapter.class,
+                    XMLStitchAdapter.class, XMLThreadAdapter.class, XMLShapeAdapter.class);
             
+            System.err.println("Initialized context.");
             
             Marshaller m = context.createMarshaller();
             
-            
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            
-            m.marshal(pattern, file);
-            
-            //m.marshal(pattern, System.err);
+            m.marshal(patternAdapter, file);
+            m.marshal(patternAdapter, System.err);
         }
         catch(Exception e)
         {

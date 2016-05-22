@@ -23,6 +23,10 @@ public class XMLStitchAdapter
     
     /*-----------------------------------------------------------------------*/
     
+    public XMLStitchAdapter()
+    {}
+    
+    /*-----------------------------------------------------------------------*/
     /**
      * Creates a new Stitch adapter with the given properties.
      * @param stitch EmbStitch - The stitch being bound to XML.

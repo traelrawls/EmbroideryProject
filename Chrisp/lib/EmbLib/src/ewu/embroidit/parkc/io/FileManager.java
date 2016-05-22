@@ -173,7 +173,7 @@ public class FileManager
             EmbStitch duplicateStitch, double dist)
     {
         if(curWrapper.getThreadColor().equals(prevWrapper.getThreadColor())
-                && dist >= 12.01 * A_EmbFill.MM_TO_PXL)
+                && dist >= 12.01 * A_EmbFill.SCALE_VALUE)
                 {                    
                     duplicateStitch.setFlag(StitchCode.JUMP);   
                     curWrapper.getStitchList().add(0, duplicateStitch);

@@ -18,7 +18,7 @@ public abstract class A_EmbShapeWrapper
 {
     /*-----------------------------------------------------------------------*/
     
-    protected static final double DEFAULT_STITCH_LENGTH = A_EmbFill.MM_TO_PXL;
+    protected static final double DEFAULT_STITCH_LENGTH = A_EmbFill.SCALE_VALUE;
             
     /*-----------------------------------------------------------------------*/
     

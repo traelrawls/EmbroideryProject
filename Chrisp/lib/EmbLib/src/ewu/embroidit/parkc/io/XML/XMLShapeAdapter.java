@@ -20,6 +20,10 @@ public class XMLShapeAdapter
     private double startX, startY, endX, endY, width, height, stitchLength;
     private XMLThreadAdapter color;
     
+    /*-----------------------------------------------------------------------*/
+    
+    public XMLShapeAdapter()
+    {}
     
     /*-----------------------------------------------------------------------*/
     

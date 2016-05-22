@@ -20,6 +20,11 @@ public class XMLThreadAdapter
     
     /*-----------------------------------------------------------------------*/
     
+    public XMLThreadAdapter()
+    {}
+    
+    /*-----------------------------------------------------------------------*/
+    
     /**
      * Creates a new thread adapter with the given properties.
      * @param r double - Red rgb value.

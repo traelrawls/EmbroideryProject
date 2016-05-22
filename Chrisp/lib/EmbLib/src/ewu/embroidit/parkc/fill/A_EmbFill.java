@@ -16,7 +16,7 @@ import javafx.scene.shape.Line;
 public abstract class A_EmbFill
 {
     /*-----------------------------------------------------------------------*/
-    public static final double MM_TO_PXL = 3.779527559;
+    public static final double SCALE_VALUE = 1.0;
     /*-----------------------------------------------------------------------*/
     
     public A_EmbFill()

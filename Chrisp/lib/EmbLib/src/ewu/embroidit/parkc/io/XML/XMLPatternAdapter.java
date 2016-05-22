@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -30,11 +31,19 @@ public class XMLPatternAdapter
     private String name;
     
     @XmlElementWrapper(name = "stitch-list")
+    @XmlElement(name = "stitch")
     private List<XMLStitchAdapter> stitchAdapterList;
     @XmlElementWrapper(name = "thread-list")
+    @XmlElement(name = "thread")
     private List<XMLThreadAdapter> threadAdapterList;
     @XmlElementWrapper(name = "shape-list")
+    @XmlElement(name = "shape")
     private List<XMLShapeAdapter> shapeAdapterList;
+    
+    /*-----------------------------------------------------------------------*/
+    
+    public XMLPatternAdapter()
+    {}
     
     /*-----------------------------------------------------------------------*/
     
