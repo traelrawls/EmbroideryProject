@@ -79,7 +79,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private TextField xField, yField, heightField, widthField, endXField, endYField;
     @FXML
-    private Button undoButton, redoButton;
+    private Button undoButton, redoButton, changeButton, deleteButton;
     @FXML
     private MenuItem undoMenuItem, redoMenuItem;
     
@@ -282,6 +282,14 @@ public class FXMLDocumentController implements Initializable {
             this.menuSaveFile();
         else
         {}
+    }
+    
+    private void improperFieldsDialog()
+    {
+        this.alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Editting Error");
+        alert.setContentText("All fields must be filled to edit!");
+        this.alert.showAndWait();
     }
     
     /*-----------------------------------------------------------------------*/
@@ -687,54 +695,68 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     public void editShape()
-    {      
+    {
         Shape shapeToEdit = this.pattern.getShapeList().get(shapeListView.getSelectionModel().getSelectedIndex());
         double xCoor = Double.parseDouble(xField.getText());
         double yCoor = Double.parseDouble(yField.getText());
         if (shapeToEdit.getClass().getSimpleName().equals("Line"))
         {
-            double endXCoor = Double.parseDouble(endXField.getText());
-            double endYCoor = Double.parseDouble(endYField.getText());
-            Line newLine = new Line(xCoor, yCoor, endXCoor, endYCoor);
-            A_EmbShapeWrapper lineWrapper = new EmbShapeWrapperLine(newLine);
-            lineWrapper.setName(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getName());
-            lineWrapper.setThreadColor(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getThreadColor());
-            addChange(shapeListView.getSelectionModel().getSelectedIndex(), false, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
-            this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(), newLine);
-            this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), lineWrapper);
+            if (!xField.getText().equals("") && !yField.getText().equals("") && !endXField.getText().equals("") && !endYField.getText().equals(""))
+            {
+                double endXCoor = Double.parseDouble(endXField.getText());
+                double endYCoor = Double.parseDouble(endYField.getText());
+                Line newLine = new Line(xCoor, yCoor, endXCoor, endYCoor);
+                A_EmbShapeWrapper lineWrapper = new EmbShapeWrapperLine(newLine);
+                lineWrapper.setName(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getName());
+                lineWrapper.setThreadColor(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getThreadColor());
+                addChange(shapeListView.getSelectionModel().getSelectedIndex(), false, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
+                this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(), newLine);
+                this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), lineWrapper);
+            }
+            else
+            {
+                improperFieldsDialog();
+            }
         }
         else
         {
-            double height = Double.parseDouble(heightField.getText());
-            double width = Double.parseDouble(widthField.getText()); 
-            if (shapeToEdit.getClass().getSimpleName().equals("Rectangle"))
+            if (!xField.getText().equals("") && !yField.getText().equals("") && !heightField.getText().equals("") && !widthField.getText().equals(""))
             {
-                Rectangle newRect = new Rectangle();
-                newRect.setX(xCoor);
-                newRect.setY(yCoor);
-                newRect.setHeight(height);
-                newRect.setWidth(width);
-                A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(newRect);
-                rectWrapper.setName(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getName());
-                rectWrapper.setThreadColor(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getThreadColor());
-                addChange(shapeListView.getSelectionModel().getSelectedIndex(), false, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
-                this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(), newRect);
-                this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), rectWrapper);
+                double height = Double.parseDouble(heightField.getText());
+                double width = Double.parseDouble(widthField.getText()); 
+                if (shapeToEdit.getClass().getSimpleName().equals("Rectangle"))
+                {
+                    Rectangle newRect = new Rectangle();
+                    newRect.setX(xCoor);
+                    newRect.setY(yCoor);
+                    newRect.setHeight(height);
+                    newRect.setWidth(width);
+                    A_EmbShapeWrapper rectWrapper = new EmbShapeWrapperTatamiFill(newRect);
+                    rectWrapper.setName(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getName());
+                    rectWrapper.setThreadColor(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getThreadColor());
+                    addChange(shapeListView.getSelectionModel().getSelectedIndex(), false, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
+                    this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(), newRect);
+                    this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), rectWrapper);
+                }
+                else if (shapeToEdit.getClass().getSimpleName().equals("Ellipse"))
+                {
+                    Ellipse newEllipse = new Ellipse();
+                    newEllipse.setCenterX(xCoor + (width/2));
+                    newEllipse.setCenterY(yCoor + (height/2));
+                    newEllipse.setRadiusX(width/2);
+                    newEllipse.setRadiusY(height/2);
+                    A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(newEllipse);
+                    ellipseWrapper.setName(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getName());
+                    ellipseWrapper.setThreadColor(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getThreadColor());
+                    addChange(shapeListView.getSelectionModel().getSelectedIndex(), false, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
+                    this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(), newEllipse);
+                    this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), ellipseWrapper);           
+                }
             }
-            else if (shapeToEdit.getClass().getSimpleName().equals("Ellipse"))
+            else
             {
-                Ellipse newEllipse = new Ellipse();
-                newEllipse.setCenterX(xCoor + (width/2));
-                newEllipse.setCenterY(yCoor + (height/2));
-                newEllipse.setRadiusX(width/2);
-                newEllipse.setRadiusY(height/2);
-                A_EmbShapeWrapper ellipseWrapper = new EmbShapeWrapperRadialFill(newEllipse);
-                ellipseWrapper.setName(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getName());
-                ellipseWrapper.setThreadColor(this.shapeList.get(this.shapeListView.getSelectionModel().getSelectedIndex()).getThreadColor());
-                addChange(shapeListView.getSelectionModel().getSelectedIndex(), false, this.shapeList.get(shapeListView.getSelectionModel().getSelectedIndex()));
-                this.pattern.getShapeList().set(shapeListView.getSelectionModel().getSelectedIndex(), newEllipse);
-                this.shapeList.set(shapeListView.getSelectionModel().getSelectedIndex(), ellipseWrapper);           
-            }        
+                improperFieldsDialog();
+            }
         }
         redrawCanvas();
     }
@@ -852,6 +874,14 @@ public class FXMLDocumentController implements Initializable {
         this.redoButton.setDisable(true);
         this.undoMenuItem.setDisable(true);
         this.redoMenuItem.setDisable(true);
+        this.changeButton.setDisable(true);
+        this.deleteButton.setDisable(true);
+        this.xField.setDisable(true);
+        this.yField.setDisable(true);
+        this.endXField.setDisable(true);
+        this.endYField.setDisable(true);
+        this.heightField.setDisable(true);
+        this.widthField.setDisable(true);
         setColor(this.colorPicker.getValue());
         this.stitchLayer.getGraphicsContext2D().setLineWidth(2);
         this.stitchLayer.getGraphicsContext2D().setLineCap(StrokeLineCap.BUTT);
@@ -867,20 +897,43 @@ public class FXMLDocumentController implements Initializable {
                         widthField.setText("");
                         if (!shapeList.isEmpty())
                         {
+                            xField.setDisable(false);
+                            yField.setDisable(false);
+                            changeButton.setDisable(false);
+                            deleteButton.setDisable(false);
                             A_EmbShapeWrapper selectedShape = shapeList.get(shapeListView.getSelectionModel().getSelectedIndex());
                             EmbShapeDimension dims = selectedShape.getDimensions();
                             xField.setText(""+dims.getStartCoord().getX());
                             yField.setText(""+dims.getStartCoord().getY());
                             if (selectedShape.getClass().getSimpleName().equals("EmbShapeWrapperLine"))
                             {
+                                endXField.setDisable(false);
+                                endYField.setDisable(false);
+                                heightField.setDisable(true);
+                                widthField.setDisable(true);
                                 endXField.setText(""+dims.getEndCoord().getX());
                                 endYField.setText(""+dims.getEndCoord().getY());
                             }
                             else
                             {
+                                heightField.setDisable(false);
+                                widthField.setDisable(false);
+                                endXField.setDisable(true);
+                                endYField.setDisable(true);
                                 heightField.setText(""+dims.getHeight());
                                 widthField.setText(""+dims.getWidth());
                             }
+                        }
+                        else
+                        {
+                            xField.setDisable(true);
+                            yField.setDisable(true);
+                            heightField.setDisable(true);
+                            widthField.setDisable(true);
+                            endXField.setDisable(true);
+                            endYField.setDisable(true);
+                            changeButton.setDisable(true);
+                            deleteButton.setDisable(true);
                         }
             }
         });
