@@ -90,7 +90,7 @@
                   </ImageView>
                </graphic>
                <tooltip>
-                  <Tooltip text="Undo" />
+                  <Tooltip text="Undo the last operation" />
                </tooltip>
             </Button>
             <Button id="shapeLayerButton" fx:id="redoButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
@@ -113,6 +113,9 @@
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Create a line" />
+               </tooltip>
             </Button>
             <Button id="rectButton" fx:id="rectButton" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#rectDrawingMode" prefHeight="40.0" prefWidth="40.0" text="Rect">
                <graphic>
@@ -122,6 +125,9 @@
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Create a rectangle" />
+               </tooltip>
             </Button>
             <Button id="ovalButton" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ellipseDrawingMode" prefHeight="40.0" prefWidth="40.0" text="Oval">
                <graphic>
@@ -131,9 +137,15 @@
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Create an oval" />
+               </tooltip>
             </Button>
             <Separator prefHeight="13.0" prefWidth="57.0" />
-            <ColorPicker fx:id="colorPicker" editable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="40.0" />
+            <ColorPicker fx:id="colorPicker" editable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="40.0">
+               <tooltip>
+                  <Tooltip text="Change the thread color" />
+               </tooltip></ColorPicker>
          </children>
          <padding>
             <Insets top="50.0" />
@@ -165,11 +177,17 @@
                         <Label fx:id="heightLabel" layoutX="11.0" layoutY="84.0" text="Height:" />
                         <Label fx:id="widthLabel" layoutX="13.0" layoutY="113.0" text="Width:" />
                         <TextField fx:id="widthField" layoutX="63.0" layoutY="109.0" prefHeight="25.0" prefWidth="95.0" />
-                        <Button fx:id="changeButton" layoutX="117.0" layoutY="146.0" mnemonicParsing="false" onAction="#editShape" prefHeight="25.0" prefWidth="62.0" text="Change" />
-                        <Button fx:id="deleteButton" layoutX="45.0" layoutY="146.0" mnemonicParsing="false" onAction="#deleteShape" prefHeight="25.0" prefWidth="62.0" text="Delete" />
-                        <Label fx:id="endXLabel" layoutX="7.0" layoutY="43.0" text="end X:" />
+                        <Button fx:id="changeButton" layoutX="117.0" layoutY="146.0" mnemonicParsing="false" onAction="#editShape" prefHeight="25.0" prefWidth="62.0" text="Change">
+                           <tooltip>
+                              <Tooltip text="Confirm property changes" />
+                           </tooltip></Button>
+                        <Button fx:id="deleteButton" layoutX="45.0" layoutY="146.0" mnemonicParsing="false" onAction="#deleteShape" prefHeight="25.0" prefWidth="62.0" text="Delete">
+                           <tooltip>
+                              <Tooltip text="Delete the selected shape" />
+                           </tooltip></Button>
+                        <Label fx:id="endXLabel" layoutX="7.0" layoutY="43.0" text="End X:" />
                         <TextField fx:id="endXField" layoutX="49.0" layoutY="39.0" prefHeight="25.0" prefWidth="52.0" />
-                        <Label fx:id="endYLabel" layoutX="109.0" layoutY="43.0" text="end Y:" />
+                        <Label fx:id="endYLabel" layoutX="109.0" layoutY="43.0" text="End Y:" />
                         <TextField fx:id="endYField" layoutX="152.0" layoutY="39.0" prefHeight="25.0" prefWidth="52.0" />
                      </children></AnchorPane>
               </content>
@@ -201,7 +219,7 @@
                         </ImageView>
                      </graphic>
                      <tooltip>
-                        <Tooltip text="Shape Layer" />
+                        <Tooltip text="Switch to the shape layer" />
                      </tooltip>
                   </Button>
                   <Button id="stitchLayerButton" alignment="CENTER" graphicTextGap="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#buttonStitchLayerPressed" prefHeight="44.0" prefWidth="96.0" text="STITCH">
@@ -213,7 +231,7 @@
                         </ImageView>
                      </graphic>
                      <tooltip>
-                        <Tooltip text="Stitch Layer" />
+                        <Tooltip text="Switch to the stitch layer" />
                      </tooltip>
                   </Button>
                </children>

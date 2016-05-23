@@ -10,10 +10,10 @@ import javax.xml.bind.Unmarshaller;
 
 /*-----------------------------------------------------------------------*/
 /**
- *
+ * Formats the information contained in a pattern file to and from XML.
  * @author Chris Park  (christopherpark@eagles.ewu.edu)
  */
-public class FormatXML //implements ValidationEventHandler
+public class FormatXML
 {
     
     /*-----------------------------------------------------------------------*/
@@ -24,7 +24,6 @@ public class FormatXML //implements ValidationEventHandler
     
     private FormatXML()
     {}
-    
     
     public static FormatXML getInstance()
     { return FormatXMLHolder.INSTANCE; }
@@ -58,31 +57,27 @@ public class FormatXML //implements ValidationEventHandler
         
         return this.pattern;
     }
-    
+
     /*-----------------------------------------------------------------------*/
     
-    
-    /*-----------------------------------------------------------------------*/
-    
+    /**
+     * Creates an XML bound pattern adapter that contains pattern information
+     * necessary for saving a file to XML.
+     * @param pattern EmbPattern - The pattern to save
+     * @param file File - The file to write the data to.
+     */
     public void saveFile(EmbPattern pattern, File file)
     {
-        
         XMLPatternAdapter patternAdapter = new XMLPatternAdapter(pattern);
-        
-        
         
         try
         {
             JAXBContext context = JAXBContext.newInstance(XMLPatternAdapter.class,
                     XMLStitchAdapter.class, XMLThreadAdapter.class, XMLShapeAdapter.class);
-            
-            System.err.println("Initialized context.");
-            
             Marshaller m = context.createMarshaller();
             
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             m.marshal(patternAdapter, file);
-            m.marshal(patternAdapter, System.err);
         }
         catch(Exception e)
         {
@@ -91,7 +86,7 @@ public class FormatXML //implements ValidationEventHandler
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Could not save data");
-            alert.setContentText("could not save data to xml file:\n"
+            alert.setContentText("Could not save data to xml file:\n"
                                 + file.getPath());
             
             alert.showAndWait();
