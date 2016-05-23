@@ -9,6 +9,7 @@ import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -82,26 +83,31 @@ public class FormatXML
         threadAdapterList = patternAdapter.getThreadAdapterList();
         shapeAdapterList = patternAdapter.getShapeAdapterList();
         
-        //get stitch adapter list
-            //for each, recreate a stitch and add it to the list
         for(XMLStitchAdapter stitch : stitchAdapterList)
         {
+            this.pattern.addStitchAbs(stitch.getXCoord(), stitch.getYCoord(),
+                                      stitch.getFlag(), stitch.getColorIndex());
             
         }
         
-            
-        //get thread adapter list
-            //for each, reacreate thread and add to list
-        
+        for(XMLThreadAdapter thread : threadAdapterList)
+        {
+            this.pattern.addThreadByValue(Color.color(thread.getRed(),
+                    thread.getGreen(), thread.getBlue()));
+        }
         
         //get the shape adapter list
             //for each, recreate the shape
             //recreate its wrapper
             //add both to their respective lists
+        for(XMLShapeAdapter shape : shapeAdapterList)
+        {
             
-        //After pattern reconstruction, we'll need to re apply fill
-        //algorithms and redraw the pattern.
+        }
         
+        //look through pattern and reapply fill algorithms
+        
+        //repopulate oberveable list
         
         return this.pattern;
             

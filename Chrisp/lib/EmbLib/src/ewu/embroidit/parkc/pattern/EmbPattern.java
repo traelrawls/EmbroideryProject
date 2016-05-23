@@ -286,6 +286,20 @@ public class EmbPattern
         this.threadList.add(thread);
     }
     
+    /**
+     * Adds a thread to the threadList using a direct color value
+     * instead of referencing the available color list.
+     * @param color Color
+     */
+    public void addThreadByValue(Color color)
+    {
+        EmbThread thread;
+        
+        this.validateObject(color);
+        thread = new EmbThread(color);
+        this.threadList.add(thread);
+    }
+    
     /*-----------------------------------------------------------------------*/
     
     /**
