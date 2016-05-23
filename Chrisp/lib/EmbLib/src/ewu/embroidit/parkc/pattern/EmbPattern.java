@@ -316,6 +316,14 @@ public class EmbPattern
     public int getColorIndex()
     { return this.colorIndex; }
     
+    
+    /**
+     * Set the current color index of this pattern.
+     * @param index int
+     */
+    public void setColorIndex(int index)
+    { this.colorIndex = index; }
+    
     /*-----------------------------------------------------------------------*/
     
     /**
@@ -333,11 +341,35 @@ public class EmbPattern
     { return this.lastY; }
     
     /**
+     * Sets the last x stitch coordinate for this pattern.
+     * @param x double
+     */
+    public void setLastX(double x)
+    { this.lastX = x; }
+    
+    /**
+     * Sets the last y stitch coordinate for this pattern.
+     * @param y double
+     */
+    public void setLastY(double y)
+    { this.lastY = y; }
+    
+    /**
      * Returns the home stitch coordinates for this pattern.
      * @return Point2D
      */
     public Point2D getHomePoint()
     { return this.homePoint; }
+    
+    /**
+     * Sets the home point for this pattern.
+     * @param point Point2D
+     */
+    public void setHomePoint(Point2D point)
+    { 
+        this.validateObject(point);
+        this.homePoint = point; 
+    }
     /*-----------------------------------------------------------------------*/
     
     /**

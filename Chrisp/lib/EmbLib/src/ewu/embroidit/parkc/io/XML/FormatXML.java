@@ -1,9 +1,15 @@
 package ewu.embroidit.parkc.io.XML;
 
 import ewu.embroidit.parkc.pattern.EmbPattern;
+import ewu.embroidit.parkc.pattern.EmbStitch;
+import ewu.embroidit.parkc.pattern.EmbThread;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.shape.Shape;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -35,27 +41,70 @@ public class FormatXML
     
     public EmbPattern loadFile(File file)
     {
-        this.pattern = new EmbPattern();
+        XMLPatternAdapter patternAdapter = new XMLPatternAdapter();
+        List<XMLStitchAdapter> stitchAdapterList = new ArrayList<>(); 
+        List<XMLThreadAdapter> threadAdapterList = new ArrayList<>(); 
+        List<XMLShapeAdapter> shapeAdapterList = new ArrayList<>(); 
+        List<EmbStitch> stitchList = new ArrayList<>();
+        List<EmbThread> threadList = new ArrayList<>();
+        List<Shape> shapeList = new ArrayList<>();
         
         try
         {
-            JAXBContext context = JAXBContext.newInstance(EmbPattern.class);
+            JAXBContext context = JAXBContext.newInstance(XMLPatternAdapter.class,
+                    XMLStitchAdapter.class, XMLThreadAdapter.class, XMLShapeAdapter.class);
             Unmarshaller um = context.createUnmarshaller();
             
-            this.pattern = (EmbPattern) um.unmarshal(file);
+            patternAdapter = (XMLPatternAdapter) um.unmarshal(file);
         }
         catch(Exception e)
         {
+            System.err.println(e);
+            
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Could not load data");
-            alert.setContentText("could not load data from xml file:\n"
+            alert.setContentText("Could not load data from xml file:\n"
                                 + file.getPath());
             
             alert.showAndWait();
         }
         
+        this.pattern = new EmbPattern();
+        this.pattern.setColorIndex(patternAdapter.getColorIndex());
+        this.pattern.setLastX(patternAdapter.getLastX());
+        this.pattern.setLastY(patternAdapter.getLastY());
+        this.pattern.setHomePoint(new Point2D(patternAdapter.getHomePointX(),
+                                              patternAdapter.getHomePointY()));
+        this.pattern.setName(patternAdapter.getName());
+        
+        stitchAdapterList = patternAdapter.getStitchAdapterList();
+        threadAdapterList = patternAdapter.getThreadAdapterList();
+        shapeAdapterList = patternAdapter.getShapeAdapterList();
+        
+        //get stitch adapter list
+            //for each, recreate a stitch and add it to the list
+        for(XMLStitchAdapter stitch : stitchAdapterList)
+        {
+            
+        }
+        
+            
+        //get thread adapter list
+            //for each, reacreate thread and add to list
+        
+        
+        //get the shape adapter list
+            //for each, recreate the shape
+            //recreate its wrapper
+            //add both to their respective lists
+            
+        //After pattern reconstruction, we'll need to re apply fill
+        //algorithms and redraw the pattern.
+        
+        
         return this.pattern;
+            
     }
 
     /*-----------------------------------------------------------------------*/
