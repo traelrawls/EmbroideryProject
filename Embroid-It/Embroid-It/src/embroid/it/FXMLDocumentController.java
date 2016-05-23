@@ -80,6 +80,8 @@ public class FXMLDocumentController implements Initializable {
     private TextField xField, yField, heightField, widthField, endXField, endYField;
     @FXML
     private Button undoButton, redoButton;
+    @FXML
+    private MenuItem undoMenuItem, redoMenuItem;
     
     
     
@@ -655,7 +657,9 @@ public class FXMLDocumentController implements Initializable {
             this.changesList.remove(0);
         }
         this.undoButton.setDisable(false);
+        this.undoMenuItem.setDisable(false);
         this.redoButton.setDisable(true);
+        this.redoMenuItem.setDisable(true);
         this.changesList.add(new EmbCommand(index, isAdding, wrapper));
     }
     
@@ -755,6 +759,7 @@ public class FXMLDocumentController implements Initializable {
         EmbCommand change = this.changesList.get(changesIndex);
         if (change.getAddingFlag())
         {
+            this.changesList.set(changesIndex, new EmbCommand(change.getListIndex(), false, null));
             this.shapeList.add(change.getListIndex(), change.getWrapper());
             this.pattern.getShapeList().add(change.getListIndex(), change.getWrapper().getWrappedShape());
             this.listViewShapes.add(change.getListIndex(), change.getWrapper().getName());
@@ -763,12 +768,14 @@ public class FXMLDocumentController implements Initializable {
         {
             if (change.getWrapper() == null)
             {
+                this.changesList.set(changesIndex, new EmbCommand(change.getListIndex(), true, this.shapeList.get(change.getListIndex())));
                 this.shapeList.remove(change.getListIndex());
                 this.pattern.getShapeList().remove(change.getListIndex());
                 this.listViewShapes.remove(change.getListIndex());
             }
             else
             {
+                this.changesList.set(changesIndex, new EmbCommand(change.getListIndex(), false, this.shapeList.get(change.getListIndex())));
                 this.shapeList.set(change.getListIndex(), change.getWrapper());
                 this.pattern.getShapeList().set(change.getListIndex(), change.getWrapper().getWrappedShape());
                 this.listViewShapes.set(change.getListIndex(), change.getWrapper().getName());
@@ -776,11 +783,50 @@ public class FXMLDocumentController implements Initializable {
         }
         this.changesIndex--;
         this.redoButton.setDisable(false);
+        this.redoMenuItem.setDisable(false);
         if (this.changesIndex < 0)
         {
             this.undoButton.setDisable(true);
+            this.undoMenuItem.setDisable(true);
         }
         redrawCanvas();
+    }
+    
+    @FXML
+    public void redoChange()
+    {
+        this.changesIndex++;
+        EmbCommand change = this.changesList.get(changesIndex);
+        if (change.getAddingFlag())
+        {
+            this.changesList.set(changesIndex, new EmbCommand(change.getListIndex(), false, null));
+            this.shapeList.add(change.getListIndex(), change.getWrapper());
+            this.pattern.getShapeList().add(change.getListIndex(), change.getWrapper().getWrappedShape());
+            this.listViewShapes.add(change.getListIndex(), change.getWrapper().getName());
+        }
+        else
+        {
+            if (change.getWrapper() == null)
+            {
+                this.changesList.set(changesIndex, new EmbCommand(change.getListIndex(), true, this.shapeList.get(change.getListIndex())));
+                this.shapeList.remove(change.getListIndex());
+                this.pattern.getShapeList().remove(change.getListIndex());
+                this.listViewShapes.remove(change.getListIndex());
+            }
+            else
+            {
+                this.changesList.set(changesIndex, new EmbCommand(change.getListIndex(), false, this.shapeList.get(change.getListIndex())));
+                this.shapeList.set(change.getListIndex(), change.getWrapper());
+                this.pattern.getShapeList().set(change.getListIndex(), change.getWrapper().getWrappedShape());
+                this.listViewShapes.set(change.getListIndex(), change.getWrapper().getName());
+            }
+        }
+        if (this.changesIndex > 4 || this.changesIndex == this.changesList.size()-1)
+        {
+            this.redoButton.setDisable(true);
+            this.redoMenuItem.setDisable(true);
+        }
+        redrawCanvas();      
     }
     
     /*-----------------------------------------------------------------------*/
@@ -804,6 +850,8 @@ public class FXMLDocumentController implements Initializable {
         this.colorPicker.setValue(Color.BLACK);
         this.undoButton.setDisable(true);
         this.redoButton.setDisable(true);
+        this.undoMenuItem.setDisable(true);
+        this.redoMenuItem.setDisable(true);
         setColor(this.colorPicker.getValue());
         this.stitchLayer.getGraphicsContext2D().setLineWidth(2);
         this.stitchLayer.getGraphicsContext2D().setLineCap(StrokeLineCap.BUTT);

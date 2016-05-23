@@ -52,11 +52,11 @@
                 </Menu>
                   <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                      <MenuItem disable="true" mnemonicParsing="false" text="Undo">
+                      <MenuItem mnemonicParsing="false" fx:id="undoMenuItem" text="Undo" onAction="#undoChange">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="U" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
-                        <MenuItem disable="true" mnemonicParsing="false" text="Redo">
+                        <MenuItem mnemonicParsing="false" fx:id="redoMenuItem" text="Redo" onAction="#redoChange">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
@@ -93,7 +93,7 @@
                   <Tooltip text="Undo the last operation" />
                </tooltip>
             </Button>
-            <Button id="shapeLayerButton" fx:id="redoButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
+            <Button id="shapeLayerButton" fx:id="redoButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#redoChange" prefHeight="40.0" prefWidth="40.0" text="Redo" textAlignment="CENTER">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
