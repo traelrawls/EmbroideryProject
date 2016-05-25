@@ -31,7 +31,6 @@ public abstract class A_EmbFill
      */
     public abstract void fillShape(A_EmbShapeWrapper shapeWrapper);
     
-    
     /*-----------------------------------------------------------------------*/
        
     /**

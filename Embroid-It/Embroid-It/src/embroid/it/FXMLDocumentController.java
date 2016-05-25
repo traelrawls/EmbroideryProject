@@ -204,13 +204,25 @@ public class FXMLDocumentController implements Initializable {
         if(!this.isSaved)
             this.makeSaveCheck();
         
+        this.resetGUI();
+        
         this.openBrowser.getExtensionFilters().add(this.xmlFilter);
         File file = openBrowser.showOpenDialog(this.primaryStage);
         
+        if(file == null)
+            return;
+        
         this.pattern = FileManager.getInstance().openPattern(file);
         
-        //Open file
-        System.err.println("OPEN!");
+        for(A_EmbShapeWrapper wrapper : 
+                FileManager.getInstance().getWrapperList(this.pattern))
+        {
+            this.shapeList.add(wrapper);
+            listViewShapes.add(wrapper.getName());
+        }
+        
+        this.redrawCanvas();
+        this.stitchFromStitchList(this.pattern.getStitchList());
     }
     
     /*-----------------------------------------------------------------------*/
@@ -287,7 +299,7 @@ public class FXMLDocumentController implements Initializable {
     private void improperFieldsDialog()
     {
         this.alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Editting Error");
+        alert.setTitle("Editing Error");
         alert.setContentText("All fields must be filled to edit!");
         this.alert.showAndWait();
     }
