@@ -52,11 +52,11 @@
                 </Menu>
                   <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                      <MenuItem mnemonicParsing="false" fx:id="undoMenuItem" text="Undo" onAction="#undoChange">
+                      <MenuItem fx:id="undoMenuItem" mnemonicParsing="false" onAction="#undoChange" text="Undo">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="U" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
-                        <MenuItem mnemonicParsing="false" fx:id="redoMenuItem" text="Redo" onAction="#redoChange">
+                        <MenuItem fx:id="redoMenuItem" mnemonicParsing="false" onAction="#redoChange" text="Redo">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
@@ -64,7 +64,7 @@
                   </Menu>
                   <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Getting Started">
+                        <MenuItem mnemonicParsing="false" onAction="#menuGettingStarted" text="Getting Started">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="F1" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>

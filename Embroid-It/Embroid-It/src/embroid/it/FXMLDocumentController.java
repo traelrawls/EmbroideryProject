@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package embroid.it;
 
 import ewu.embroidit.parkc.fill.A_EmbFill;
@@ -14,6 +9,7 @@ import ewu.embroidit.parkc.pattern.EmbPattern;
 import ewu.embroidit.parkc.pattern.EmbStitch;
 import ewu.embroidit.parkc.shape.*;
 import ewu.embroidit.parkc.util.EmbCommand;
+import java.awt.Desktop;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -259,6 +255,38 @@ public class FXMLDocumentController implements Initializable {
     
     /*-----------------------------------------------------------------------*/
     
+    /**
+     * Opens the beginners documentation for the project. If the machine
+     * the application runs on has no .PDF reading solution, a link to
+     * documentation in the repository is attempted instead.
+     */
+    @FXML
+    private void menuGettingStarted()
+    {
+        if(Desktop.isDesktopSupported())
+        {
+            try
+            {
+                File pdf = new File("./src/embroid/it/res/QuickStartGuide.pdf");
+                Desktop.getDesktop().open(pdf);
+            }
+            catch(Exception e)
+            { System.err.println("Error loading pdf"); }
+        }
+        else
+        {
+            //Error message and alternate method of viewing
+        }
+    }
+    
+    /*-----------------------------------------------------------------------*/
+    //END MENU OPERATIONS
+    /*-----------------------------------------------------------------------*/
+    
+    /*-----------------------------------------------------------------------*/
+    //DIALOGS
+    /*-----------------------------------------------------------------------*/
+    
     @FXML
     private void menuAbout()
     {
@@ -275,6 +303,8 @@ public class FXMLDocumentController implements Initializable {
         
         this.alert.showAndWait();
     }
+    
+    
     
     /*-----------------------------------------------------------------------*/
     /**
@@ -305,7 +335,7 @@ public class FXMLDocumentController implements Initializable {
     }
     
     /*-----------------------------------------------------------------------*/
-    //END MENU OPERATIONS
+    //END DIALOGS
     /*-----------------------------------------------------------------------*/
    
     /*-----------------------------------------------------------------------*/
