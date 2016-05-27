@@ -60,15 +60,8 @@ public class FormatPES
         this.closeFile();
         this.validateLastStitch();
         
-        //scale stitch list
         EmbMath.scaleStitches(this.pattern.getStitchList(), 4.0);
-        
-        //offset using the bounding box
         EmbMath.offsetStitchList(this.pattern.getStitchList());
-        
-        
-        
-        
     }
     
     /*-----------------------------------------------------------------------*/
@@ -342,7 +335,6 @@ public class FormatPES
         
         this.fileStream.writeShort(colorCount);
         
-        //How does this not walk off the array?
         for(int i = 0; i < colorCount; i++)
         {
             fileStream.writeShort(colorInfo[i * 2]);
@@ -350,8 +342,6 @@ public class FormatPES
         }
             
         fileStream.writeInt(0);
-        
-        
     }
     
     /*-----------------------------------------------------------------------*/

@@ -46,9 +46,7 @@ public class FileManager
      * @return EmbPattern
      */
     public EmbPattern openPattern(File file)
-    {
-        return FormatXML.getInstance().loadFile(file);
-    }
+    { return FormatXML.getInstance().loadFile(file); }
     
     /*-----------------------------------------------------------------------*/
 
@@ -58,9 +56,7 @@ public class FileManager
      * @param file File
      */
     public void savePattern(EmbPattern pattern, File file)
-    {
-        FormatXML.getInstance().saveFile(pattern, file);
-    }
+    { FormatXML.getInstance().saveFile(pattern, file); }
     
     /*-----------------------------------------------------------------------*/
     

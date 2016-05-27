@@ -185,6 +185,13 @@ public class FXMLDocumentController implements Initializable {
         if(!this.isSaved)
             this.makeSaveCheck();
         
+        this.exportBrowser.getExtensionFilters().add(this.pesFilter);
+        File file = exportBrowser.showSaveDialog(this.primaryStage);
+        
+        if(file == null)
+            return;
+        
+        FileManager.getInstance().patternToPes(file, this.pattern);
         //Export call here
         System.err.println("EXPORT!");
     }

@@ -169,6 +169,7 @@ public class PECEncoder
         yFactor = 32.0/height;
         xFactor = 42.0/ width;
         
+        /*
         try
         {
             for(EmbStitch stitch : stitchList)
@@ -211,7 +212,10 @@ public class PECEncoder
             }
             this.writeImage(fileStream, imageArray);
         }
+        */
         
+        this.writeImage(fileStream, imageArray);
+        this.writeImage(fileStream, imageArray);
       
     }
     

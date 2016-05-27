@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package embroid.it;
 
 import javafx.application.Application;
@@ -12,8 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- *
- * @author Desolis
+ * Embroid-it application main class.
+ * @author Chris Park
  */
 public class EmbroidIt extends Application {
     
@@ -23,6 +18,7 @@ public class EmbroidIt extends Application {
         
         Scene scene = new Scene(root);
         
+        stage.setTitle("Embroid-It");
         stage.setScene(scene);
         stage.show();
     }
